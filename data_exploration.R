@@ -36,6 +36,9 @@ pkg <- c("knitr", "tidyverse", "lavaan", "corrplot", "blavaan")
 sapply(pkg, library, character.only = T)
 
 
+# rstan set
+options(mc.cores = parallel::detectCores())
+rstan_options(auto_write = TRUE)
 
 
 # load data ---------------------------------------------------------------
@@ -297,8 +300,16 @@ model <- c("t1 =~ 1*prop_vh_15 + 1*prop_vh.p.w_15
             pol =~ 1*prop_vh_15 + 1*prop_vh_17 + 1*prop_vh_19
             surv =~ 1*prop_vh.p.w_15 + 1*prop_vh.p.w_17 + 1*prop_vh.p.w_19
            ")
+
+
+
+# try to take the log as model is not estimating properly
+data <- dat_s2l %>%
+  select(matches("prop_vh_"), matches("prop_vh.p.w")) %>%
+  mutate_all(~log(. + 1))
+
 m2_propvh <- bsem(model, data = dat_s2l,
-                  burnin = 2000, sample = 1000, n.chains = 4)
+                  burnin = 4000, sample = 2000, n.chains = 4)
 
 summary(m2_propvh, standardized = TRUE)
 
@@ -316,7 +327,8 @@ model <- c("t1 =~ 1*prop_pers_15 + 1*prop_pers.p.w_15
             pol =~ 1*prop_pers_15 + 1*prop_pers_17 + 1*prop_pers_19
             surv =~ 1*prop_pers.p.w_15 + 1*prop_pers.p.w_17 + 1*prop_pers.p.w_19
            ")
-m2_proppers <- bsem(model, data = dat_s2l)
+m2_proppers <- bsem(model, data = dat_s2l,
+                    burnin = 4000, sample = 2000, n.chains = 4)
 
 summary(m2_proppers, standardized = TRUE)
 
