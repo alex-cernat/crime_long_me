@@ -1,0 +1,40 @@
+
+
+
+\tikzstyle{true}=[circle,draw=black,thick,inner sep=0pt, minimum size=15mm]
+\tikzstyle{obs}=[rectangle,draw=black,thick,inner sep=0pt, minimum size=13mm]
+\tikzstyle{err}=[circle,draw=black,thick,inner sep=0pt, minimum size=9mm]
+\tikzstyle{pre}=[<-,shorten <=1pt,>=stealth', thick]
+\tikzstyle{post}=[->,shorten >=1pt,>=stealth', thick]
+
+\begin{tikzpicture}[scale=1.3]
+\node (T1) at ( 0,-1.5) [true] {$T_{1}$};
+\node (T2) at ( 3,-1.5) [true] {$T_{2}$};
+\node (T3) at ( 6,-1.5) [true] {$T_{3}$};
+
+\node (O1) at ( 0,-4) [obs] {y$_{1}$};
+\node (O2) at ( 3,-4) [obs] {y$_{2}$};
+\node (O3) at ( 6,-4) [obs] {y$_{3}$};
+
+\node (E1) at ( 0.5,-5.5) [err] {\epsilon};
+\node (E2) at ( 3.5,-5.5) [err] {\epsilon};
+\node (E3) at ( 6.5,-5.5) [err] {\epsilon};
+
+\node (E4) at ( 3.5, 0) [err] {\zeta$_1$};
+\node (E5) at ( 6.5, 0) [err] {\zeta$_2$};
+
+\draw[post] (T1) to node[pos = 0.5, left]  {$1$} (O1.north);
+\draw[post] (T2) to node[pos = 0.5, left]  {$1$} (O2.north);
+\draw[post] (T3) to node[pos = 0.5, left]  {$1$} (O3.north);
+
+\draw[post] (T1) to node[pos = 0.5, above]  {$\beta_{21}$} (T2);
+\draw[post] (T2) to node[pos = 0.5, above]  {$\beta_{32}$} (T3);
+
+
+\draw[post] (E1) to (O1.south);
+\draw[post] (E2) to (O2.south);
+\draw[post] (E3) to (O3.south);
+\draw[post] (E4) to (T2.north);
+\draw[post] (E5) to (T3.north);
+
+\end{tikzpicture}

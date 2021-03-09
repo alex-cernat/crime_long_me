@@ -1,0 +1,344 @@
+#############################################################
+#
+# Project looking estimating measurement error in crime data using
+# longitudinal models
+#
+# We start by using data from Barcelona 2015-2019
+#
+#
+#############################################################
+
+# clear working space
+rm(list = ls())
+
+# Admin -------------------------------------------------------------------
+
+# folders for installed packages (for Alex work machine)
+# .libPaths(c(paste0("C:/Users/", Sys.getenv("USERNAME"), "/Dropbox (The University of Manchester)/R/package"),  .libPaths()))
+
+
+
+# create folders (run just once)
+# dir.create("./output")
+# dir.create("./output/figs/")
+# dir.create("./output/tabs/")
+# dir.create("./functions")
+# dir.create("./data")
+# dir.create("./data/raw/")
+# dir.create("./data/clean/")
+# dir.create("./mplus")
+# dir.create("./info")
+
+# install packages
+pkg <- c("knitr", "tidyverse", "lavaan", "corrplot", "blavaan")
+
+# sapply(pkg, install.packages)
+sapply(pkg, library, character.only = T)
+
+
+
+
+# load data ---------------------------------------------------------------
+
+barca_raw <- read_csv("./data/raw/neighbourhoods.csv")
+barca_2y <- read_csv("./data/clean/neighbourhoods_2years.csv")
+
+
+# data cleaning -----------------------------------------------------------
+
+barca_2y <- barca_2y %>%
+  mutate(id = as.factor(Barri) %>% as.numeric()) %>%
+  rename_all(~str_to_lower(.)) %>%
+  rename(row = x1, year = any) %>%
+  select(row, id, everything())
+
+
+# descriptives ------------------------------------------------------------
+
+
+vars_int <- str_c(c("property_vh", "property_personal", "violence") %>%
+                    rep(each = 2),
+                  c("", ".r.w") %>%
+                    rep(3))
+
+count(barca_2y, year)
+
+# change in time
+
+dat_s <- barca_2y %>%
+  select(id, year, vars_int)
+
+
+# variances
+dat_s %>%
+  select(-id) %>%
+  group_by(year) %>%
+  summarise_all(list(mean = ~mean(.),
+                     sd = ~sd(.))) %>%
+  gather(-year, key = key, value = value) %>%
+  mutate(stat = ifelse(str_detect(key, "mean$"), "Mean", "SD"),
+         group = ifelse(str_detect(key, "\\.r\\.w"), "Survey", "Police"),
+         var = str_remove_all(key, "_mean|_sd|\\.r\\.w")) %>%
+  ggplot(aes(year, value, linetype = var,
+             color = group, group = as.factor(key))) +
+  geom_line(size = 1.5) +
+  facet_wrap(~ stat, scales = "free_y") +
+  theme_bw() +
+  labs(color = "Data source",
+       linetype = "Variable",
+       x = "Year",
+       y = "Value")
+
+# corelations
+
+b2y_long <- barca_2y %>%
+  select(id, year, vars_int) %>%
+  mutate(year = str_remove_all(year, "20|-.+")) %>%
+  pivot_wider(
+    values_from = property_vh:violence.r.w,
+      names_sep = "_",
+      names_from = year) %>%
+  rename_all(~str_remove_all(., "erty|onal|ence"))
+
+
+b2y_long %>%
+  select(-id) %>%
+  cor() %>%
+  corrplot()
+
+
+
+
+
+
+# auto-regressive models --------------------------------------------------
+
+vars_int2 <- str_remove_all(vars_int, "erty|onal|ence")
+
+autoreg <- function(var) {
+  model <- str_c(var, "_17 ~ ", var, "_15\n",
+                 var, "_19 ~ ", var, "_17")
+
+  sem(model, data = b2y_long)
+}
+
+res_autoreg <- map(vars_int2, autoreg)
+
+
+
+
+
+
+model <- c("t1 =~ prop_vh_15
+            t2 =~ prop_vh_17
+            t3 =~ prop_vh_19
+
+            t2 ~ t1
+            t3 ~ t2
+
+           prop_vh_15 ~~ a*prop_vh_15
+           prop_vh_17 ~~ a*prop_vh_17
+           prop_vh_19 ~~ a*prop_vh_19")
+m1 <- sem(model, data = b2y_long)
+m1b <- bsem(model, data = b2y_long)
+
+summary(m1)
+summary(m1b)
+
+qs <- function(var) {
+  model <- str_c("t1 =~ ", var, "_15\n",
+                 "t2 =~ ", var, "_17\n",
+                 "t3 =~ ", var, "_19\n\n",
+                 "t2 ~ t1 \nt3 ~ t2\n\n",
+                 var, "_15 ~~ a*", var, "_15\n",
+                 var, "_17 ~~ a*", var, "_17\n",
+                 var, "_19 ~~ a*", var, "_19")
+
+  bsem(model, data = b2y_long)
+}
+
+
+
+# takes a while to run so just re-load
+# res_qs <- map(vars_int2, qs)
+# save(res_qs, file = "./output/quasi_simple.RData")
+
+load("./output/quasi_simple.RData")
+
+
+qs_rel <- map(res_qs, function(x) summary(x, standardized = TRUE) %>%
+      .[1:3, 7] %>% as.numeric()
+) %>%
+  reduce(cbind) %>%
+  as_tibble() %>%
+  setNames(vars_int2) %>%
+  mutate(year = c(15, 17, 19))
+
+
+qs_rel %>%
+  gather(-year, key = key, value = value) %>%
+  mutate(group = ifelse(str_detect(key, "\\.r\\.w"), "Survey", "Police"),
+         var = str_remove_all(key, "_mean|_sd|\\.r\\.w")) %>%
+  ggplot(aes(as.factor(year), value, color = var,
+             group = var)) +
+  geom_line(size = 1.5) +
+  facet_wrap(~ group) +
+  theme_bw() +
+  labs(color = "Variable",
+       x = "Year",
+       y = "Value")
+
+
+
+qs_rel %>%
+  gather(-year, key = key, value = value) %>%
+  mutate(group = ifelse(str_detect(key, "\\.r\\.w"), "Survey", "Police"),
+         var = str_remove_all(key, "_mean|_sd|\\.r\\.w")) %>%
+  group_by(group, var) %>%
+  summarise(reliability = mean(value)) %>%
+  group_by(group) %>%
+  mutate(reliability_source = mean(reliability))
+
+
+
+
+# multi-item QS -----------------------------------------------------------
+
+
+vars_int5 <- str_c(c("prop_vh", "prop_pers", "viol") %>%
+                     rep(each = 2),
+                   c("", ".p.w") %>%
+                     rep(3))
+
+
+dat_s2l %>%
+  select(matches(str_c(vars_int5, "_"))) %>%
+  cor() %>%
+  corrplot()
+
+
+
+
+# run only once
+
+model <- c("t1 =~ 1*prop_vh_15 + 1*prop_vh.p.w_15
+            t2 =~ 1*prop_vh_17 + 1*prop_vh.p.w_17
+            t3 =~ 1*prop_vh_19 + 1*prop_vh.p.w_19
+
+            t2 ~ t1
+            t3 ~ t2
+           ")
+m1_propvh <- bsem(model, data = dat_s2l,
+                  burnin = 2000, sample = 1000, n.chains = 4)
+
+summary(m1_propvh, standardized = TRUE)
+
+qplot(dat_s2l$prop_vh_15 %>% log())
+qplot(dat_s2l$prop_vh_17 %>% log())
+qplot(dat_s2l$prop_vh_19 %>% log())
+
+
+
+model <- c("t1 =~ 1*prop_pers_15 + 1*prop_pers.p.w_15
+            t2 =~ 1*prop_pers_17 + 1*prop_pers.p.w_17
+            t3 =~ 1*prop_pers_19 + 1*prop_pers.p.w_19
+
+            t2 ~ t1
+            t3 ~ t2
+           ")
+
+# try to take the log as model is not estimating properly
+data <- dat_s2l %>%
+  select(matches("prop_pers_"), matches("prop_pers.p.w")) %>%
+  mutate_all(~log(. + 1))
+
+
+
+m1_proppers <- bsem(model, data = data,
+                    burnin = 2000, sample = 1000, n.chains = 4)
+
+summary(m1_proppers, standardized = TRUE)
+
+
+
+model <- c("t1 =~ 1*viol_15 + 1*viol.p.w_15
+            t2 =~ 1*viol_17 + 1*viol.p.w_17
+            t3 =~ 1*viol_19 + 1*viol.p.w_19
+
+            t2 ~ t1
+            t3 ~ t2
+           ")
+m1_viol <- bsem(model, data = dat_s2l)
+
+summary(m1_viol, standardized = TRUE)
+
+
+qs_m1 <- list(m1_propvh, m1_proppers, m1_viol)
+
+save(qs_m1, file = "./output/qs_m1.RData")
+
+
+
+
+
+
+
+
+
+
+
+model <- c("t1 =~ 1*prop_vh_15 + 1*prop_vh.p.w_15
+            t2 =~ 1*prop_vh_17 + 1*prop_vh.p.w_17
+            t3 =~ 1*prop_vh_19 + 1*prop_vh.p.w_19
+
+            t2 ~ t1
+            t3 ~ t2
+
+            pol =~ 1*prop_vh_15 + 1*prop_vh_17 + 1*prop_vh_19
+            surv =~ 1*prop_vh.p.w_15 + 1*prop_vh.p.w_17 + 1*prop_vh.p.w_19
+           ")
+m2_propvh <- bsem(model, data = dat_s2l,
+                  burnin = 2000, sample = 1000, n.chains = 4)
+
+summary(m2_propvh, standardized = TRUE)
+
+
+
+
+model <- c("t1 =~ 1*prop_pers_15 + 1*prop_pers.p.w_15
+            t2 =~ 1*prop_pers_17 + 1*prop_pers.p.w_17
+            t3 =~ 1*prop_pers_19 + 1*prop_pers.p.w_19
+
+            t2 ~ t1
+            t3 ~ t2
+
+
+            pol =~ 1*prop_pers_15 + 1*prop_pers_17 + 1*prop_pers_19
+            surv =~ 1*prop_pers.p.w_15 + 1*prop_pers.p.w_17 + 1*prop_pers.p.w_19
+           ")
+m2_proppers <- bsem(model, data = dat_s2l)
+
+summary(m2_proppers, standardized = TRUE)
+
+
+
+model <- c("t1 =~ 1*viol_15 + 1*viol.p.w_15
+            t2 =~ 1*viol_17 + 1*viol.p.w_17
+            t3 =~ 1*viol_19 + 1*viol.p.w_19
+
+            t2 ~ t1
+            t3 ~ t2
+
+            pol =~ 1*viol_15 + 1*viol_17 + 1*prop_vh_19
+            surv =~ 1*viol.p.w_15 + 1*viol.p.w_17 + 1*viol.p.w_19
+           ")
+m2_viol <- bsem(model, data = dat_s2l)
+
+summary(m2_viol, standardized = TRUE)
+
+
+ qs_m2 <- list(m2_propvh, m2_proppers, m2_viol)
+
+save(qs_m2, file = "./output/qs_m2.RData")
+
+
