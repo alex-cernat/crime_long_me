@@ -86,7 +86,7 @@ dat_s %>%
 
 ```
 
-When we look at correlations also we see pretty striking patterns. First of all the consistency within measure is much higher for police data than survey data. Then, the relationship between of measures across data sources is very low. This could be problematic for any modeling.
+When we look at correlations we also see pretty striking patterns. First of all the consistency within measure is much higher for police data than survey data. Then, the relationship between of measures across data sources is very low. This could be problematic for any MTMM like modeling.
 
 ```{r}
 
@@ -112,14 +112,12 @@ b2y_long %>%
 
 
 
-
-
 ## Quasi-simplex
 
 A first way to look at the quality of the data is to use the quasi-simplex model. This assumes an auto-regressive model of true scores and estimates reliability by assuming equal variance of error over time (see for more details: https://www.iser.essex.ac.uk/research/publications/working-papers/iser/2014-09.pdf). 
 
 
-```{r}
+```{r out.width="70%"}
 knitr::include_graphics("./output/figs/qs.png")
 ```
 
@@ -127,25 +125,14 @@ I estimate the models using `blavaan` which does in the background SEM using Sta
 
 
 ```{r results='hide'}
-# auto-regressive models --------------------------------------------------
- vars_int2 <- str_remove_all(vars_int, "erty|onal|ence")
 
-# autoreg <- function(var) {
-#   model <- str_c(var, "_17 ~ ", var, "_15\n",
-#                  var, "_19 ~ ", var, "_17")
-# 
-#   sem(model, data = b2y_long)
-# }
-# 
-# res_autoreg <- map(vars_int2, autoreg)
-# 
-# 
-# 
 
 # quasi-simplex -----------------------------------------------------------
 
 
 load("./output/quasi_simple.RData")
+
+vars_int2 <- str_remove_all(vars_int, "erty|onal|ence")
 
 
 qs_rel <- map(res_qs, function(x) summary(x, standardized = TRUE) %>%
@@ -157,7 +144,7 @@ qs_rel <- map(res_qs, function(x) summary(x, standardized = TRUE) %>%
   mutate(year = c(15, 17, 19))
 ```
 
-Here we plot the reliability by variable, data source and wave as estimated by quasi-simplex. Reliabilities are extremely low for the survey data (as expected given the correlation matrices above). 
+Here we plot the reliability by variable, data source and wave as estimated by quasi-simplex. Reliabilities are much lower for the survey data (as expected given the correlation matrices above). 
 
 ```{r}
 qs_rel %>%
@@ -191,9 +178,7 @@ qs_rel %>%
 ```
 
 
-Given this and the point David made in a recent email let's have a look at the survey data about places where crimes happen (".f.w") and looking only at crimes reported to the police (".p.w").
-
-The quasi-simplex does not work for the ".f.w" (determinant of covariance matrix is 0 for some reason). So here I compere the original survey measures with the ".p.w" ones.
+Given this and the point David made in a recent email let's have a look at the survey data about places where crimes happen (".f.w" - "Survey places") and looking only at crimes reported to the police (".p.w" - "Survey corrected").
 
 
 ```{r}
@@ -233,50 +218,33 @@ dat_s2l %>%
 
 ```{r results='hide'}
 
-vars_int4 <- dat_s2l %>% 
-  select(matches("\\.f.\\w"), matches("\\.p\\.w")) %>% 
-  names() %>% 
-  str_remove("_1[1-9]$") %>% 
-  unique()
-
-
-qs <- function(var) {
-  model <- str_c("t1 =~ ", var, "_15\n",
-                 "t2 =~ ", var, "_17\n",
-                 "t3 =~ ", var, "_19\n\n",
-                 "t2 ~ t1 \nt3 ~ t2\n\n",
-                 var, "_15 ~~ a*", var, "_15\n",
-                 var, "_17 ~~ a*", var, "_17\n",
-                 var, "_19 ~~ a*", var, "_19")
-
-  bsem(model, data = dat_s2l)
-}
-
-
-# run only once
-# res_qs2 <- map(vars_int4[4:6], qs)
-# save(res_qs2, file = "./output/quasi_simple_extra.RData")
-
 load("./output/quasi_simple_extra.RData")
 
 
 
+vars_int4 <- dat_s2l %>%
+  select(matches("\\.f.\\w"), matches("\\.p\\.w")) %>%
+  names() %>%
+  str_remove("_1[1-9]$") %>%
+  unique()
+
 
 qs_rel2 <- map(res_qs2, function(x) summary(x, standardized = TRUE) %>%
-      .[1:3, 7] %>% as.numeric()
+                 .[1:3, 7] %>% as.numeric()
 ) %>%
   reduce(cbind) %>%
   as_tibble() %>%
-  setNames(vars_int4[4:6]) %>%
+  setNames(vars_int4) %>%
   mutate(year = c(15, 17, 19))
 
 
 full_join(qs_rel, qs_rel2, by = "year") %>%
   gather(-year, key = key, value = value) %>%
-  filter(str_detect(key, "r\\.w|p\\.w")) %>% 
-  mutate(group = ifelse(str_detect(key, "\\.r\\.w"), 
-                        "Original survey", "Survey corrected"),
-         var = str_remove_all(key, "\\.p\\.w|\\.r\\.w")) %>%
+  filter(str_detect(key, "f\\.w|r\\.w|p\\.w")) %>% 
+  mutate(group = case_when(str_detect(key, "\\.r\\.w") ~ "Original survey",
+                           str_detect(key, "\\.p\\.w") ~ "Survey corrected",
+                           str_detect(key, "\\.f\\.w") ~ "Survey places"),
+         var = str_remove_all(key, "\\.f\\.w|\\.p\\.w|\\.r\\.w")) %>%
   ggplot(aes(as.factor(year), value, 
              group = group, color = group)) +
   geom_line(size = 1.5) +
@@ -290,12 +258,14 @@ full_join(qs_rel, qs_rel2, by = "year") %>%
 ```
 
 ```{r}
+
 full_join(qs_rel, qs_rel2, by = "year") %>%
   gather(-year, key = key, value = value) %>%
-  filter(str_detect(key, "r\\.w|p\\.w")) %>% 
-  mutate(group = ifelse(str_detect(key, "\\.r\\.w"), 
-                        "Original survey", "Survey corrected"),
-         var = str_remove_all(key, "\\.p\\.w|\\.r\\.w")) %>% 
+  filter(str_detect(key, "f\\.w|r\\.w|p\\.w")) %>%
+  mutate(group = case_when(str_detect(key, "\\.r\\.w") ~ "Original survey",
+                           str_detect(key, "\\.p\\.w") ~ "Survey corrected",
+                           str_detect(key, "\\.f\\.w") ~ "Survey places"),
+         var = str_remove_all(key, "\\.f\\.w|\\.p\\.w|\\.r\\.w")) %>% 
   group_by(var, group) %>%
   summarise(reliability = mean(value)) %>%
   group_by(group) %>%
@@ -309,13 +279,13 @@ Overall seems that the ".p.w" measures have better quality so we'll use them in 
 
 ## Longitudinal variance decomposition 
 
-Next we will expand the quasi-simplex. We will make a measurement model at each wave that includes the measure of interest from the police and the corrected survey data in addition to include the simplex change in time. 
+Next we will expand the quasi-simplex. We will make a measurement model at each wave that includes the measure of interest from the police and the corrected survey data in addition to include the simplex change in time. The statistic of interest here would be the standardized loading on trait which can be seen as  "validity".
 
 ```{r}
 
 vars_int5 <- str_c(c("prop_vh", "prop_pers", "viol") %>%
                     rep(each = 2),
-                  c("", ".p.w") %>%
+                  c("", ".f.w") %>%
                     rep(3))
 
 
@@ -326,21 +296,36 @@ dat_s2l %>%
 
 ```
 
+### Property vehicle
 
 ```{r}
 
 
 load("./output/qs_m1.RData")
 
-summary(qs_m1[[1]])
-summary(qs_m1[[2]])
-summary(qs_m1[[3]])
+summary(qs_m1[[1]], standardized = T)
+```
+
+### Property personal
+
+```{r}
+summary(qs_m1[[2]], standardized = T)
+```
+
+
+### Violence
+
+```{r}
+summary(qs_m1[[3]], standardized = T)
 
 ```
 
 
+## Include stable method effect
 
-We can expand this model and include a stable method effect. 
+Additionally, we can expand this model and include a stable method effect. Now the standardized loading on the method effect is "systematic bias" while the standardized  loading on trait can be seen as "reliability" I think. These models are getting hard to estimate so we need to trade lightly. 
+
+### Property vehicle 
 
 ```{r}
 
@@ -348,7 +333,17 @@ We can expand this model and include a stable method effect.
 load("./output/qs_m2.RData")
 
 summary(qs_m2[[1]], standardized = TRUE)
+```
+
+### Property personal
+
+```{r}
 summary(qs_m2[[2]], standardized = TRUE)
+```
+
+### Violence
+
+```{r}
 summary(qs_m2[[3]], standardized = TRUE)
 
 

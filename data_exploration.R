@@ -30,7 +30,8 @@ rm(list = ls())
 # dir.create("./info")
 
 # install packages
-pkg <- c("knitr", "tidyverse", "lavaan", "corrplot", "blavaan")
+pkg <- c("knitr", "tidyverse", "lavaan", "corrplot",
+         "blavaan", "rstan")
 
 # sapply(pkg, install.packages)
 sapply(pkg, library, character.only = T)
@@ -117,52 +118,60 @@ b2y_long %>%
 # auto-regressive models --------------------------------------------------
 
 vars_int2 <- str_remove_all(vars_int, "erty|onal|ence")
-
-autoreg <- function(var) {
-  model <- str_c(var, "_17 ~ ", var, "_15\n",
-                 var, "_19 ~ ", var, "_17")
-
-  sem(model, data = b2y_long)
-}
-
-res_autoreg <- map(vars_int2, autoreg)
-
-
-
+#
+# autoreg <- function(var) {
+#   model <- str_c(var, "_17 ~ ", var, "_15\n",
+#                  var, "_19 ~ ", var, "_17")
+#
+#   sem(model, data = b2y_long)
+# }
+#
+# res_autoreg <- map(vars_int2, autoreg)
+#
 
 
 
-model <- c("t1 =~ prop_vh_15
-            t2 =~ prop_vh_17
-            t3 =~ prop_vh_19
 
-            t2 ~ t1
-            t3 ~ t2
 
-           prop_vh_15 ~~ a*prop_vh_15
-           prop_vh_17 ~~ a*prop_vh_17
-           prop_vh_19 ~~ a*prop_vh_19")
-m1 <- sem(model, data = b2y_long)
-m1b <- bsem(model, data = b2y_long)
-
-summary(m1)
-summary(m1b)
-
-qs <- function(var) {
-  model <- str_c("t1 =~ ", var, "_15\n",
-                 "t2 =~ ", var, "_17\n",
-                 "t3 =~ ", var, "_19\n\n",
-                 "t2 ~ t1 \nt3 ~ t2\n\n",
-                 var, "_15 ~~ a*", var, "_15\n",
-                 var, "_17 ~~ a*", var, "_17\n",
-                 var, "_19 ~~ a*", var, "_19")
-
-  bsem(model, data = b2y_long)
-}
-
+# model <- c("t1 =~ prop_vh_15
+#             t2 =~ prop_vh_17
+#             t3 =~ prop_vh_19
+#
+#             t2 ~ t1
+#             t3 ~ t2
+#
+#            prop_vh_15 ~~ a*prop_vh_15
+#            prop_vh_17 ~~ a*prop_vh_17
+#            prop_vh_19 ~~ a*prop_vh_19")
+# m1 <- sem(model, data = b2y_long)
+# m1b <- bsem(model, data = b2y_long)
+#
+# summary(m1)
+# summary(m1b)
 
 
 # takes a while to run so just re-load
+
+# make log
+# b2y_long2 <- b2y_long %>%
+#   select(matches(vars_int2)) %>%
+#   mutate_all(~log(. + 1))
+#
+#
+#
+# qs <- function(var) {
+#   model <- str_c("t1 =~ ", var, "_15\n",
+#                  "t2 =~ ", var, "_17\n",
+#                  "t3 =~ ", var, "_19\n\n",
+#                  "t2 ~ t1 \nt3 ~ t2\n\n",
+#                  var, "_15 ~~ a*", var, "_15\n",
+#                  var, "_17 ~~ a*", var, "_17\n",
+#                  var, "_19 ~~ a*", var, "_19")
+#
+#   bsem(model, data = b2y_long2,
+#        burnin = 8000, sample = 2000, n.chains = 8)
+# }
+#
 # res_qs <- map(vars_int2, qs)
 # save(res_qs, file = "./output/quasi_simple.RData")
 
@@ -205,7 +214,102 @@ qs_rel %>%
 
 
 
+
+
+vars_int3 <- str_c(c("property_vh", "property_personal", "violence") %>%
+                     rep(each = 4),
+                   c("", ".r.w", ".f.w", ".p.w") %>%
+                     rep(3))
+
+data_s2 <- barca_2y %>%
+  select(id, year, vars_int3)
+
+dat_s2l <- data_s2 %>%
+  mutate(year = str_remove_all(year, "20|-.+")) %>%
+  pivot_wider(
+    values_from = property_vh:violence.p.w,
+    names_sep = "_",
+    names_from = year) %>%
+  rename_all(~str_remove_all(., "erty|onal|ence"))
+
+
+dat_s2l %>%
+  select(-id) %>%
+  cor() %>%
+  corrplot()
+
+
+
+
+
+
+
+
+
+vars_int4 <- dat_s2l %>%
+  select(matches("\\.f.\\w"), matches("\\.p\\.w")) %>%
+  names() %>%
+  str_remove("_1[1-9]$") %>%
+  unique()
+
+# make quasi-simplex for "corrected" survey estimates
+# run only once
+
+
+#
+# dat_s3l <- dat_s2l %>%
+#   select(matches(vars_int4)) %>%
+#   mutate_all(~log(. + 1))
+#
+#
+# qs <- function(var) {
+#   model <- str_c("t1 =~ ", var, "_15\n",
+#                  "t2 =~ ", var, "_17\n",
+#                  "t3 =~ ", var, "_19\n\n",
+#                  "t2 ~ t1 \nt3 ~ t2\n\n",
+#                  var, "_15 ~~ a*", var, "_15\n",
+#                  var, "_17 ~~ a*", var, "_17\n",
+#                  var, "_19 ~~ a*", var, "_19")
+#
+#   bsem(model, data = dat_s3l,
+#        burnin = 8000, sample = 2000, n.chains = 8)
+# }
+#
+# res_qs2 <- map(vars_int4, qs)
+# save(res_qs2, file = "./output/quasi_simple_extra.RData")
+
+load("./output/quasi_simple_extra.RData")
+
+qs_rel2 <- map(res_qs2, function(x) summary(x, standardized = TRUE) %>%
+                 .[1:3, 7] %>% as.numeric()
+) %>%
+  reduce(cbind) %>%
+  as_tibble() %>%
+  setNames(vars_int4) %>%
+  mutate(year = c(15, 17, 19))
+
+
+full_join(qs_rel, qs_rel2, by = "year") %>%
+  gather(-year, key = key, value = value) %>%
+  filter(str_detect(key, "f\\.w|r\\.w|p\\.w")) %>%
+  mutate(group = case_when(str_detect(key, "\\.r\\.w") ~ "Original survey",
+                           str_detect(key, "\\.p\\.w") ~ "Survey corrected",
+                           str_detect(key, "\\.f\\.w") ~ "Survey places"),
+         var = str_remove_all(key, "\\.f\\.w|\\.p\\.w|\\.r\\.w")) %>%
+  ggplot(aes(as.factor(year), value,
+             group = group, color = group)) +
+  geom_line(size = 1.5) +
+  facet_wrap(~var) +
+  theme_bw() +
+  labs(color = "Data",
+       x = "Year",
+       y = "Reliability")
+
+
+
+
 # multi-item QS -----------------------------------------------------------
+
 
 
 vars_int5 <- str_c(c("prop_vh", "prop_pers", "viol") %>%
@@ -223,133 +327,149 @@ dat_s2l %>%
 
 
 # run only once
-
-model <- c("t1 =~ 1*prop_vh_15 + 1*prop_vh.p.w_15
-            t2 =~ 1*prop_vh_17 + 1*prop_vh.p.w_17
-            t3 =~ 1*prop_vh_19 + 1*prop_vh.p.w_19
-
-            t2 ~ t1
-            t3 ~ t2
-           ")
-m1_propvh <- bsem(model, data = dat_s2l,
-                  burnin = 2000, sample = 1000, n.chains = 4)
-
-summary(m1_propvh, standardized = TRUE)
-
-qplot(dat_s2l$prop_vh_15 %>% log())
-qplot(dat_s2l$prop_vh_17 %>% log())
-qplot(dat_s2l$prop_vh_19 %>% log())
-
-
-
-model <- c("t1 =~ 1*prop_pers_15 + 1*prop_pers.p.w_15
-            t2 =~ 1*prop_pers_17 + 1*prop_pers.p.w_17
-            t3 =~ 1*prop_pers_19 + 1*prop_pers.p.w_19
-
-            t2 ~ t1
-            t3 ~ t2
-           ")
-
-# try to take the log as model is not estimating properly
-data <- dat_s2l %>%
-  select(matches("prop_pers_"), matches("prop_pers.p.w")) %>%
-  mutate_all(~log(. + 1))
-
-
-
-m1_proppers <- bsem(model, data = data,
-                    burnin = 2000, sample = 1000, n.chains = 4)
-
-summary(m1_proppers, standardized = TRUE)
-
-
-
-model <- c("t1 =~ 1*viol_15 + 1*viol.p.w_15
-            t2 =~ 1*viol_17 + 1*viol.p.w_17
-            t3 =~ 1*viol_19 + 1*viol.p.w_19
-
-            t2 ~ t1
-            t3 ~ t2
-           ")
-m1_viol <- bsem(model, data = dat_s2l)
-
-summary(m1_viol, standardized = TRUE)
-
-
-qs_m1 <- list(m1_propvh, m1_proppers, m1_viol)
-
-save(qs_m1, file = "./output/qs_m1.RData")
-
-
-
-
-
+#
+# # take log
+# dat_s3l <- dat_s2l %>%
+#   mutate_at(vars(starts_with("prop_vh")),
+#             ~ log(. + 1))
+#
+# model <- c("t1 =~ 1*prop_vh_15 + 1*prop_vh.f.w_15
+#             t2 =~ 1*prop_vh_17 + 1*prop_vh.f.w_17
+#             t3 =~ 1*prop_vh_19 + 1*prop_vh.f.w_19
+#
+#             t2 ~ t1
+#             t3 ~ t2
+#            ")
+# m1_propvh <- bsem(model, data = dat_s3l,
+#                   burnin = 8000, sample = 2000, n.chains = 8)
+#
+# summary(m1_propvh, standardized = TRUE)
+#
+#
+#
+# dat_s3l <- dat_s2l %>%
+#   mutate_at(vars(starts_with("prop_pers")),
+#             ~ log(. + 1))
+#
+# model <- c("t1 =~ 1*prop_pers_15 + 1*prop_pers.f.w_15
+#             t2 =~ 1*prop_pers_17 + 1*prop_pers.f.w_17
+#             t3 =~ 1*prop_pers_19 + 1*prop_pers.f.w_19
+#
+#             t2 ~ t1
+#             t3 ~ t2
+#            ")
+#
+# # try to take the log as model is not estimating properly
+# m1_proppers <- bsem(model, data = dat_s3l,
+#                     burnin = 8000, sample = 2000, n.chains = 8)
+#
+# summary(m1_proppers, standardized = TRUE)
+#
+#
+# dat_s3l <- dat_s2l %>%
+#   mutate_at(vars(starts_with("viol")),
+#             ~ log(. + 1))
+#
+# model <- c("t1 =~ 1*viol_15 + 1*viol.f.w_15
+#             t2 =~ 1*viol_17 + 1*viol.f.w_17
+#             t3 =~ 1*viol_19 + 1*viol.f.w_19
+#
+#             t2 ~ t1
+#             t3 ~ t2
+#            ")
+# m1_viol <- bsem(model, data = dat_s3l,
+#                 burnin = 8000, sample = 2000, n.chains = 8)
+#
+# summary(m1_viol, standardized = TRUE)
+#
+#
+# qs_m1 <- list(m1_propvh, m1_proppers, m1_viol)
+#
+# save(qs_m1, file = "./output/qs_m1.RData")
 
 
-
+summary(qs_m1[[3]], standardized = T)
 
 
 
-model <- c("t1 =~ 1*prop_vh_15 + 1*prop_vh.p.w_15
-            t2 =~ 1*prop_vh_17 + 1*prop_vh.p.w_17
-            t3 =~ 1*prop_vh_19 + 1*prop_vh.p.w_19
+
+
+dat_s3l <- dat_s2l %>%
+  mutate_at(vars(starts_with("prop_vh")),
+            ~ log(. + 1))
+
+model <- c("t1 =~ 1*prop_vh_15 + 1*prop_vh.f.w_15
+            t2 =~ 1*prop_vh_17 + 1*prop_vh.f.w_17
+            t3 =~ 1*prop_vh_19 + 1*prop_vh.f.w_19
 
             t2 ~ t1
             t3 ~ t2
 
             pol =~ 1*prop_vh_15 + 1*prop_vh_17 + 1*prop_vh_19
-            surv =~ 1*prop_vh.p.w_15 + 1*prop_vh.p.w_17 + 1*prop_vh.p.w_19
+            surv =~ 1*prop_vh.f.w_15 + 1*prop_vh.f.w_17 + 1*prop_vh.f.w_19
            ")
 
 
-
-# try to take the log as model is not estimating properly
-data <- dat_s2l %>%
-  select(matches("prop_vh_"), matches("prop_vh.p.w")) %>%
-  mutate_all(~log(. + 1))
-
-m2_propvh <- bsem(model, data = dat_s2l,
-                  burnin = 4000, sample = 2000, n.chains = 4)
+m2_propvh <- bsem(model, data = dat_s3l,
+                  burnin = 8000, sample = 2000, n.chains = 8)
 
 summary(m2_propvh, standardized = TRUE)
 
 
 
 
-model <- c("t1 =~ 1*prop_pers_15 + 1*prop_pers.p.w_15
-            t2 =~ 1*prop_pers_17 + 1*prop_pers.p.w_17
-            t3 =~ 1*prop_pers_19 + 1*prop_pers.p.w_19
+
+
+
+dat_s3l <- dat_s2l %>%
+  mutate_at(vars(starts_with("prop_pers")),
+            ~ log(. + 1))
+
+
+model <- c("t1 =~ 1*prop_pers_15 + 1*prop_pers.f.w_15
+            t2 =~ 1*prop_pers_17 + 1*prop_pers.f.w_17
+            t3 =~ 1*prop_pers_19 + 1*prop_pers.f.w_19
 
             t2 ~ t1
             t3 ~ t2
 
 
             pol =~ 1*prop_pers_15 + 1*prop_pers_17 + 1*prop_pers_19
-            surv =~ 1*prop_pers.p.w_15 + 1*prop_pers.p.w_17 + 1*prop_pers.p.w_19
+            surv =~ 1*prop_pers.f.w_15 + 1*prop_pers.f.w_17 + 1*prop_pers.f.w_19
            ")
-m2_proppers <- bsem(model, data = dat_s2l,
-                    burnin = 4000, sample = 2000, n.chains = 4)
+m2_proppers <- bsem(model, data = dat_s3l,
+                    burnin = 8000, sample = 2000, n.chains = 8)
 
 summary(m2_proppers, standardized = TRUE)
 
 
 
-model <- c("t1 =~ 1*viol_15 + 1*viol.p.w_15
-            t2 =~ 1*viol_17 + 1*viol.p.w_17
-            t3 =~ 1*viol_19 + 1*viol.p.w_19
+
+
+
+
+dat_s3l <- dat_s2l %>%
+  mutate_at(vars(starts_with("viol")),
+            ~ log(. + 1))
+
+
+model <- c("t1 =~ 1*viol_15 + 1*viol.f.w_15
+            t2 =~ 1*viol_17 + 1*viol.f.w_17
+            t3 =~ 1*viol_19 + 1*viol.f.w_19
 
             t2 ~ t1
             t3 ~ t2
 
-            pol =~ 1*viol_15 + 1*viol_17 + 1*prop_vh_19
-            surv =~ 1*viol.p.w_15 + 1*viol.p.w_17 + 1*viol.p.w_19
+            pol =~ 1*viol_15 + 1*viol_17 + 1*viol_19
+            surv =~ 1*viol.f.w_15 + 1*viol.f.w_17 + 1*viol.f.w_19
            ")
-m2_viol <- bsem(model, data = dat_s2l)
+m2_viol <- bsem(model, data = dat_s3l,
+                burnin = 8000, sample = 2000, n.chains = 8)
 
 summary(m2_viol, standardized = TRUE)
 
 
- qs_m2 <- list(m2_propvh, m2_proppers, m2_viol)
+qs_m2 <- list(m2_propvh, m2_proppers, m2_viol)
 
 save(qs_m2, file = "./output/qs_m2.RData")
 
