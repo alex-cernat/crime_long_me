@@ -39,7 +39,7 @@ barca_2y <- barca_2y %>%
 ```
 
 
-Here I explore the Barcelona data that has three types of crimes: property vehicle, property personal and violence collected in surveys and official data over regions (76) and time (6 years). We group years by two in order to avoid having regions with 0s. 
+Here I explore the Barcelona data that has three types of crimes: property vehicle, property personal and violence collected in surveys and official data over regions (73) and time (6 years). We group years by two in order to avoid having regions with 0s. 
 
 Here I concentrate on the weighted estimates from the survey (ending in ".r.w") and the official data.
 

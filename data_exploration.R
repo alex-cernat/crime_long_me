@@ -5,6 +5,13 @@
 #
 # We start by using data from Barcelona 2015-2019
 #
+#  TO DO
+#  - re-focus the paper on comparing survey estimates
+#  - clean syntax an estimate reliability for all three survey measures
+#      and police
+#  - try multi-item simplex model with survey data
+#  - try mtmm with pooled data
+#  - do correlations with crime data
 #
 #############################################################
 
