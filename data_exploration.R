@@ -407,6 +407,10 @@ model <- c("t1 =~ 1*prop_vh_15 + 1*prop_vh.f.w_15
 
             pol =~ 1*prop_vh_15 + 1*prop_vh_17 + 1*prop_vh_19
             surv =~ 1*prop_vh.f.w_15 + 1*prop_vh.f.w_17 + 1*prop_vh.f.w_19
+
+            pol ~~ 0*surv
+            pol ~~ 0*t1
+            surv ~~ 0*t1
            ")
 
 
@@ -436,6 +440,10 @@ model <- c("t1 =~ 1*prop_pers_15 + 1*prop_pers.f.w_15
 
             pol =~ 1*prop_pers_15 + 1*prop_pers_17 + 1*prop_pers_19
             surv =~ 1*prop_pers.f.w_15 + 1*prop_pers.f.w_17 + 1*prop_pers.f.w_19
+
+            pol ~~ 0*surv
+            pol ~~ 0*t1
+            surv ~~ 0*t1
            ")
 m2_proppers <- bsem(model, data = dat_s3l,
                     burnin = 8000, sample = 2000, n.chains = 8)
@@ -462,6 +470,11 @@ model <- c("t1 =~ 1*viol_15 + 1*viol.f.w_15
 
             pol =~ 1*viol_15 + 1*viol_17 + 1*viol_19
             surv =~ 1*viol.f.w_15 + 1*viol.f.w_17 + 1*viol.f.w_19
+
+
+            pol ~~ 0*surv
+            pol ~~ 0*t1
+            surv ~~ 0*t1
            ")
 m2_viol <- bsem(model, data = dat_s3l,
                 burnin = 8000, sample = 2000, n.chains = 8)
