@@ -38,7 +38,7 @@ rm(list = ls())
 
 # install packages
 pkg <- c("knitr", "tidyverse", "lavaan", "corrplot",
-         "blavaan", "rstan")
+         "blavaan", "rstan", "viridis")
 
 # sapply(pkg, install.packages)
 sapply(pkg, library, character.only = T)
@@ -51,13 +51,13 @@ rstan_options(auto_write = TRUE)
 
 # load data ---------------------------------------------------------------
 
-barca_raw <- read_csv("./data/raw/neighbourhoods.csv")
-barca_2y <- read_csv("./data/clean/neighbourhoods_2years.csv")
+barca_raw_full <- read_csv("./data/raw/neighbourhoods.csv")
+barca_2y_full <- read_csv("./data/clean/neighbourhoods_2years.csv")
 
 
 # data cleaning -----------------------------------------------------------
 
-barca_2y <- barca_2y %>%
+barca_2y <- barca_2y_full %>%
   mutate(id = as.factor(Barri) %>% as.numeric()) %>%
   rename_all(~str_to_lower(.)) %>%
   rename(row = x1, year = any) %>%
@@ -68,11 +68,12 @@ barca_2y <- barca_2y %>%
 
 
 vars_int <- str_c(c("property_vh", "property_personal", "violence") %>%
-                    rep(each = 2),
-                  c("", ".r.w") %>%
+                    rep(each = 4),
+                  c("", ".r.w", ".f.w", ".p.w") %>%
                     rep(3))
 
-count(barca_2y, year)
+vars_int2 <- str_remove_all(vars_int, "erty|onal|ence")
+
 
 # change in time
 
@@ -80,25 +81,41 @@ dat_s <- barca_2y %>%
   select(id, year, vars_int)
 
 
+
 # variances
-dat_s %>%
+descriptives <- dat_s %>%
   select(-id) %>%
   group_by(year) %>%
   summarise_all(list(mean = ~mean(.),
                      sd = ~sd(.))) %>%
   gather(-year, key = key, value = value) %>%
   mutate(stat = ifelse(str_detect(key, "mean$"), "Mean", "SD"),
-         group = ifelse(str_detect(key, "\\.r\\.w"), "Survey", "Police"),
-         var = str_remove_all(key, "_mean|_sd|\\.r\\.w")) %>%
-  ggplot(aes(year, value, linetype = var,
+         group = case_when(str_detect(key, "\\.r\\.w") ~ "Survey original",
+                           str_detect(key, "\\.p\\.w") ~ "Survey corrected",
+                           str_detect(key, "\\.f\\.w") ~ "Survey places",
+                           TRUE ~ "Police "),
+         topic = case_when(
+           str_detect(key, "property_personal") ~ "Personal property",
+           str_detect(key, "property_vh") ~ "Personal vechicle",
+           TRUE ~ "Violence"),
+         var = str_remove_all(key, "_mean|_sd|\\.r\\.w"))
+
+descriptives %>%
+  ggplot(aes(year, value,
              color = group, group = as.factor(key))) +
   geom_line(size = 1.5) +
-  facet_wrap(~ stat, scales = "free_y") +
+  facet_wrap(topic~ stat, scales = "free_y", ncol = 2) +
   theme_bw() +
   labs(color = "Data source",
        linetype = "Variable",
        x = "Year",
-       y = "Value")
+       y = "Value") +
+  viridis::scale_color_viridis(discrete = T)
+
+
+ggsave("./output/avg_sd_change.png")
+write_csv(descriptives, "./output/descriptive_change.csv")
+
 
 # corelations
 
@@ -124,7 +141,6 @@ b2y_long %>%
 
 # auto-regressive models --------------------------------------------------
 
-vars_int2 <- str_remove_all(vars_int, "erty|onal|ence")
 #
 # autoreg <- function(var) {
 #   model <- str_c(var, "_17 ~ ", var, "_15\n",
@@ -220,14 +236,6 @@ qs_rel %>%
 
 
 
-
-
-
-vars_int3 <- str_c(c("property_vh", "property_personal", "violence") %>%
-                     rep(each = 4),
-                   c("", ".r.w", ".f.w", ".p.w") %>%
-                     rep(3))
-
 data_s2 <- barca_2y %>%
   select(id, year, vars_int3)
 
@@ -250,14 +258,6 @@ dat_s2l %>%
 
 
 
-
-
-
-vars_int4 <- dat_s2l %>%
-  select(matches("\\.f.\\w"), matches("\\.p\\.w")) %>%
-  names() %>%
-  str_remove("_1[1-9]$") %>%
-  unique()
 
 # make quasi-simplex for "corrected" survey estimates
 # run only once
