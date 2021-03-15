@@ -255,108 +255,32 @@ qs_rel <- map(res_qs, function(x) summary(x, standardized = TRUE) %>%
   mutate(year = c(15, 17, 19))
 
 
-qs_rel %>%
-  gather(-year, key = key, value = value) %>%
-  mutate(group = ifelse(str_detect(key, "\\.r\\.w"), "Survey", "Police"),
-         var = str_remove_all(key, "_mean|_sd|\\.r\\.w")) %>%
-  ggplot(aes(as.factor(year), value, color = var,
-             group = var)) +
-  geom_line(size = 1.5) +
-  facet_wrap(~ group) +
-  theme_bw() +
-  labs(color = "Variable",
-       x = "Year",
-       y = "Value")
-
 
 
 qs_rel %>%
-  gather(-year, key = key, value = value) %>%
-  mutate(group = ifelse(str_detect(key, "\\.r\\.w"), "Survey", "Police"),
-         var = str_remove_all(key, "_mean|_sd|\\.r\\.w")) %>%
-  group_by(group, var) %>%
-  summarise(reliability = mean(value)) %>%
-  group_by(group) %>%
-  mutate(reliability_source = mean(reliability))
-
-
-
-data_s2 <- barca_2y %>%
-  select(id, year, vars_int3)
-
-dat_s2l <- data_s2 %>%
-  mutate(year = str_remove_all(year, "20|-.+")) %>%
-  pivot_wider(
-    values_from = property_vh:violence.p.w,
-    names_sep = "_",
-    names_from = year) %>%
-  rename_all(~str_remove_all(., "erty|onal|ence"))
-
-
-dat_s2l %>%
-  select(-id) %>%
-  cor() %>%
-  corrplot()
-
-
-
-
-
-
-
-# make quasi-simplex for "corrected" survey estimates
-# run only once
-
-
-#
-# dat_s3l <- dat_s2l %>%
-#   select(matches(vars_int4)) %>%
-#   mutate_all(~log(. + 1))
-#
-#
-# qs <- function(var) {
-#   model <- str_c("t1 =~ ", var, "_15\n",
-#                  "t2 =~ ", var, "_17\n",
-#                  "t3 =~ ", var, "_19\n\n",
-#                  "t2 ~ t1 \nt3 ~ t2\n\n",
-#                  var, "_15 ~~ a*", var, "_15\n",
-#                  var, "_17 ~~ a*", var, "_17\n",
-#                  var, "_19 ~~ a*", var, "_19")
-#
-#   bsem(model, data = dat_s3l,
-#        burnin = 8000, sample = 2000, n.chains = 8)
-# }
-#
-# res_qs2 <- map(vars_int4, qs)
-# save(res_qs2, file = "./output/quasi_simple_extra.RData")
-
-load("./output/quasi_simple_extra.RData")
-
-qs_rel2 <- map(res_qs2, function(x) summary(x, standardized = TRUE) %>%
-                 .[1:3, 7] %>% as.numeric()
-) %>%
-  reduce(cbind) %>%
-  as_tibble() %>%
-  setNames(vars_int4) %>%
-  mutate(year = c(15, 17, 19))
-
-
-full_join(qs_rel, qs_rel2, by = "year") %>%
   gather(-year, key = key, value = value) %>%
   filter(str_detect(key, "f\\.w|r\\.w|p\\.w")) %>%
-  mutate(group = case_when(str_detect(key, "\\.r\\.w") ~ "Original survey",
-                           str_detect(key, "\\.p\\.w") ~ "Survey corrected",
-                           str_detect(key, "\\.f\\.w") ~ "Survey places"),
-         var = str_remove_all(key, "\\.f\\.w|\\.p\\.w|\\.r\\.w")) %>%
+  mutate(group = case_when(str_detect(key, "\\.r\\.w") ~ "Survey victim",
+                           str_detect(key, "\\.p\\.w") ~ "Survey reported",
+                           str_detect(key, "\\.f\\.w") ~ "Survey places",
+                           TRUE ~ "Police"),
+         var = str_remove_all(key, "\\.f\\.w|\\.p\\.w|\\.r\\.w"),
+         topic = case_when(
+           str_detect(key, "prop_pers") ~ "Personal property",
+           str_detect(key, "prop_vh") ~ "Personal vechicle",
+           TRUE ~ "Violence")) %>%
   ggplot(aes(as.factor(year), value,
              group = group, color = group)) +
   geom_line(size = 1.5) +
-  facet_wrap(~var) +
+  facet_wrap(~topic) +
   theme_bw() +
-  labs(color = "Data",
+  labs(color = "Question",
        x = "Year",
-       y = "Reliability")
+       y = "Reliability") +
+  viridis::scale_color_viridis(discrete = T)
 
+
+ggsave("./output/figs/reliability_survey_qs.png")
 
 
 
