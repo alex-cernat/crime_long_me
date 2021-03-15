@@ -51,13 +51,19 @@ rstan_options(auto_write = TRUE)
 
 # load data ---------------------------------------------------------------
 
-barca_raw_full <- read_csv("./data/raw/neighbourhoods.csv")
+barca_raw_full <- read_csv("./data/clean/neighbourhoods.csv")
 barca_2y_full <- read_csv("./data/clean/neighbourhoods_2years.csv")
-
+barca_6y_full <- read_csv("./data/clean/neighbourhoods_6years.csv")
 
 # data cleaning -----------------------------------------------------------
 
 barca_2y <- barca_2y_full %>%
+  mutate(id = as.factor(Barri) %>% as.numeric()) %>%
+  rename_all(~str_to_lower(.)) %>%
+  rename(row = x1, year = any) %>%
+  select(row, id, everything())
+
+barca_6y <- barca_6y_full %>%
   mutate(id = as.factor(Barri) %>% as.numeric()) %>%
   rename_all(~str_to_lower(.)) %>%
   rename(row = x1, year = any) %>%
@@ -95,8 +101,8 @@ descriptives <- dat_s %>%
                            str_detect(key, "\\.f\\.w") ~ "Survey places",
                            TRUE ~ "Police "),
          topic = case_when(
-           str_detect(key, "property_personal") ~ "Personal property",
-           str_detect(key, "property_vh") ~ "Personal vechicle",
+           str_detect(key, "property_personal") ~ "Property personal",
+           str_detect(key, "property_vh") ~ "Property household/vehicle",
            TRUE ~ "Violence"),
          var = str_remove_all(key, "_mean|_sd|\\.r\\.w"))
 
@@ -118,26 +124,11 @@ write_csv(descriptives, "./output/tabs/descriptive_change.csv")
 
 
 # overall correlation matrix
-# redo with aggregated data
-
-
 # corelations
 
-b2yw <- barca_2y %>%
-  select(id, year, vars_int) %>%
-  mutate(year = str_remove_all(year, "20|-.+")) %>%
-  pivot_wider(
-    values_from = property_vh:violence.p.w,
-      names_sep = "_",
-      names_from = year) %>%
-  rename_all(~str_remove_all(., "erty|onal|ence"))
 
-
-
-corr_data <- barca_2y %>%
+corr_data <- barca_6y %>%
   select(id, vars_int) %>%
-  group_by(id) %>%
-  summarise_all(~sum(.)) %>%
   rename_all(~str_remove_all(., "erty|onal|ence")) %>%
   ungroup() %>%
   select(-id)
@@ -155,8 +146,8 @@ corr_data %>%
                            str_detect(key, "\\.f\\.w") ~ "Survey places",
                            TRUE ~ "Police"),
          topic = case_when(
-           str_detect(key, "prop_pers") ~ "Personal property",
-           str_detect(key, "prop_vh") ~ "Personal vechicle",
+           str_detect(key, "prop_pers") ~ "Property personal",
+           str_detect(key, "prop_vh") ~ "Property household/vehicle",
            TRUE ~ "Violence"),
          key2 = str_remove_all(key, "\\..+")) %>%
   filter(row == key2, cor != 1) %>%
@@ -167,50 +158,6 @@ corr_data %>%
   labs(x = "Correlation with police data", y = "Topic", color = "Question")
 
 ggsave("./output/figs/cor_police_overall.png")
-
-
-
-g1 <- corr_data %>%
-  select(starts_with("viol")) %>%
-  setNames(c("Police", "Survey victims", "Survey places", "Survey reported")) %>%
-  cor() %>%
-  ggcorrplot(type = "upper") +
-  viridis::scale_fill_viridis(limits = c(-1, 1), direction = -1) +
-  labs(fill = "Correlation")
-
-g2 <- corr_data %>%
-  select(starts_with("prop_vh")) %>%
-  setNames(c("Police", "Survey victims", "Survey places", "Survey reported")) %>%
-  cor() %>%
-  ggcorrplot(type = "upper") +
-  viridis::scale_fill_viridis(limits = c(-1, 1), direction = -1) +
-  labs(fill = "Correlation")
-
-g3 <- corr_data %>%
-  select(starts_with("prop_pers")) %>%
-  setNames(c("Police", "Survey victims", "Survey places", "Survey reported")) %>%
-  cor() %>%
-  ggcorrplot(type = "upper") +
-  viridis::scale_fill_viridis(limits = c(-1, 1), direction = -1) +
-  labs(fill = "Correlation")
-
-
-ggarrange(g1 +
-            theme(axis.text.x = element_blank(),
-                  axis.ticks.x = element_blank()),
-          g2 +
-            theme(axis.text.x = element_blank(),
-                  axis.ticks.x = element_blank()),
-          g3 +
-            theme(axis.text.x = element_blank(),
-                  axis.ticks.x = element_blank()),
-          nrow = 3,
-          common.legend = T,
-          labels = c("Violence",
-                     "Property - vehicle",
-                     "Proporty - personal"),
-          font.label = list(size = 10, align = "right"))
-
 
 
 
@@ -266,8 +213,8 @@ qs_rel %>%
                            TRUE ~ "Police"),
          var = str_remove_all(key, "\\.f\\.w|\\.p\\.w|\\.r\\.w"),
          topic = case_when(
-           str_detect(key, "prop_pers") ~ "Personal property",
-           str_detect(key, "prop_vh") ~ "Personal vechicle",
+           str_detect(key, "property_personal") ~ "Property personal",
+           str_detect(key, "property_vh") ~ "Property household/vehicle",
            TRUE ~ "Violence")) %>%
   ggplot(aes(as.factor(year), value,
              group = group, color = group)) +
@@ -290,173 +237,270 @@ ggsave("./output/figs/reliability_survey_qs.png")
 # run only once
 #
 # # take log
+#
+# # property vehicle
+# model <- c("t1 =~ 1*prop_vh.f.w_15 + 1*prop_vh.p.w_15 + 1*prop_vh.r.w_15
+#             t2 =~ 1*prop_vh.f.w_17 + 1*prop_vh.p.w_17 + 1*prop_vh.r.w_17
+#             t3 =~ 1*prop_vh.f.w_19 + 1*prop_vh.p.w_19 + 1*prop_vh.r.w_19
+#
+#             t2 ~ t1
+#             t3 ~ t2
+#            ")
+# m1_propvh <- bsem(model, data = b2yw2,
+#                   burnin = 8000, sample = 2000, n.chains = 8)
+#
+# summary(m1_propvh, standardized = TRUE)
+#
+# # property personal
+# model <- c("t1 =~ 1*prop_pers.f.w_15 + 1*prop_pers.p.w_15 + 1*prop_pers.r.w_15
+#             t2 =~ 1*prop_pers.f.w_17 + 1*prop_pers.p.w_17 + 1*prop_pers.r.w_17
+#             t3 =~ 1*prop_pers.f.w_19 + 1*prop_pers.p.w_19 + 1*prop_pers.r.w_19
+#
+#             t2 ~ t1
+#             t3 ~ t2
+#            ")
+#
+# m1_proppers <- bsem(model, data = b2yw2,
+#                     burnin = 8000, sample = 2000, n.chains = 8)
+#
+# summary(m1_proppers, standardized = TRUE)
+#
+#
+# # violence
+# model <- c("t1 =~ 1*viol.f.w_15 + 1*viol.p.w_15 + 1*viol.r.w_15
+#             t2 =~ 1*viol.f.w_17 + 1*viol.p.w_17 + 1*viol.r.w_17
+#             t3 =~ 1*viol.f.w_19 + 1*viol.p.w_19 + 1*viol.r.w_19
+#
+#             t2 ~ t1
+#             t3 ~ t2
+#            ")
+# m1_viol <- bsem(model, data = b2yw2,
+#                 burnin = 8000, sample = 2000, n.chains = 8)
+#
+# summary(m1_viol, standardized = TRUE)
+#
+#
+# qs_m1 <- list(m1_propvh, m1_proppers, m1_viol)
 
-# property vehicle
-model <- c("t1 =~ 1*prop_vh.f.w_15 + 1*prop_vh.p.w_15 + 1*prop_vh.r.w_15
-            t2 =~ 1*prop_vh.f.w_17 + 1*prop_vh.p.w_17 + 1*prop_vh.r.w_17
-            t3 =~ 1*prop_vh.f.w_19 + 1*prop_vh.p.w_19 + 1*prop_vh.r.w_19
 
-            t2 ~ t1
-            t3 ~ t2
-           ")
-m1_propvh <- bsem(model, data = b2yw2,
-                  burnin = 8000, sample = 2000, n.chains = 8)
+# save(qs_m1, file = "./output/qs_m1.RData")
 
-summary(m1_propvh, standardized = TRUE)
-
-# property personal
-model <- c("t1 =~ 1*prop_pers.f.w_15 + 1*prop_pers.p.w_15 + 1*prop_pers.r.w_15
-            t1 =~ 1*prop_pers.f.w_17 + 1*prop_pers.p.w_17 + 1*prop_pers.r.w_17
-            t1 =~ 1*prop_pers.f.w_19 + 1*prop_pers.p.w_19 + 1*prop_pers.r.w_19
-
-            t2 ~ t1
-            t3 ~ t2
-           ")
-
-
-m1_proppers <- bsem(model, data = b2yw2,
-                    burnin = 8000, sample = 2000, n.chains = 8)
-
-summary(m1_proppers, standardized = TRUE)
-
-
-# violence
-model <- c("t1 =~ 1*viol.f.w_15 + 1*viol.p.w_15 + 1*viol.r.w_15
-            t1 =~ 1*viol.f.w_17 + 1*viol.p.w_17 + 1*viol.r.w_17
-            t1 =~ 1*viol.f.w_19 + 1*viol.p.w_19 + 1*viol.r.w_19
-
-            t2 ~ t1
-            t3 ~ t2
-           ")
-m1_viol <- bsem(model, data = b2yw2,
-                burnin = 8000, sample = 2000, n.chains = 8)
-
-summary(m1_viol, standardized = TRUE)
-
-
-qs_m1 <- list(m1_propvh, m1_proppers, m1_viol)
-
-save(qs_m1, file = "./output/qs_m1.RData")
-
+load("./output/qs_m1.RData")
 
 
 summary(qs_m1[[3]], standardized = T)
 
 
 # Models 2 with method effect ---------------------------------------------
+#
+# # property vehicle
+# model <- c("t1 =~ 1*prop_vh.f.w_15 + 1*prop_vh.p.w_15 + 1*prop_vh.r.w_15
+#             t2 =~ 1*prop_vh.f.w_17 + 1*prop_vh.p.w_17 + 1*prop_vh.r.w_17
+#             t3 =~ 1*prop_vh.f.w_19 + 1*prop_vh.p.w_19 + 1*prop_vh.r.w_19
+#
+#             t2 ~ t1
+#             t3 ~ t2
+#
+#             m_rep =~ 1*prop_vh.p.w_15 + 1*prop_vh.p.w_17 + 1*prop_vh.p.w_19
+#             m_vic =~ 1*prop_vh.r.w_15 + 1*prop_vh.r.w_17 + 1*prop_vh.r.w_19
+#             m_loc =~ 1*prop_vh.f.w_15 + 1*prop_vh.f.w_17 + 1*prop_vh.f.w_19
+#
+#             m_vic ~~ 0*m_rep
+#             m_vic ~~ 0*m_loc
+#             m_vic ~~ 0*t1
+#             m_rep ~~ 0*m_loc
+#             m_rep ~~ 0*t1
+#             m_loc ~~ 0*t1
+#
+#
+#             t1 ~ 1
+#             t2 ~ 1
+#             t3 ~ 1
+#
+#             m_vic ~ 1
+#             m_rep ~ 1
+#             m_loc ~ 1
+#
+#             prop_vh.p.w_15 + prop_vh.p.w_17 + prop_vh.p.w_19 + prop_vh.r.w_15 + prop_vh.r.w_17 + prop_vh.r.w_19 + prop_vh.f.w_15 + prop_vh.f.w_17 + prop_vh.f.w_19 ~ 0*1
+#
+#            ")
+#
+#
+# m2_propvh <- bsem(model, data = b2yw2,
+#                   burnin = 8000, sample = 2000, n.chains = 8)
+#
+# summary(m2_propvh, standardized = TRUE)
+#
+#
+#
+# # property personal
+# model <- c("t1 =~ 1*prop_pers.f.w_15 + 1*prop_pers.p.w_15 + 1*prop_pers.r.w_15
+#             t2 =~ 1*prop_pers.f.w_17 + 1*prop_pers.p.w_17 + 1*prop_pers.r.w_17
+#             t3 =~ 1*prop_pers.f.w_19 + 1*prop_pers.p.w_19 + 1*prop_pers.r.w_19
+#
+#             t2 ~ t1
+#             t3 ~ t2
+#
+#             m_rep =~ 1*prop_pers.p.w_15 + 1*prop_pers.p.w_17 + 1*prop_pers.p.w_19
+#             m_vic =~ 1*prop_pers.r.w_15 + 1*prop_pers.r.w_17 + 1*prop_pers.r.w_19
+#             m_loc =~ 1*prop_pers.f.w_15 + 1*prop_pers.f.w_17 + 1*prop_pers.f.w_19
+#
+#             m_vic ~~ 0*m_rep
+#             m_vic ~~ 0*m_loc
+#             m_vic ~~ 0*t1
+#             m_rep ~~ 0*m_loc
+#             m_rep ~~ 0*t1
+#             m_loc ~~ 0*t1
+#
+#
+#             t1 ~ 1
+#             t2 ~ 1
+#             t3 ~ 1
+#
+#             m_vic ~ 1
+#             m_rep ~ 1
+#             m_loc ~ 1
+#
+#             prop_pers.p.w_15 + prop_pers.p.w_17 + prop_pers.p.w_19 + prop_pers.r.w_15 + prop_pers.r.w_17 + prop_pers.r.w_19 + prop_pers.f.w_15 + prop_pers.f.w_17 + prop_pers.f.w_19 ~ 0*1
+#
+#            ")
+# m2_proppers <- bsem(model, data = b2yw2,
+#                     burnin = 8000, sample = 2000, n.chains = 8)
+#
+# summary(m2_proppers, standardized = TRUE)
+#
+#
+#
+#
+#
+# # violence
+# model <- c("t1 =~ 1*viol.f.w_15 + 1*viol.p.w_15 + 1*viol.r.w_15
+#             t2 =~ 1*viol.f.w_17 + 1*viol.p.w_17 + 1*viol.r.w_17
+#             t3 =~ 1*viol.f.w_19 + 1*viol.p.w_19 + 1*viol.r.w_19
+#
+#             t2 ~ t1
+#             t3 ~ t2
+#
+#             m_rep =~ 1*viol.p.w_15 + 1*viol.p.w_17 + 1*viol.p.w_19
+#             m_vic =~ 1*viol.r.w_15 + 1*viol.r.w_17 + 1*viol.r.w_19
+#             m_loc =~ 1*viol.f.w_15 + 1*viol.f.w_17 + 1*viol.f.w_19
+#
+#
+#             m_vic ~~ 0*m_rep
+#             m_vic ~~ 0*m_loc
+#             m_vic ~~ 0*t1
+#             m_rep ~~ 0*m_loc
+#             m_rep ~~ 0*t1
+#             m_loc ~~ 0*t1
+#
+#             t1 ~ 1
+#             t2 ~ 1
+#             t3 ~ 1
+#
+#             m_vic ~ 1
+#             m_rep ~ 1
+#             m_loc ~ 1
+#
+#             viol.p.w_15 + viol.p.w_17 + viol.p.w_19 + viol.r.w_15 + viol.r.w_17 + viol.r.w_19 + viol.f.w_15 + viol.f.w_17 + viol.f.w_19 ~ 0*1
+#
+#            ")
+# m2_viol <- bsem(model, data = b2yw2,
+#                 burnin = 8000, sample = 2000, n.chains = 8)
+#
+# summary(m2_viol, standardized = TRUE)
+#
+#
+# qs_m2 <- list(m2_propvh, m2_proppers, m2_viol)
 
-# property vehicle
-model <- c("t1 =~ 1*prop_vh.f.w_15 + 1*prop_vh.p.w_15 + 1*prop_vh.r.w_15
-            t2 =~ 1*prop_vh.f.w_17 + 1*prop_vh.p.w_17 + 1*prop_vh.r.w_17
-            t3 =~ 1*prop_vh.f.w_19 + 1*prop_vh.p.w_19 + 1*prop_vh.r.w_19
+# save(qs_m2, file = "./output/qs_m2.RData")
 
-            t2 ~ t1
-            t3 ~ t2
-
-            m_vic =~ 1*prop_vh.p.w_15 + 1*prop_vh.p.w_17 + 1*prop_vh.p.w_19
-            m_rep =~ 1*prop_vh.r.w_15 + 1*prop_vh.r.w_17 + 1*prop_vh.r.w_19
-            m_loc =~ 1*prop_vh.f.w_15 + 1*prop_vh.f.w_17 + 1*prop_vh.f.w_19
-
-            m_vic ~~ 0*m_rep 0*m_loc 0*t1
-            m_rep ~~ 0*m_loc 0*t1
-            m_loc ~~ 0*t1
-           ")
-
-
-m2_propvh <- bsem(model, data = b2yw2,
-                  burnin = 8000, sample = 2000, n.chains = 8)
-
-summary(m2_propvh, standardized = TRUE)
-
-
-
-# property personal
-model <- c("t1 =~ 1*prop_pers.f.w_15 + 1*prop_pers.p.w_15 + 1*prop_pers.r.w_15
-            t1 =~ 1*prop_pers.f.w_17 + 1*prop_pers.p.w_17 + 1*prop_pers.r.w_17
-            t1 =~ 1*prop_pers.f.w_19 + 1*prop_pers.p.w_19 + 1*prop_pers.r.w_19
-
-            t2 ~ t1
-            t3 ~ t2
-
-            m_vic =~ 1*prop_pers.p.w_15 + 1*prop_pers.p.w_17 + 1*prop_pers.p.w_19
-            m_rep =~ 1*prop_pers.r.w_15 + 1*prop_pers.r.w_17 + 1*prop_pers.r.w_19
-            m_loc =~ 1*prop_pers.f.w_15 + 1*prop_pers.f.w_17 + 1*prop_pers.f.w_19
-
-            m_vic ~~ 0*m_rep 0*m_loc 0*t1
-            m_rep ~~ 0*m_loc 0*t1
-            m_loc ~~ 0*t1
-           ")
-m2_proppers <- bsem(model, data = b2yw2,
-                    burnin = 8000, sample = 2000, n.chains = 8)
-
-summary(m2_proppers, standardized = TRUE)
-
-
-
-
-
-# violence
-model <- c("t1 =~ 1*viol.f.w_15 + 1*viol.p.w_15 + 1*viol.r.w_15
-            t1 =~ 1*viol.f.w_17 + 1*viol.p.w_17 + 1*viol.r.w_17
-            t1 =~ 1*viol.f.w_19 + 1*viol.p.w_19 + 1*viol.r.w_19
-
-            t2 ~ t1
-            t3 ~ t2
-
-            m_vic =~ 1*viol.p.w_15 + 1*viol.p.w_17 + 1*viol.p.w_19
-            m_rep =~ 1*viol.r.w_15 + 1*viol.r.w_17 + 1*viol.r.w_19
-            m_loc =~ 1*viol.f.w_15 + 1*viol.f.w_17 + 1*viol.f.w_19
-
-
-            m_vic ~~ 0*m_rep 0*m_loc 0*t1
-            m_rep ~~ 0*m_loc 0*t1
-            m_loc ~~ 0*t1
-           ")
-m2_viol <- bsem(model, data = b2yw2,
-                burnin = 8000, sample = 2000, n.chains = 8)
-
-summary(m2_viol, standardized = TRUE)
-
-
-qs_m2 <- list(m2_propvh, m2_proppers, m2_viol)
-
-save(qs_m2, file = "./output/qs_m2.RData")
-
-
-
-m_vic =~ 1*viol.p.w + 1*prop_vh.p.w + 1*prop_pers.p.w
-m_rep =~ 1*viol.r.w + 1*prop_vh.r.w + 1*prop_pers.r.w
-m_loc =~ 1*viol.f.w + 1*prop_vh.f.w + 1*prop_pers.f.w
-
-
+load("./output/qs_m2.RData")
+summary(qs_m2[[2]], standardized = T)
 
 
 
 # MTMM model --------------------------------------------------------------
 
+b6yw <- barca_6y %>%
+  rename_all(~str_remove_all(., "erty|onal|ence")) %>%
+  select(matches(str_subset(vars_int2, "w"))) %>%
+  select(-ends_with("2")) %>%
+  mutate_all(~log(. + 1))
 
 
 
-model <- c("t_viol =~ 1*viol.f.w + 1*viol.p.w + 1*viol.r.w
-            t_vh =~ 1*prop_vh.f.w + 1*prop_vh.p.w + 1*prop_vh.r.w
-            t_pers =~ 1*prop_pers.f.w + 1*prop_pers.p.w + 1*prop_pers.r.w
+# model <- c("t_viol =~ 1*viol.f.w + 1*viol.p.w + 1*viol.r.w
+#             t_vh =~ 1*prop_vh.f.w + 1*prop_vh.p.w + 1*prop_vh.r.w
+#             t_pers =~ 1*prop_pers.f.w + 1*prop_pers.p.w + 1*prop_pers.r.w
+#
+#             m_rep =~ 1*viol.p.w + 1*prop_vh.p.w + 1*prop_pers.p.w
+#             m_vic =~ 1*viol.r.w + 1*prop_vh.r.w + 1*prop_pers.r.w
+#             m_loc =~ 1*viol.f.w + 1*prop_vh.f.w + 1*prop_pers.f.w
+#
+#             m_vic ~~ 0*m_rep
+#             m_vic ~~ 0*m_loc
+#             m_vic ~~ 0*t_viol
+#             m_vic ~~ 0*t_vh
+#             m_vic ~~ 0*t_pers
+#
+#             m_rep ~~ 0*m_loc
+#             m_rep ~~ 0*t_viol
+#             m_rep ~~ 0*t_vh
+#             m_rep ~~ 0*t_pers
+#
+#             m_loc ~~ 0*t_viol
+#             m_loc ~~ 0*t_vh
+#             m_loc ~~ 0*t_pers
+#
+#             t_viol ~ 1
+#             t_vh ~ 1
+#             t_pers ~ 1
+#             m_vic ~ 1
+#             m_rep ~ 1
+#             m_loc ~ 1
+#
+#             viol.p.w + prop_vh.p.w + prop_pers.p.w + viol.r.w + prop_vh.r.w + prop_pers.r.w + viol.f.w + prop_vh.f.w + prop_pers.f.w ~ 0*1
+#
+#            ")
+# mtmm <- bsem(model, data = b6yw,
+#              burnin = 8000, sample = 2000, n.chains = 8)
+#
+# summary(mtmm, standardized = TRUE)
+#
+# save(mtmm, file = "./output/mtmm.RData")
 
-            m_vic =~ 1*viol.p.w + 1*prop_vh.p.w + 1*prop_pers.p.w
-            m_rep =~ 1*viol.r.w + 1*prop_vh.r.w + 1*prop_pers.r.w
-            m_loc =~ 1*viol.f.w + 1*prop_vh.f.w + 1*prop_pers.f.w
+load("./output/mtmm.RData")
+summary(mtmm, standardized = TRUE)
 
-            m_vic ~~ 0*m_rep 0*m_loc 0*t_viol 0*t_vh 0*t_pers
-            m_rep ~~ 0*m_loc 0*t_viol 0*t_vh 0*t_pers
-            m_loc ~~ 0*t_viol 0*t_vh 0*t_pers
+mtmm_est <- lavaan::parameterestimates(mtmm, standardized = T)
 
-           ")
-m2_viol <- bsem(model, data = dat_s3l,
-                burnin = 8000, sample = 2000, n.chains = 8)
+mtmm_qual <- mtmm_est %>%
+  filter(op == "=~" | op == "~~") %>%
+  filter(!(op == "~~" & str_detect(lhs, "t_|m_"))) %>%
+  mutate(Trait = case_when(str_detect(rhs, "viol") ~ "Violence",
+                           str_detect(rhs, "vh") ~ "Property household/vehicle",
+                           str_detect(rhs, "pers") ~ "Property personal"),
+         group = case_when(str_detect(rhs, "\\.r\\.w") ~ "Survey victim",
+                           str_detect(rhs, "\\.p\\.w") ~ "Survey reported",
+                           str_detect(rhs, "\\.f\\.w") ~ "Survey places",
+                           TRUE ~ "Police"),
+         source = case_when(str_detect(lhs, "t_") ~ "Trait",
+                            str_detect(lhs, "m_") ~ "Method",
+                            TRUE ~ "Random error"),
+         qual = ifelse(source != "Random error", std.all^2, std.all)) %>%
+  select(-op, -est, -std.lv, -std.nox)
 
-summary(m2_viol, standardized = TRUE)
 
+mtmm_qual %>%
+  mutate(source = fct_relevel(source, "Trait")) %>%
+  ggplot(aes(group, qual, fill = source)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~Trait, nrow = 3) +
+  viridis::scale_fill_viridis(discrete = T) +
+  labs(y = "Proportion variance",
+       x = "Question",
+       fill = "Source") +
+    theme_bw()
 
-qs_m2 <- list(m2_propvh, m2_proppers, m2_viol)
-
-save(qs_m2, file = "./output/qs_m2.RData")
+ggsave("./output/figs/mtmm_qual_overall.png", height = 8)
 
