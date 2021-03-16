@@ -6,12 +6,15 @@
 # We start by using data from Barcelona 2015-2019
 #
 #  TO DO
-#  - re-focus the paper on comparing survey estimates
-#  - clean syntax an estimate reliability for all three survey measures
-#      and police
-#  - try multi-item simplex model with survey data
-#  - try mtmm with pooled data
-#  - do correlations with crime data
+#  - corraltion and means by 2 years
+#  - sensitivity analysis multi-item qs 2 items at a time
+#  - try multi-item qs with police
+#  - mtmm 2 methods at a time
+#  - do qs and mtmm with weight 2
+#  - do mtmm with the police as well
+#  - all models w2
+#  -
+#
 #
 #############################################################
 
@@ -131,7 +134,8 @@ corr_data <- barca_6y %>%
   select(id, vars_int) %>%
   rename_all(~str_remove_all(., "erty|onal|ence")) %>%
   ungroup() %>%
-  select(-id)
+  select(-id) %>%
+  mutate_all(~log(. + 1))
 
 
 corr_data %>%
@@ -159,6 +163,27 @@ corr_data %>%
 
 ggsave("./output/figs/cor_police_overall.png")
 
+corr_data %>%
+  summarise_all(~mean(.)) %>%
+  gather() %>%
+  mutate(group = case_when(str_detect(key, "\\.r\\.w") ~ "Survey victims",
+                           str_detect(key, "\\.p\\.w") ~ "Survey reported",
+                           str_detect(key, "\\.f\\.w") ~ "Survey places",
+                           TRUE ~ "Police"),
+         topic = case_when(
+           str_detect(key, "prop_pers") ~ "Property personal",
+           str_detect(key, "prop_vh") ~ "Property household/vehicle",
+           TRUE ~ "Violence"),
+         key2 = str_remove_all(key, "\\..+"),
+         est = exp(value) - 1) %>%
+  ggplot(aes(value, topic, color = group)) +
+  geom_point(size = 3, alpha = 0.8) +
+  theme_bw() +
+  viridis::scale_color_viridis(discrete = T) +
+  labs(x = "Log crime rates", y = "Topic", color = "Question")
+
+
+ggsave("./output/figs/logrates_police_overall.png")
 
 
 # Quasi-simplex models ----------------------------------------------------
@@ -168,7 +193,7 @@ ggsave("./output/figs/cor_police_overall.png")
 # takes a while to run so just re-load
 
 # make log
-b2yw2 <- b2yw %>%
+b2yw2 <- dat_s %>%
   select(matches(vars_int2)) %>%
   mutate_all(~log(. + 1))
 
@@ -213,11 +238,11 @@ qs_rel %>%
                            TRUE ~ "Police"),
          var = str_remove_all(key, "\\.f\\.w|\\.p\\.w|\\.r\\.w"),
          topic = case_when(
-           str_detect(key, "property_personal") ~ "Property personal",
-           str_detect(key, "property_vh") ~ "Property household/vehicle",
+           str_detect(key, "prop_pers") ~ "Property personal",
+           str_detect(key, "prop_vh") ~ "Property household/vehicle",
            TRUE ~ "Violence")) %>%
   ggplot(aes(as.factor(year), value,
-             group = group, color = group)) +
+             color = group, group = group)) +
   geom_line(size = 1.5) +
   facet_wrap(~topic) +
   theme_bw() +
@@ -418,6 +443,78 @@ load("./output/qs_m2.RData")
 summary(qs_m2[[2]], standardized = T)
 
 
+qual_qsm2 <- qs_m2 %>%
+  map_df(function(x) {
+    parameterestimates(x, standardized = T) %>%
+      filter(op == "=~" | op == "~~") %>%
+      filter(!std.all %in% c(0, 1)) %>%
+      filter(!(op == "~~" & str_detect(lhs, "^m_|t[1-9]")))  %>%
+      mutate(
+        group = case_when(
+          str_detect(rhs, "\\.r\\.w") ~ "Survey victim",
+          str_detect(rhs, "\\.p\\.w") ~ "Survey reported",
+          str_detect(rhs, "\\.f\\.w") ~ "Survey places",
+          TRUE ~ "Police"
+        ),
+        source = case_when(
+          str_detect(lhs, "t[1-9]") ~ "Trait",
+          str_detect(lhs, "m_") ~ "Method",
+          TRUE ~ "Random error"
+        ),
+        qual = ifelse(source != "Random error", std.all ^ 2, std.all),
+        year = str_extract(rhs, "[0-9].+")
+      ) %>%
+      select(-op, -est, -std.lv, -std.nox)
+  }) %>%
+  mutate(Trait = case_when(str_detect(rhs, "viol") ~ "Violence",
+                  str_detect(rhs, "vh") ~ "Property household/vehicle",
+                  str_detect(rhs, "pers") ~ "Property personal"))
+
+
+
+
+qual_qsm2 %>%
+  mutate(source = fct_relevel(source, "Trait")) %>%
+  ggplot(aes(year, qual, fill = source)) +
+  geom_bar(stat = "identity") +
+  facet_grid(Trait~group) +
+  viridis::scale_fill_viridis(discrete = T) +
+  labs(y = "Proportion variance",
+       x = "Question",
+       fill = "Source") +
+  theme_bw()
+
+ggsave("./output/figs/qsm2_quality.png")
+
+
+
+qs_m2 %>%
+  map_df(function(x) {
+    parameterestimates(x, standardized = T) %>%
+      filter(op == "~1", est != 0) %>%
+      mutate(type = rep(c("Trait", "Method"), each = 3),
+             year = c("15", "17", "19", rep("overall", 3)))
+  }) %>%
+  mutate(trait = rep(c("Property household/vehicle", "Property personal",
+                        "Violence"), each = 6),
+         source = case_when(str_detect(lhs, "vic") ~ "Survey victim",
+                           str_detect(lhs, "rep") ~ "Survey reported",
+                           str_detect(lhs, "loc") ~ "Survey places"),
+         source = ifelse(is.na(source), year, source),
+         type = as.factor(type) %>% fct_rev()) %>%
+  ggplot(aes(est, source)) +
+  geom_point(size = 2) +
+  geom_vline(xintercept = 0, alpha = 0.5) +
+  facet_wrap(trait~ type, ncol = 2, scales = "free_y") +
+  theme_bw() +
+  labs(x = "Mean (log rates)",
+       y = "Dimension")
+
+ggsave("./output/figs/qsm2_mean.png")
+
+
+
+
 
 # MTMM model --------------------------------------------------------------
 
@@ -427,7 +524,12 @@ b6yw <- barca_6y %>%
   select(-ends_with("2")) %>%
   mutate_all(~log(. + 1))
 
+b6yw %>%
+  cor() %>%
+  ggcorrplot() +
+  viridis::scale_fill_viridis(direction = -1)
 
+ggsave("./output/figs/mtmm_corr_matrix.png")
 
 # model <- c("t_viol =~ 1*viol.f.w + 1*viol.p.w + 1*viol.r.w
 #             t_vh =~ 1*prop_vh.f.w + 1*prop_vh.p.w + 1*prop_vh.r.w
@@ -504,3 +606,23 @@ mtmm_qual %>%
 
 ggsave("./output/figs/mtmm_qual_overall.png", height = 8)
 
+
+mtmm_est %>%
+  filter(op == "~1", est != 0) %>%
+  select(lhs, est) %>%
+  mutate(type = rep(c("Trait", "Method"), each = 3),
+         source = c("Violence", "Property household/vehicle",
+                    "Property personal", "Survey victim",
+                    "Survey reported", "Survey places"),
+         type = as.factor(type) %>% fct_rev()) %>%
+  ggplot(aes(est, source)) +
+  facet_wrap(~ type, nrow = 2, scales = "free_y") +
+  geom_point(size = 2) +
+  theme_bw() +
+  labs(x = "Mean (log rates)",
+       y = "Dimension")
+
+ggsave("./output/figs/mtmm_mean_overall.png")
+
+
+launch_shinystan(mtmm)

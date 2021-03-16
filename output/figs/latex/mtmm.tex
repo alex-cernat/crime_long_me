@@ -1,0 +1,142 @@
+\documentclass[convert={density=300,size=1080x800,outext=.png}]{standalone}
+
+
+
+\usepackage{pgf}
+\usepackage{tikz}
+\usepackage{xcolor}
+\usepackage{graphics}
+
+\tikzstyle{every picture}+=[font=\sffamily]
+
+\usetikzlibrary{calc,intersections, arrows,backgrounds, shapes,snakes, matrix}
+
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+
+\begin{document}
+
+
+\tikzstyle{true}=[circle,draw=black,thick,inner sep=0pt, minimum size=20mm]
+\tikzstyle{obs}=[rectangle,draw=black,thick,inner sep=0pt, minimum size=13mm]
+\tikzstyle{err}=[circle,draw=black,thick,inner sep=0pt, minimum size=9mm]
+\tikzstyle{pre}=[<-,shorten <=1pt,>=stealth', thick]
+\tikzstyle{post}=[->,shorten >=1pt,>=stealth', thick]
+\tikzstyle{corr}=[<->, shorten <=1pt,>=stealth', thick]
+
+\begin{tikzpicture}[scale=1.3]
+
+
+\node (T2) at ( 1,-1.5) [true] {T1};
+\node (O1) at ( -1,-5) [obs] {viol.f.w};
+\node[above left = 3pt, at=(O1.north)] (int1) {};
+\node (O2) at ( 1,-5) [obs] {viol.p.w};
+\node[above left = 3pt, at=(O2.north)] (int2) {};
+\node (O3) at ( 3,-5) [obs] {viol.r.w};
+\node[above right = 3pt, at=(O3.north)] (int3) {};
+
+
+%\node (E1) at ( -0.5,-6.5) [err] {$\epsilon_{11}$};
+%\node (E2) at ( 1.5,-6.5) [err] {$\epsilon_{21}$};
+%\node (E3) at ( 3.5,-6.5) [err] {$\epsilon_{31}$};
+
+\draw[post] (T2) to node[pos = 0.5, left]  {1} (O1.north);
+\draw[post] (T2) to node[pos = 0.5, left]  {1} (O2.north);
+\draw[post] (T2) to node[pos = 0.5, left]  {1} (O3.north);
+
+%\draw[post] (E1) to (O1.south);
+%\draw[post] (E2) to (O2.south);
+%\draw[post] (E3) to (O3.south);
+
+
+
+
+
+\node (T2B) at (8,-1.5) [true] {T2};
+\node (O1B) at (6,-5) [obs] {pers.f.w};
+\node[above left = 3pt, at=(O1B.north)] (int1b) {};
+\node (O2B) at (8,-5) [obs] {pers.p.w};
+\node[above left = 3pt, at=(O2B.north)] (int2b) {};
+\node (O3B) at (10,-5) [obs] {pers.r.w};
+\node[above right = 3pt, at=(O3B.north)] (int3b) {};
+
+
+%\node (E1B) at ( 6.5,-6.5) [err] {$\epsilon_{12}$};
+%\node (E2B) at ( 8.5,-6.5) [err] {$\epsilon_{22}$};
+%\node (E3B) at ( 10.5,-6.5) [err] {$\epsilon_{32}$};
+
+\draw[post] (T2B) to node[pos = 0.5, left]  {1} (O1B.north);
+\draw[post] (T2B) to node[pos = 0.5, left]  {1} (O2B.north);
+\draw[post] (T2B) to node[pos = 0.5, left]  {1} (O3B.north);
+
+%\draw[post] (E1B) to (O1B.south);
+%\draw[post] (E2B) to (O2B.south);
+%\draw[post] (E3B) to (O3B.south);
+
+
+
+
+
+
+
+
+\node (T22) at (15,-1.5) [true] {T3};
+\node (O12) at (13,-5) [obs] {vh.f.w};
+\node[above left = 3pt, at=(O12.north)] (int4) {};
+\node (O22) at (15,-5) [obs] {vh.p.w};
+\node[above left = 3pt, at=(O22.north)] (int5) {};
+\node (O32) at (17,-5) [obs] {vh.r.w};
+\node[above right = 3pt, at=(O32.north)] (int6) {};
+
+
+
+%\node (E12) at (13.5,-6.5) [err] {$\epsilon_{13}$};
+%\node (E22) at (15.5,-6.5) [err] {$\epsilon_{23}$};
+%\node (E32) at (17.5,-6.5) [err] {$\epsilon_{33}$};
+
+
+\draw[post] (T22) to node[pos = 0.5, left]  {1} (O12.north);
+\draw[post] (T22) to node[pos = 0.5, left]  {1} (O22.north);
+\draw[post] (T22) to node[pos = 0.5, left]  {1} (O32.north);
+
+%\draw[post] (E12) to (O12.south);
+%\draw[post] (E22) to (O22.south);
+%\draw[post] (E32) to (O32.south);
+
+
+
+\draw[corr, bend left=20] (T2) to node[pos = 0.5, above]  {} (T2B);
+\draw[corr, bend left=20] (T2B) to node[pos = 0.5, above]  {} (T22);
+\draw[corr, bend left=30] (T2) to node[pos = 0.5, above]  {} (T22);
+
+
+\node (DM1) at (1, -11) [obs, draw = white] {Survey places};
+\node (M1) at (1,-10) [true] {M1};
+
+\node (DM2) at (8, -11) [obs, draw = white] {Survey reported};
+\node (M2) at (8,-10) [true] {M2};
+
+\node (DM2) at (15, -11) [obs, draw = white] {Survey victim};
+\node (M3) at (15,-10) [true] {M3};
+
+
+\draw[post] (M1) to node[pos = 0.1, left]  {1} (O1.south);
+\draw[post] (M1) to node[pos = 0.1, left]  {1} (O1B.south);
+\draw[post] (M1) to node[pos = 0.1, above]  {1} (O12.south);
+
+\draw[post] (M2) to node[pos = 0.1, left]  {1} (O2.south);
+\draw[post] (M2) to node[pos = 0.1, left]  {1} (O2B.south);
+\draw[post] (M2) to node[pos = 0.1, above]  {1} (O22.south);
+
+\draw[post] (M3) to node[pos = 0.1, left]  {1} (O3.south);
+\draw[post] (M3) to node[pos = 0.1, left]  {1} (O3B.south);
+\draw[post] (M3) to node[pos = 0.1, above]  {1} (O32.south);
+
+
+
+\end{tikzpicture}
+
+
+\end{document}
