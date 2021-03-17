@@ -881,7 +881,7 @@ qual_qsm2_w2 <- qs_m2_w2 %>%
           TRUE ~ "Random error"
         ),
         qual = ifelse(source != "Random error", std.all ^ 2, std.all),
-        year = str_extract(rhs, "[0-9].+")
+        year = str_extract(rhs, "_([0-9].+)") %>% str_remove("_")
       ) %>%
       select(-op, -est, -std.lv, -std.nox)
   }) %>%
