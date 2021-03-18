@@ -3,6 +3,8 @@
 # Project looking estimating measurement error in crime data using
 # longitudinal models
 #
+# https://journals.sagepub.com/home/jrc
+#
 # We start by using data from Barcelona 2015-2019
 #
 #  TO DO
@@ -11,6 +13,8 @@
 #  - try multi-item qs with police
 #  - mtmm 2 methods at a time
 #  - do mtmm with the police as well
+#  - do correlations with police in w2
+#  - redo analysis with measures without weights
 #
 #
 #
