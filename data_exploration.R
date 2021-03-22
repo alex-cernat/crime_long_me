@@ -1945,7 +1945,7 @@ mtmm_wo <- bsem(model, data = b6yw2_wo,
 
 summary(mtmm_wo, standardized = TRUE)
 
-save(mtmm_w, file = "./output/mtmm_wo.RData")
+save(mtmm_wo, file = "./output/mtmm_wo.RData")
 
 load("./output/mtmm_wo.RData")
 
@@ -2019,10 +2019,10 @@ ggsave("./output/figs/mtmm_mean_overall_wo.png")
 
 b2yw_wo <- barca_2y %>%
   rename_all(~str_remove_all(., "erty|onal|ence")) %>%
-  select(id, year, var_int2_wo, vars_int2[c(1, 5, 9)]) %>%
+  select(id, year, vars_int2_wo, vars_int2[c(1, 5, 9)]) %>%
   mutate(year = str_remove_all(year, "20|-.+")) %>%
   pivot_wider(
-    values_from = viol.f.wo:prop_pers.r.wo,
+    values_from = prop_vh.r.wo:viol,
     names_sep = "_",
     names_from = year) %>%
   mutate_at(vars(-id),
@@ -2157,7 +2157,7 @@ load("./output/qs_m2_wo.RData")
 
 
 
-summary(qs_m2_uw[[1]])
+summary(qs_m2_wo[[1]])
 
 
 qual_qsm2_wo <- qs_m2_wo %>%
@@ -2251,7 +2251,7 @@ qs <- function(var) {
        burnin = 8000, sample = 2000, n.chains = 8)
 }
 
-res_qs_wo <- map(var_int2_wo, qs)
+res_qs_wo <- map(vars_int2_wo, qs)
 save(res_qs_wo, file = "./output/quasi_simple_wo.RData")
 
 load("./output/quasi_simple_wo.RData")
@@ -2262,7 +2262,7 @@ qs_rel_wo <- map(res_qs_wo, function(x) summary(x, standardized = TRUE) %>%
 ) %>%
   reduce(cbind) %>%
   as_tibble() %>%
-  setNames(var_int3) %>%
+  setNames(vars_int2_wo) %>%
   mutate(year = c(15, 17, 19))
 
 
@@ -2291,7 +2291,7 @@ qs_rel_wo %>%
   viridis::scale_color_viridis(discrete = T)
 
 
-ggsave("./output/figs/reliability_survey_qs_uw.png")
+ggsave("./output/figs/reliability_survey_qs_wo.png")
 
 
 
