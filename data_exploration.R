@@ -96,11 +96,20 @@ vars_int2_w2 <- str_remove_all(vars_int_w2, "erty|onal|ence")
 
 
 
+vars_int_wo <- str_c(c("property_vh", "property_personal", "violence") %>%
+                       rep(each = 3),
+                     rep(c(".r.wo", ".f.wo", ".p.wo"), 3))
+
+vars_int2_wo <- str_remove_all(vars_int_wo, "erty|onal|ence")
+
+
+
+
 
 # change in time
 
 dat_s <- barca_2y %>%
-  select(id, year, vars_int)
+  select(id, year, vars_int_wo)
 
 
 
@@ -123,7 +132,7 @@ descriptives <- dat_s %>%
            str_detect(key, "property_personal") ~ "Property personal",
            str_detect(key, "property_vh") ~ "Property household/vehicle",
            TRUE ~ "Violence"),
-         var = str_remove_all(key, "_mean|_sd|\\.r\\.w"))
+         var = str_remove_all(key, "_mean|_sd|\\.r\\.wo"))
 
 descriptives %>%
   ggplot(aes(year, value,
@@ -147,7 +156,7 @@ write_csv(descriptives, "./output/tabs/descriptive_change.csv")
 
 
 corr_data <- barca_6y %>%
-  select(id, vars_int) %>%
+  select(id, vars_int[c(1, 5, 9)], vars_int_wo) %>%
   rename_all(~str_remove_all(., "erty|onal|ence")) %>%
   ungroup() %>%
   select(-id) %>%
@@ -193,7 +202,7 @@ corr_data %>%
          key2 = str_remove_all(key, "\\..+"),
          est = exp(value) - 1) %>%
   ggplot(aes(value, topic, color = group)) +
-  geom_point(size = 3, alpha = 0.8) +
+  geom_point(size = 3, alpha = 0.6) +
   theme_bw() +
   viridis::scale_color_viridis(discrete = T) +
   labs(x = "Log crime rates", y = "Topic", color = "Question")
@@ -1844,3 +1853,449 @@ qs_rel_uw %>%
 
 
 ggsave("./output/figs/reliability_survey_qs_uw.png")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Models with original weights --------------------------------------------------
+
+
+
+
+
+# MTMM with 4 methods -----------------------------------------------------
+
+# make data only with the vars we want
+
+
+b6yw2_wo <- barca_6y %>%
+  rename_all(~str_remove_all(., "erty|onal|ence")) %>%
+  select(all_of(vars_int2_wo), vars_int2[c(1, 5, 9)]) %>%
+  mutate_all(~log(. + 1))
+
+
+# correlation matrix
+b6yw2_wo %>%
+  cor() %>%
+  ggcorrplot() +
+  viridis::scale_fill_viridis(direction = -1)
+
+
+
+
+model <- c("t_viol =~ 1*viol.f.wo + 1*viol.p.wo + 1*viol.r.wo
+            t_vh =~ 1*prop_vh.f.wo + 1*prop_vh.p.wo + 1*prop_vh.r.wo
+            t_pers =~ 1*prop_pers.f.wo + 1*prop_pers.p.wo + 1*prop_pers.r.wo
+
+            m_rep =~ 1*viol.p.wo + 1*prop_vh.p.wo + 1*prop_pers.p.wo
+            m_vic =~ 1*viol.r.wo + 1*prop_vh.r.wo + 1*prop_pers.r.wo
+            m_loc =~ 1*viol.f.wo + 1*prop_vh.f.wo + 1*prop_pers.f.wo
+
+            m_vic ~~ 0*m_rep
+            m_vic ~~ 0*m_loc
+            m_vic ~~ 0*t_viol
+            m_vic ~~ 0*t_vh
+            m_vic ~~ 0*t_pers
+
+
+            m_rep ~~ 0*m_loc
+            m_rep ~~ 0*t_viol
+            m_rep ~~ 0*t_vh
+            m_rep ~~ 0*t_pers
+
+            m_loc ~~ 0*t_viol
+            m_loc ~~ 0*t_vh
+            m_loc ~~ 0*t_pers
+
+            t_viol ~ 1
+            t_vh ~ 1
+            t_pers ~ 1
+            m_vic ~ 1
+            m_rep ~ 1
+            m_loc ~ 1
+
+
+            viol.p.wo + prop_vh.p.wo + prop_pers.p.wo + viol.r.wo + prop_vh.r.wo + prop_pers.r.wo + viol.f.wo + prop_vh.f.wo + prop_pers.f.wo ~ 0*1
+
+           ")
+mtmm_wo <- bsem(model, data = b6yw2_wo,
+                burnin = 8000, sample = 2000, n.chains = 8)
+
+summary(mtmm_wo, standardized = TRUE)
+
+save(mtmm_w, file = "./output/mtmm_wo.RData")
+
+load("./output/mtmm_wo.RData")
+
+summary(mtmm_wo, standardized = T)
+
+
+mtmm_wo_est <- lavaan::parameterestimates(mtmm_wo, standardized = T)
+
+mtmm_wo_qual <- mtmm_wo_est %>%
+  filter(op == "=~" | op == "~~") %>%
+  filter(!(op == "~~" & str_detect(lhs, "t_|m_"))) %>%
+  mutate(Trait = case_when(str_detect(rhs, "viol") ~ "Violence",
+                           str_detect(rhs, "vh") ~ "Property household/vehicle",
+                           str_detect(rhs, "pers") ~ "Property personal"),
+         group = case_when(str_detect(rhs, "\\.r") ~ "Survey victim",
+                           str_detect(rhs, "\\.p") ~ "Survey reported",
+                           str_detect(rhs, "\\.f") ~ "Survey places",
+                           TRUE ~ "Police"),
+         source = case_when(str_detect(lhs, "t_") ~ "Trait",
+                            str_detect(lhs, "m_") ~ "Method",
+                            TRUE ~ "Random error"),
+         qual = ifelse(source != "Random error", std.all^2, std.all)) %>%
+  select(-op, -est, -std.lv, -std.nox)
+
+
+mtmm_wo_qual %>%
+  mutate(source = fct_relevel(source, "Trait")) %>%
+  ggplot(aes(group, qual, fill = source)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~Trait, nrow = 3) +
+  viridis::scale_fill_viridis(discrete = T) +
+  labs(y = "Proportion variance",
+       x = "Question",
+       fill = "Source") +
+  theme_bw()
+
+ggsave("./output/figs/mtmm_qual_overall_wo.png", height = 8)
+
+
+mtmm_wo_est %>%
+  filter(op == "~1", est != 0) %>%
+  select(lhs, est) %>%
+  mutate(type = rep(c("Trait", "Method"), each = 3),
+         source = c("Violence", "Property household/vehicle",
+                    "Property personal", "Survey victim",
+                    "Survey reported", "Survey places"),
+         type = as.factor(type) %>% fct_rev()) %>%
+  ggplot(aes(est, source)) +
+  facet_wrap(~ type, nrow = 2, scales = "free_y") +
+  geom_point(size = 2) +
+  theme_bw() +
+  labs(x = "Mean (log rates)",
+       y = "Dimension")
+
+ggsave("./output/figs/mtmm_mean_overall_wo.png")
+
+
+
+
+
+
+
+
+
+# Models 2 with method effect ---------------------------------------------
+
+
+
+
+# make wide data
+
+b2yw_wo <- barca_2y %>%
+  rename_all(~str_remove_all(., "erty|onal|ence")) %>%
+  select(id, year, var_int2_wo, vars_int2[c(1, 5, 9)]) %>%
+  mutate(year = str_remove_all(year, "20|-.+")) %>%
+  pivot_wider(
+    values_from = viol.f.wo:prop_pers.r.wo,
+    names_sep = "_",
+    names_from = year) %>%
+  mutate_at(vars(-id),
+            ~log(. + 1))
+
+
+
+# property vehicle
+model <- c("t1 =~ 1*prop_vh.f.wo_15 + 1*prop_vh.p.wo_15 + 1*prop_vh.r.wo_15
+            t2 =~ 1*prop_vh.f.wo_17 + 1*prop_vh.p.wo_17 + 1*prop_vh.r.wo_17
+            t3 =~ 1*prop_vh.f.wo_19 + 1*prop_vh.p.wo_19 + 1*prop_vh.r.wo_19
+
+            t2 ~ t1
+            t3 ~ t2
+
+            m_rep =~ 1*prop_vh.p.wo_15 + 1*prop_vh.p.wo_17 + 1*prop_vh.p.wo_19
+            m_vic =~ 1*prop_vh.r.wo_15 + 1*prop_vh.r.wo_17 + 1*prop_vh.r.wo_19
+            m_loc =~ 1*prop_vh.f.wo_15 + 1*prop_vh.f.wo_17 + 1*prop_vh.f.wo_19
+
+            m_vic ~~ 0*m_rep
+            m_vic ~~ 0*m_loc
+            m_vic ~~ 0*t1
+            m_rep ~~ 0*m_loc
+            m_rep ~~ 0*t1
+            m_loc ~~ 0*t1
+
+
+            t1 ~ 1
+            t2 ~ 1
+            t3 ~ 1
+
+            m_vic ~ 1
+            m_rep ~ 1
+            m_loc ~ 1
+
+            prop_vh.p.wo_15 + prop_vh.p.wo_17 + prop_vh.p.wo_19 + prop_vh.r.wo_15 + prop_vh.r.wo_17 + prop_vh.r.wo_19 + prop_vh.f.wo_15 + prop_vh.f.wo_17 + prop_vh.f.wo_19 ~ 0*1
+
+           ")
+
+
+m2_propvh_wo <- bsem(model, data = b2yw_wo,
+                     burnin = 8000, sample = 2000, n.chains = 8)
+
+summary(m2_propvh_wo, standardized = TRUE)
+
+
+
+# property personal
+model <- c("t1 =~ 1*prop_pers.f.wo_15 + 1*prop_pers.p.wo_15 + 1*prop_pers.r.wo_15
+            t2 =~ 1*prop_pers.f.wo_17 + 1*prop_pers.p.wo_17 + 1*prop_pers.r.wo_17
+            t3 =~ 1*prop_pers.f.wo_19 + 1*prop_pers.p.wo_19 + 1*prop_pers.r.wo_19
+
+            t2 ~ t1
+            t3 ~ t2
+
+            m_rep =~ 1*prop_pers.p.wo_15 + 1*prop_pers.p.wo_17 + 1*prop_pers.p.wo_19
+            m_vic =~ 1*prop_pers.r.wo_15 + 1*prop_pers.r.wo_17 + 1*prop_pers.r.wo_19
+            m_loc =~ 1*prop_pers.f.wo_15 + 1*prop_pers.f.wo_17 + 1*prop_pers.f.wo_19
+
+            m_vic ~~ 0*m_rep
+            m_vic ~~ 0*m_loc
+            m_vic ~~ 0*t1
+            m_rep ~~ 0*m_loc
+            m_rep ~~ 0*t1
+            m_loc ~~ 0*t1
+
+
+            t1 ~ 1
+            t2 ~ 1
+            t3 ~ 1
+
+            m_vic ~ 1
+            m_rep ~ 1
+            m_loc ~ 1
+
+            prop_pers.p.wo_15 + prop_pers.p.wo_17 + prop_pers.p.wo_19 + prop_pers.r.wo_15 + prop_pers.r.wo_17 + prop_pers.r.wo_19 + prop_pers.f.wo_15 + prop_pers.f.wo_17 + prop_pers.f.wo_19 ~ 0*1
+
+           ")
+m2_proppers_wo <- bsem(model, data = b2yw_wo,
+                       burnin = 8000, sample = 2000, n.chains = 8)
+
+summary(m2_proppers_wo, standardized = TRUE)
+
+
+
+
+
+# violence
+model <- c("t1 =~ 1*viol.f.wo_15 + 1*viol.p.wo_15 + 1*viol.r.wo_15
+            t2 =~ 1*viol.f.wo_17 + 1*viol.p.wo_17 + 1*viol.r.wo_17
+            t3 =~ 1*viol.f.wo_19 + 1*viol.p.wo_19 + 1*viol.r.wo_19
+
+            t2 ~ t1
+            t3 ~ t2
+
+            m_rep =~ 1*viol.p.wo_15 + 1*viol.p.wo_17 + 1*viol.p.wo_19
+            m_vic =~ 1*viol.r.wo_15 + 1*viol.r.wo_17 + 1*viol.r.wo_19
+            m_loc =~ 1*viol.f.wo_15 + 1*viol.f.wo_17 + 1*viol.f.wo_19
+
+
+            m_vic ~~ 0*m_rep
+            m_vic ~~ 0*m_loc
+            m_vic ~~ 0*t1
+            m_rep ~~ 0*m_loc
+            m_rep ~~ 0*t1
+            m_loc ~~ 0*t1
+
+            t1 ~ 1
+            t2 ~ 1
+            t3 ~ 1
+
+            m_vic ~ 1
+            m_rep ~ 1
+            m_loc ~ 1
+
+            viol.p.wo_15 + viol.p.wo_17 + viol.p.wo_19 + viol.r.wo_15 + viol.r.wo_17 + viol.r.wo_19 + viol.f.wo_15 + viol.f.wo_17 + viol.f.wo_19 ~ 0*1
+
+           ")
+m2_viol_wo <- bsem(model, data = b2yw_wo,
+                   burnin = 8000, sample = 2000, n.chains = 8)
+
+summary(m2_viol_wo, standardized = TRUE)
+
+
+qs_m2_wo <- list(m2_propvh_wo, m2_proppers_wo, m2_viol_wo)
+
+save(qs_m2_wo, file = "./output/qs_m2_wo.RData")
+
+
+
+load("./output/qs_m2_wo.RData")
+
+
+
+summary(qs_m2_uw[[1]])
+
+
+qual_qsm2_wo <- qs_m2_wo %>%
+  map_df(function(x) {
+    parameterestimates(x, standardized = T) %>%
+      filter(op == "=~" | op == "~~") %>%
+      filter(!std.all %in% c(0, 1)) %>%
+      filter(!(op == "~~" & str_detect(lhs, "^m_|t[1-9]")))  %>%
+      mutate(
+        group = case_when(
+          str_detect(rhs, "\\.r") ~ "Survey victim",
+          str_detect(rhs, "\\.p") ~ "Survey reported",
+          str_detect(rhs, "\\.f") ~ "Survey places",
+          TRUE ~ "Police"
+        ),
+        source = case_when(
+          str_detect(lhs, "t[1-9]") ~ "Trait",
+          str_detect(lhs, "m_") ~ "Method",
+          TRUE ~ "Random error"
+        ),
+        qual = ifelse(source != "Random error", std.all ^ 2, std.all),
+        year = str_extract(rhs, "_([0-9].+)") %>% str_remove("_")
+      ) %>%
+      select(-op, -est, -std.lv, -std.nox)
+  }) %>%
+  mutate(Trait = case_when(str_detect(rhs, "viol") ~ "Violence",
+                           str_detect(rhs, "vh") ~ "Property household/vehicle",
+                           str_detect(rhs, "pers") ~ "Property personal"))
+
+
+
+
+qual_qsm2_wo %>%
+  mutate(source = fct_relevel(source, "Trait")) %>%
+  ggplot(aes(year, qual, fill = source)) +
+  geom_bar(stat = "identity") +
+  facet_grid(Trait~group) +
+  viridis::scale_fill_viridis(discrete = T) +
+  labs(y = "Proportion variance",
+       x = "Question",
+       fill = "Source") +
+  theme_bw()
+
+ggsave("./output/figs/qsm2_quality_wo.png")
+
+
+
+qs_m2_wo %>%
+  map_df(function(x) {
+    parameterestimates(x, standardized = T) %>%
+      filter(op == "~1", est != 0) %>%
+      mutate(type = rep(c("Trait", "Method"), each = 3),
+             year = c("15", "17", "19", rep("overall", 3)))
+  }) %>%
+  mutate(trait = rep(c("Property household/vehicle", "Property personal",
+                       "Violence"), each = 6),
+         source = case_when(str_detect(lhs, "vic") ~ "Survey victim",
+                            str_detect(lhs, "rep") ~ "Survey reported",
+                            str_detect(lhs, "loc") ~ "Survey places"),
+         source = ifelse(is.na(source), year, source),
+         type = as.factor(type) %>% fct_rev()) %>%
+  ggplot(aes(est, source)) +
+  geom_point(size = 2) +
+  geom_vline(xintercept = 0, alpha = 0.5) +
+  facet_wrap(trait~ type, ncol = 2, scales = "free_y") +
+  theme_bw() +
+  labs(x = "Mean (log rates)",
+       y = "Dimension")
+
+ggsave("./output/figs/qsm2_mean_wo.png")
+
+
+
+
+
+
+# Quasi-simplex -----------------------------------------------------------
+
+
+
+qs <- function(var) {
+  model <- str_c("t1 =~ ", var, "_15\n",
+                 "t2 =~ ", var, "_17\n",
+                 "t3 =~ ", var, "_19\n\n",
+                 "t2 ~ t1 \nt3 ~ t2\n\n",
+                 var, "_15 ~~ a*", var, "_15\n",
+                 var, "_17 ~~ a*", var, "_17\n",
+                 var, "_19 ~~ a*", var, "_19")
+
+  bsem(model, data = b2yw_wo,
+       burnin = 8000, sample = 2000, n.chains = 8)
+}
+
+res_qs_wo <- map(var_int2_wo, qs)
+save(res_qs_wo, file = "./output/quasi_simple_wo.RData")
+
+load("./output/quasi_simple_wo.RData")
+
+
+qs_rel_wo <- map(res_qs_wo, function(x) summary(x, standardized = TRUE) %>%
+                   .[1:3, 7] %>% as.numeric()
+) %>%
+  reduce(cbind) %>%
+  as_tibble() %>%
+  setNames(var_int3) %>%
+  mutate(year = c(15, 17, 19))
+
+
+
+
+qs_rel_wo %>%
+  gather(-year, key = key, value = value) %>%
+  filter(str_detect(key, "\\.f|\\.r|\\.p")) %>%
+  mutate(group = case_when(str_detect(key, "\\.r") ~ "Survey victim",
+                           str_detect(key, "\\.p") ~ "Survey reported",
+                           str_detect(key, "\\.f") ~ "Survey places",
+                           TRUE ~ "Police"),
+         var = str_remove_all(key, "\\.f|\\.p|\\.r"),
+         topic = case_when(
+           str_detect(key, "prop_pers") ~ "Property personal",
+           str_detect(key, "prop_vh") ~ "Property household/vehicle",
+           TRUE ~ "Violence")) %>%
+  ggplot(aes(as.factor(year), value,
+             color = group, group = group)) +
+  geom_line(size = 1.5) +
+  facet_wrap(~topic) +
+  theme_bw() +
+  labs(color = "Question",
+       x = "Year",
+       y = "Reliability") +
+  viridis::scale_color_viridis(discrete = T)
+
+
+ggsave("./output/figs/reliability_survey_qs_uw.png")
+
+
+
+
+
+
+
