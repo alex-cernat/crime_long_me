@@ -1,4 +1,7 @@
 year,key,value,stat,group,topic,var
+2015-16,property_vh_mean,162.13013698630138,Mean,Police ,Property household/vehicle,property_vh
+2017-18,property_vh_mean,208.986301369863,Mean,Police ,Property household/vehicle,property_vh
+2019-20,property_vh_mean,216.34083683322214,Mean,Police ,Property household/vehicle,property_vh
 2015-16,property_vh.r.wo_mean,22.277126504936046,Mean,Survey victim,Property household/vehicle,property_vh
 2017-18,property_vh.r.wo_mean,25.608073138342437,Mean,Survey victim,Property household/vehicle,property_vh
 2019-20,property_vh.r.wo_mean,20.399800526768793,Mean,Survey victim,Property household/vehicle,property_vh
@@ -8,6 +11,12 @@ year,key,value,stat,group,topic,var
 2015-16,property_vh.p.wo_mean,3.535292071336881,Mean,Survey reported,Property household/vehicle,property_vh.p.wo
 2017-18,property_vh.p.wo_mean,3.345954957933309,Mean,Survey reported,Property household/vehicle,property_vh.p.wo
 2019-20,property_vh.p.wo_mean,2.709751657549258,Mean,Survey reported,Property household/vehicle,property_vh.p.wo
+2015-16,property_vh.rp.wo_mean,4.640876956448002,Mean,Survey victims reported,Property household/vehicle,property_vh.rp.wo
+2017-18,property_vh.rp.wo_mean,4.601584198364843,Mean,Survey victims reported,Property household/vehicle,property_vh.rp.wo
+2019-20,property_vh.rp.wo_mean,3.507787014007402,Mean,Survey victims reported,Property household/vehicle,property_vh.rp.wo
+2015-16,property_personal_mean,1621.63698630137,Mean,Police ,Property personal,property_personal
+2017-18,property_personal_mean,1964.1164383561643,Mean,Police ,Property personal,property_personal
+2019-20,property_personal_mean,1576.5784629273455,Mean,Police ,Property personal,property_personal
 2015-16,property_personal.r.wo_mean,22.103717800941887,Mean,Survey victim,Property personal,property_personal
 2017-18,property_personal.r.wo_mean,32.21124309741351,Mean,Survey victim,Property personal,property_personal
 2019-20,property_personal.r.wo_mean,35.389837687238106,Mean,Survey victim,Property personal,property_personal
@@ -17,6 +26,12 @@ year,key,value,stat,group,topic,var
 2015-16,property_personal.p.wo_mean,2.356482943251402,Mean,Survey reported,Property personal,property_personal.p.wo
 2017-18,property_personal.p.wo_mean,3.957029466430945,Mean,Survey reported,Property personal,property_personal.p.wo
 2019-20,property_personal.p.wo_mean,3.830047748735903,Mean,Survey reported,Property personal,property_personal.p.wo
+2015-16,property_personal.rp.wo_mean,4.339490686711904,Mean,Survey victims reported,Property personal,property_personal.rp.wo
+2017-18,property_personal.rp.wo_mean,6.415965993746587,Mean,Survey victims reported,Property personal,property_personal.rp.wo
+2019-20,property_personal.rp.wo_mean,5.790205653642855,Mean,Survey victims reported,Property personal,property_personal.rp.wo
+2015-16,violence_mean,280.4931506849315,Mean,Police ,Violence,violence
+2017-18,violence_mean,295.56164383561645,Mean,Police ,Violence,violence
+2019-20,violence_mean,301.66811241511954,Mean,Police ,Violence,violence
 2015-16,violence.r.wo_mean,11.21271399685237,Mean,Survey victim,Violence,violence
 2017-18,violence.r.wo_mean,15.027275147565367,Mean,Survey victim,Violence,violence
 2019-20,violence.r.wo_mean,14.198777627654827,Mean,Survey victim,Violence,violence
@@ -26,6 +41,12 @@ year,key,value,stat,group,topic,var
 2015-16,violence.p.wo_mean,1.3427646883509687,Mean,Survey reported,Violence,violence.p.wo
 2017-18,violence.p.wo_mean,1.1386895258787886,Mean,Survey reported,Violence,violence.p.wo
 2019-20,violence.p.wo_mean,1.5751305787438443,Mean,Survey reported,Violence,violence.p.wo
+2015-16,violence.rp.wo_mean,1.640218569943138,Mean,Survey victims reported,Violence,violence.rp.wo
+2017-18,violence.rp.wo_mean,1.4860815976550417,Mean,Survey victims reported,Violence,violence.rp.wo
+2019-20,violence.rp.wo_mean,1.775900860215767,Mean,Survey victims reported,Violence,violence.rp.wo
+2015-16,property_vh_sd,134.400676549359,SD,Police ,Property household/vehicle,property_vh
+2017-18,property_vh_sd,199.13559681998686,SD,Police ,Property household/vehicle,property_vh
+2019-20,property_vh_sd,209.32548386147178,SD,Police ,Property household/vehicle,property_vh
 2015-16,property_vh.r.wo_sd,17.292770405147156,SD,Survey victim,Property household/vehicle,property_vh
 2017-18,property_vh.r.wo_sd,19.084490437107366,SD,Survey victim,Property household/vehicle,property_vh
 2019-20,property_vh.r.wo_sd,17.083496554434085,SD,Survey victim,Property household/vehicle,property_vh
@@ -35,6 +56,12 @@ year,key,value,stat,group,topic,var
 2015-16,property_vh.p.wo_sd,3.2889245218563117,SD,Survey reported,Property household/vehicle,property_vh.p.wo
 2017-18,property_vh.p.wo_sd,3.4017065582167882,SD,Survey reported,Property household/vehicle,property_vh.p.wo
 2019-20,property_vh.p.wo_sd,3.253278033147249,SD,Survey reported,Property household/vehicle,property_vh.p.wo
+2015-16,property_vh.rp.wo_sd,3.941623200527913,SD,Survey victims reported,Property household/vehicle,property_vh.rp.wo
+2017-18,property_vh.rp.wo_sd,5.019877318368862,SD,Survey victims reported,Property household/vehicle,property_vh.rp.wo
+2019-20,property_vh.rp.wo_sd,3.666855652406808,SD,Survey victims reported,Property household/vehicle,property_vh.rp.wo
+2015-16,property_personal_sd,2595.647183347261,SD,Police ,Property personal,property_personal
+2017-18,property_personal_sd,3285.2599672211677,SD,Police ,Property personal,property_personal
+2019-20,property_personal_sd,2366.440676323462,SD,Police ,Property personal,property_personal
 2015-16,property_personal.r.wo_sd,16.84972488915422,SD,Survey victim,Property personal,property_personal
 2017-18,property_personal.r.wo_sd,24.612535434706334,SD,Survey victim,Property personal,property_personal
 2019-20,property_personal.r.wo_sd,30.27578212661259,SD,Survey victim,Property personal,property_personal
@@ -44,6 +71,12 @@ year,key,value,stat,group,topic,var
 2015-16,property_personal.p.wo_sd,3.191324418721645,SD,Survey reported,Property personal,property_personal.p.wo
 2017-18,property_personal.p.wo_sd,6.237223138020359,SD,Survey reported,Property personal,property_personal.p.wo
 2019-20,property_personal.p.wo_sd,5.64553834297604,SD,Survey reported,Property personal,property_personal.p.wo
+2015-16,property_personal.rp.wo_sd,3.646691306738814,SD,Survey victims reported,Property personal,property_personal.rp.wo
+2017-18,property_personal.rp.wo_sd,5.289520607288912,SD,Survey victims reported,Property personal,property_personal.rp.wo
+2019-20,property_personal.rp.wo_sd,5.373743387947863,SD,Survey victims reported,Property personal,property_personal.rp.wo
+2015-16,violence_sd,285.90917960116826,SD,Police ,Violence,violence
+2017-18,violence_sd,323.0011388998398,SD,Police ,Violence,violence
+2019-20,violence_sd,323.9566028665147,SD,Police ,Violence,violence
 2015-16,violence.r.wo_sd,9.729114888398387,SD,Survey victim,Violence,violence
 2017-18,violence.r.wo_sd,12.236616270691789,SD,Survey victim,Violence,violence
 2019-20,violence.r.wo_sd,13.141193259319524,SD,Survey victim,Violence,violence
@@ -53,3 +86,6 @@ year,key,value,stat,group,topic,var
 2015-16,violence.p.wo_sd,2.455608682197748,SD,Survey reported,Violence,violence.p.wo
 2017-18,violence.p.wo_sd,1.5241828361637584,SD,Survey reported,Violence,violence.p.wo
 2019-20,violence.p.wo_sd,2.2330961822292057,SD,Survey reported,Violence,violence.p.wo
+2015-16,violence.rp.wo_sd,2.465581856208134,SD,Survey victims reported,Violence,violence.rp.wo
+2017-18,violence.rp.wo_sd,1.8153341238062348,SD,Survey victims reported,Violence,violence.rp.wo
+2019-20,violence.rp.wo_sd,2.3476242865868473,SD,Survey victims reported,Violence,violence.rp.wo
