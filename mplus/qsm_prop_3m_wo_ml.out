@@ -1,0 +1,1363 @@
+Mplus VERSION 8.6
+MUTHEN & MUTHEN
+04/20/2021   8:45 AM
+
+INPUT INSTRUCTIONS
+
+  TITLE: Your title goes here
+  DATA: FILE = "./mplus/b2yw_wo.dat";
+  VARIABLE:
+  NAMES = id prop_vh_15 prop_vh_17 prop_vh_19 prop_vh_r_15 prop_vh_r_17 prop_vh_r_19
+       prop_vh_f_15 prop_vh_f_17 prop_vh_f_19 prop_vh_p_15 prop_vh_p_17 prop_vh_p_19
+       prop_vh_rp_15 prop_vh_rp_17 prop_vh_rp_19 prop_15 prop_17 prop_19 prop_r_15
+       prop_r_17 prop_r_19 prop_f_15 prop_f_17 prop_f_19 prop_p_15 prop_p_17 prop_p_19
+       prop_rp_15 prop_rp_17 prop_rp_19 viol_15 viol_17 viol_19 viol_r_15 viol_r_17
+       viol_r_19 viol_f_15 viol_f_17 viol_f_19 viol_p_15 viol_p_17 viol_p_19
+       viol_rp_15 viol_rp_17 viol_rp_19;
+
+  USEVARIABLE = prop_p_15 prop_p_17 prop_p_19
+                  prop_r_15 prop_r_17 prop_r_19
+                  prop_f_15 prop_f_17 prop_f_19;
+
+  MISSING=.;
+
+  Analysis:
+
+
+    !COVERAGE = 0;
+    !ESTIMATOR = BAYES;
+    !PROCESSORS = 4;
+    !BCONVERGENCE = 0.05;
+    !THIN = 3000;
+    ! FBITERATIONS = 100;
+    !BITERATIONS = 500000 20000;
+    !CHAINS = 4;
+    !BSEED = 2015011;
+    !ALGORITHM = GIBBS(PX1);
+
+
+
+  MODEL:
+
+  t1 BY prop_f_15@1 prop_p_15@1 prop_r_15@1;
+  t2 BY prop_f_17@1 prop_p_17@1 prop_r_17@1;
+  t3 BY prop_f_19@1 prop_p_19@1 prop_r_19@1;
+
+  t2 ON t1;
+  t3 ON t2;
+
+  m_rep BY prop_p_15@1 prop_p_17@1 prop_p_19@1;
+  m_vic BY prop_r_15@1 prop_r_17@1 prop_r_19@1;
+  m_loc BY prop_f_15@1 prop_f_17@1 prop_f_19@1;
+
+
+  m_vic WITH m_rep@0;
+  m_vic WITH m_loc@0;
+  m_vic WITH t1@0;
+  m_rep WITH m_loc@0;
+  m_rep WITH t1@0;
+  m_loc WITH t1@0;
+
+
+  m_rep@0;
+
+
+  ![t1 t2 t3 m_vic m_rep m_loc ];
+
+  ![p_p_15@0 p_p_17@0 p_p_19@0 p_r_15@0 p_r_17@0
+  !p_r_19@0 p_f_15@0 p_f_17@0 p_f_19@0];
+
+
+  OUTPUT:
+  	CINTERVAL STANDARDIZED(STDYX) RESIDUAL SVALUES
+  	TECH1 TECH5 TECH8 TECH10 TECH16 TECH12 TECH16;
+
+
+
+*** WARNING in VARIABLE command
+  Note that only the first 8 characters of variable names are used in the output.
+  Shorten variable names to avoid any confusion.
+*** WARNING in OUTPUT command
+  TECH8 option is available only with analysis types MIXTURE, RANDOM, or
+  TWOLEVEL with estimators ML, MLF, or MLR or ALGORITHM=INTEGRATION.
+  Request for TECH8 is ignored.
+*** WARNING in OUTPUT command
+  TECH10 option is available only with estimators ML, MLF, and MLR for TYPE=MIXTURE or
+  analysis with ALGORITHM=INTEGRATION.
+  Request for TECH10 is ignored.
+*** WARNING in OUTPUT command
+  TECH12 option is available only with TYPE=MIXTURE.
+  Request for TECH12 is ignored.
+*** WARNING in OUTPUT command
+  TECH16 option is only available with ESTIMATOR=BAYES.
+  Request for TECH16 will be ignored.
+   5 WARNING(S) FOUND IN THE INPUT INSTRUCTIONS
+
+
+
+Your title goes here
+
+SUMMARY OF ANALYSIS
+
+Number of groups                                                 1
+Number of observations                                          73
+
+Number of dependent variables                                    9
+Number of independent variables                                  0
+Number of continuous latent variables                            6
+
+Observed dependent variables
+
+  Continuous
+   PROP_P_15   PROP_P_17   PROP_P_19   PROP_R_15   PROP_R_17   PROP_R_19
+   PROP_F_15   PROP_F_17   PROP_F_19
+
+Continuous latent variables
+   T1          T2          T3          M_REP       M_VIC       M_LOC
+
+
+Estimator                                                       ML
+Information matrix                                        OBSERVED
+Maximum number of iterations                                  1000
+Convergence criterion                                    0.500D-04
+Maximum number of steepest descent iterations                   20
+Maximum number of iterations for H1                           2000
+Convergence criterion for H1                             0.100D-03
+
+Input data file(s)
+  ./mplus/b2yw_wo.dat
+
+Input data format  FREE
+
+
+SUMMARY OF DATA
+
+     Number of missing data patterns             1
+
+
+COVARIANCE COVERAGE OF DATA
+
+Minimum covariance coverage value   0.100
+
+
+     PROPORTION OF DATA PRESENT
+
+
+           Covariance Coverage
+              PROP_P_1      PROP_P_1      PROP_P_1      PROP_R_1      PROP_R_1
+              ________      ________      ________      ________      ________
+ PROP_P_1       1.000
+ PROP_P_1       1.000         1.000
+ PROP_P_1       1.000         1.000         1.000
+ PROP_R_1       1.000         1.000         1.000         1.000
+ PROP_R_1       1.000         1.000         1.000         1.000         1.000
+ PROP_R_1       1.000         1.000         1.000         1.000         1.000
+ PROP_F_1       1.000         1.000         1.000         1.000         1.000
+ PROP_F_1       1.000         1.000         1.000         1.000         1.000
+ PROP_F_1       1.000         1.000         1.000         1.000         1.000
+
+
+           Covariance Coverage
+              PROP_R_1      PROP_F_1      PROP_F_1      PROP_F_1
+              ________      ________      ________      ________
+ PROP_R_1       1.000
+ PROP_F_1       1.000         1.000
+ PROP_F_1       1.000         1.000         1.000
+ PROP_F_1       1.000         1.000         1.000         1.000
+
+
+
+UNIVARIATE SAMPLE STATISTICS
+
+
+     UNIVARIATE HIGHER-ORDER MOMENT DESCRIPTIVE STATISTICS
+
+         Variable/         Mean/     Skewness/   Minimum/ % with                Percentiles
+        Sample Size      Variance    Kurtosis    Maximum  Min/Max      20%/60%    40%/80%    Median
+
+     PROP_P_15             0.857       0.528       0.000   34.25%       0.000      0.507      0.768
+              73.000       0.657      -0.874       2.725    1.37%       1.007      1.612
+     PROP_P_17             1.077       0.512       0.000   32.88%       0.000      0.649      1.004
+              73.000       0.962      -0.721       3.677    1.37%       1.314      2.013
+     PROP_P_19             1.120       0.381       0.000   28.77%       0.000      0.778      1.111
+              73.000       0.855      -0.644       3.546    1.37%       1.430      1.966
+     PROP_R_15             2.753      -1.163       0.000    5.48%       2.011      2.843      2.977
+              73.000       1.122       0.873       4.443    1.37%       3.308      3.558
+     PROP_R_17             3.137      -1.183       0.000    2.74%       2.406      3.132      3.349
+              73.000       1.024       1.452       4.701    1.37%       3.477      3.929
+     PROP_R_19             3.097      -1.079       0.000    5.48%       2.180      3.145      3.380
+              73.000       1.488       0.505       5.029    1.37%       3.613      4.059
+     PROP_F_15             1.590       0.369       0.000   15.07%       0.338      1.252      1.658
+              73.000       1.225      -0.364       4.320    1.37%       1.777      2.391
+     PROP_F_17             1.995       0.182       0.000   10.96%       0.764      1.508      2.173
+              73.000       1.589      -0.709       5.079    1.37%       2.359      3.025
+     PROP_F_19             2.105       0.237       0.000   12.33%       0.809      1.710      2.133
+              73.000       1.739      -0.371       5.554    1.37%       2.376      3.148
+
+
+THE MODEL ESTIMATION TERMINATED NORMALLY
+
+
+
+MODEL FIT INFORMATION
+
+Number of Free Parameters                       25
+
+Loglikelihood
+
+          H0 Value                        -600.346
+          H1 Value                        -532.865
+
+Information Criteria
+
+          Akaike (AIC)                    1250.692
+          Bayesian (BIC)                  1307.954
+          Sample-Size Adjusted BIC        1229.178
+            (n* = (n + 2) / 24)
+
+Chi-Square Test of Model Fit
+
+          Value                            134.963
+          Degrees of Freedom                    29
+          P-Value                           0.0000
+
+RMSEA (Root Mean Square Error Of Approximation)
+
+          Estimate                           0.224
+          90 Percent C.I.                    0.186  0.263
+          Probability RMSEA <= .05           0.000
+
+CFI/TLI
+
+          CFI                                0.875
+          TLI                                0.845
+
+Chi-Square Test of Model Fit for the Baseline Model
+
+          Value                            881.992
+          Degrees of Freedom                    36
+          P-Value                           0.0000
+
+SRMR (Standardized Root Mean Square Residual)
+
+          Value                              0.141
+
+
+
+MODEL RESULTS
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+ T1       BY
+    PROP_F_15          1.000      0.000    999.000    999.000
+    PROP_P_15          1.000      0.000    999.000    999.000
+    PROP_R_15          1.000      0.000    999.000    999.000
+
+ T2       BY
+    PROP_F_17          1.000      0.000    999.000    999.000
+    PROP_P_17          1.000      0.000    999.000    999.000
+    PROP_R_17          1.000      0.000    999.000    999.000
+
+ T3       BY
+    PROP_F_19          1.000      0.000    999.000    999.000
+    PROP_P_19          1.000      0.000    999.000    999.000
+    PROP_R_19          1.000      0.000    999.000    999.000
+
+ M_REP    BY
+    PROP_P_15          1.000      0.000    999.000    999.000
+    PROP_P_17          1.000      0.000    999.000    999.000
+    PROP_P_19          1.000      0.000    999.000    999.000
+
+ M_VIC    BY
+    PROP_R_15          1.000      0.000    999.000    999.000
+    PROP_R_17          1.000      0.000    999.000    999.000
+    PROP_R_19          1.000      0.000    999.000    999.000
+
+ M_LOC    BY
+    PROP_F_15          1.000      0.000    999.000    999.000
+    PROP_F_17          1.000      0.000    999.000    999.000
+    PROP_F_19          1.000      0.000    999.000    999.000
+
+ T2       ON
+    T1                 0.987      0.085     11.661      0.000
+
+ T3       ON
+    T2                 1.056      0.065     16.124      0.000
+
+ M_VIC    WITH
+    M_REP              0.000      0.000    999.000    999.000
+    M_LOC              0.000      0.000    999.000    999.000
+    T1                 0.000      0.000    999.000    999.000
+
+ M_REP    WITH
+    M_LOC              0.000      0.000    999.000    999.000
+    T1                 0.000      0.000    999.000    999.000
+
+ M_LOC    WITH
+    T1                 0.000      0.000    999.000    999.000
+
+ Intercepts
+    PROP_P_15          0.857      0.101      8.445      0.000
+    PROP_P_17          1.077      0.113      9.552      0.000
+    PROP_P_19          1.120      0.123      9.140      0.000
+    PROP_R_15          2.753      0.131     21.086      0.000
+    PROP_R_17          3.137      0.128     24.599      0.000
+    PROP_R_19          3.097      0.146     21.205      0.000
+    PROP_F_15          1.590      0.107     14.847      0.000
+    PROP_F_17          1.995      0.123     16.192      0.000
+    PROP_F_19          2.105      0.127     16.596      0.000
+
+ Variances
+    T1                 0.609      0.115      5.305      0.000
+    M_REP              0.000      0.000    999.000    999.000
+    M_VIC              0.374      0.077      4.881      0.000
+    M_LOC              0.166      0.043      3.896      0.000
+
+ Residual Variances
+    PROP_P_15          0.142      0.039      3.649      0.000
+    PROP_P_17          0.169      0.042      3.989      0.000
+    PROP_P_19          0.152      0.042      3.651      0.000
+    PROP_R_15          0.261      0.063      4.119      0.000
+    PROP_R_17          0.054      0.035      1.565      0.118
+    PROP_R_19          0.239      0.056      4.281      0.000
+    PROP_F_15          0.062      0.032      1.933      0.053
+    PROP_F_17          0.183      0.044      4.196      0.000
+    PROP_F_19          0.064      0.031      2.050      0.040
+    T2                 0.166      0.045      3.643      0.000
+    T3                 0.097      0.034      2.882      0.004
+
+
+QUALITY OF NUMERICAL RESULTS
+
+     Condition Number for the Information Matrix              0.695E-02
+       (ratio of smallest to largest eigenvalue)
+
+
+STANDARDIZED MODEL RESULTS
+
+
+STDYX Standardization
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+ T1       BY
+    PROP_F_15          0.853      0.038     22.689      0.000
+    PROP_P_15          0.901      0.028     31.985      0.000
+    PROP_R_15          0.700      0.043     16.128      0.000
+
+ T2       BY
+    PROP_F_17          0.827      0.036     22.702      0.000
+    PROP_P_17          0.904      0.027     33.184      0.000
+    PROP_R_17          0.800      0.037     21.561      0.000
+
+ T3       BY
+    PROP_F_19          0.897      0.027     33.137      0.000
+    PROP_P_19          0.928      0.019     48.045      0.000
+    PROP_R_19          0.779      0.037     21.015      0.000
+
+ M_REP    BY
+    PROP_P_15        999.000    999.000    999.000    999.000
+    PROP_P_17        999.000    999.000    999.000    999.000
+    PROP_P_19        999.000    999.000    999.000    999.000
+
+ M_VIC    BY
+    PROP_R_15          0.548      0.049     11.303      0.000
+    PROP_R_17          0.561      0.053     10.607      0.000
+    PROP_R_19          0.490      0.047     10.385      0.000
+
+ M_LOC    BY
+    PROP_F_15          0.445      0.060      7.361      0.000
+    PROP_F_17          0.387      0.052      7.459      0.000
+    PROP_F_19          0.376      0.054      6.966      0.000
+
+ T2       ON
+    T1                 0.884      0.037     24.121      0.000
+
+ T3       ON
+    T2                 0.947      0.020     46.906      0.000
+
+ M_VIC    WITH
+    M_REP            999.000    999.000    999.000    999.000
+    M_LOC              0.000      0.000    999.000    999.000
+    T1                 0.000      0.000    999.000    999.000
+
+ M_REP    WITH
+    M_LOC            999.000    999.000    999.000    999.000
+    T1               999.000    999.000    999.000    999.000
+
+ M_LOC    WITH
+    T1                 0.000      0.000    999.000    999.000
+
+ Intercepts
+    PROP_P_15          0.988      0.142      6.972      0.000
+    PROP_P_17          1.118      0.145      7.723      0.000
+    PROP_P_19          1.070      0.148      7.231      0.000
+    PROP_R_15          2.468      0.193     12.818      0.000
+    PROP_R_17          2.879      0.231     12.445      0.000
+    PROP_R_19          2.482      0.195     12.696      0.000
+    PROP_F_15          1.738      0.166     10.463      0.000
+    PROP_F_17          1.895      0.170     11.173      0.000
+    PROP_F_19          1.942      0.182     10.678      0.000
+
+ Variances
+    T1                 1.000      0.000    999.000    999.000
+    M_REP            999.000    999.000    999.000    999.000
+    M_VIC              1.000      0.000    999.000    999.000
+    M_LOC              1.000      0.000    999.000    999.000
+
+ Residual Variances
+    PROP_P_15          0.189      0.051      3.722      0.000
+    PROP_P_17          0.183      0.049      3.705      0.000
+    PROP_P_19          0.139      0.036      3.864      0.000
+    PROP_R_15          0.210      0.046      4.561      0.000
+    PROP_R_17          0.046      0.029      1.599      0.110
+    PROP_R_19          0.154      0.036      4.239      0.000
+    PROP_F_15          0.074      0.038      1.921      0.055
+    PROP_F_17          0.165      0.040      4.096      0.000
+    PROP_F_19          0.055      0.028      1.959      0.050
+    T2                 0.218      0.065      3.366      0.001
+    T3                 0.103      0.038      2.702      0.007
+
+
+R-SQUARE
+
+    Observed                                        Two-Tailed
+    Variable        Estimate       S.E.  Est./S.E.    P-Value
+
+    PROP_P_1           0.811      0.051     15.993      0.000
+    PROP_P_1           0.817      0.049     16.592      0.000
+    PROP_P_1           0.861      0.036     24.023      0.000
+    PROP_R_1           0.790      0.046     17.201      0.000
+    PROP_R_1           0.954      0.029     33.316      0.000
+    PROP_R_1           0.846      0.036     23.343      0.000
+    PROP_F_1           0.926      0.038     24.098      0.000
+    PROP_F_1           0.835      0.040     20.655      0.000
+    PROP_F_1           0.945      0.028     33.881      0.000
+
+     Latent                                         Two-Tailed
+    Variable        Estimate       S.E.  Est./S.E.    P-Value
+
+    T2                 0.782      0.065     12.060      0.000
+    T3                 0.897      0.038     23.453      0.000
+
+
+CONFIDENCE INTERVALS OF MODEL RESULTS
+
+                  Lower .5%  Lower 2.5%    Lower 5%    Estimate    Upper 5%  Upper 2.5%   Upper .5%
+
+ T1       BY
+    PROP_F_15        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    PROP_P_15        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    PROP_R_15        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ T2       BY
+    PROP_F_17        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    PROP_P_17        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    PROP_R_17        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ T3       BY
+    PROP_F_19        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    PROP_P_19        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    PROP_R_19        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ M_REP    BY
+    PROP_P_15        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    PROP_P_17        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    PROP_P_19        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ M_VIC    BY
+    PROP_R_15        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    PROP_R_17        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    PROP_R_19        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ M_LOC    BY
+    PROP_F_15        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    PROP_F_17        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    PROP_F_19        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ T2       ON
+    T1               0.769       0.821       0.847       0.987       1.126       1.152       1.205
+
+ T3       ON
+    T2               0.887       0.928       0.948       1.056       1.164       1.184       1.225
+
+ M_VIC    WITH
+    M_REP            0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    M_LOC            0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    T1               0.000       0.000       0.000       0.000       0.000       0.000       0.000
+
+ M_REP    WITH
+    M_LOC            0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    T1               0.000       0.000       0.000       0.000       0.000       0.000       0.000
+
+ M_LOC    WITH
+    T1               0.000       0.000       0.000       0.000       0.000       0.000       0.000
+
+ Intercepts
+    PROP_P_1         0.595       0.658       0.690       0.857       1.024       1.056       1.118
+    PROP_P_1         0.787       0.856       0.892       1.077       1.263       1.298       1.368
+    PROP_P_1         0.804       0.880       0.918       1.120       1.321       1.360       1.435
+    PROP_R_1         2.416       2.497       2.538       2.753       2.967       3.009       3.089
+    PROP_R_1         2.808       2.887       2.927       3.137       3.347       3.387       3.465
+    PROP_R_1         2.721       2.810       2.856       3.097       3.337       3.383       3.473
+    PROP_F_1         1.314       1.380       1.414       1.590       1.766       1.800       1.866
+    PROP_F_1         1.678       1.754       1.792       1.995       2.198       2.237       2.312
+    PROP_F_1         1.778       1.856       1.896       2.105       2.313       2.353       2.431
+
+ Variances
+    T1               0.314       0.384       0.421       0.609       0.798       0.835       0.905
+    M_REP            0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    M_VIC            0.177       0.224       0.248       0.374       0.500       0.524       0.571
+    M_LOC            0.056       0.082       0.096       0.166       0.236       0.250       0.276
+
+ Residual Variances
+    PROP_P_1         0.042       0.066       0.078       0.142       0.206       0.218       0.242
+    PROP_P_1         0.060       0.086       0.100       0.169       0.239       0.253       0.279
+    PROP_P_1         0.045       0.070       0.083       0.152       0.220       0.233       0.259
+    PROP_R_1         0.098       0.137       0.157       0.261       0.365       0.385       0.424
+    PROP_R_1        -0.035      -0.014      -0.003       0.054       0.112       0.122       0.144
+    PROP_R_1         0.095       0.130       0.147       0.239       0.331       0.349       0.383
+    PROP_F_1        -0.021      -0.001       0.009       0.062       0.114       0.125       0.144
+    PROP_F_1         0.071       0.098       0.112       0.183       0.255       0.269       0.296
+    PROP_F_1        -0.016       0.003       0.013       0.064       0.116       0.126       0.145
+    T2               0.048       0.076       0.091       0.166       0.240       0.255       0.283
+    T3               0.010       0.031       0.042       0.097       0.153       0.164       0.185
+
+
+CONFIDENCE INTERVALS OF STANDARDIZED MODEL RESULTS
+
+
+STDYX Standardization
+
+                  Lower .5%  Lower 2.5%    Lower 5%    Estimate    Upper 5%  Upper 2.5%   Upper .5%
+
+ T1       BY
+    PROP_F_15        0.756       0.779       0.791       0.853       0.915       0.927       0.950
+    PROP_P_15        0.828       0.845       0.854       0.901       0.947       0.956       0.973
+    PROP_R_15        0.588       0.615       0.629       0.700       0.771       0.785       0.812
+
+ T2       BY
+    PROP_F_17        0.734       0.756       0.768       0.827       0.887       0.899       0.921
+    PROP_P_17        0.834       0.851       0.859       0.904       0.949       0.958       0.974
+    PROP_R_17        0.704       0.727       0.739       0.800       0.861       0.872       0.895
+
+ T3       BY
+    PROP_F_19        0.827       0.844       0.852       0.897       0.941       0.950       0.966
+    PROP_P_19        0.878       0.890       0.896       0.928       0.960       0.966       0.978
+    PROP_R_19        0.683       0.706       0.718       0.779       0.840       0.851       0.874
+
+ M_REP    BY
+    PROP_P_15      999.000     999.000     999.000     999.000     999.000     999.000     999.000
+    PROP_P_17      999.000     999.000     999.000     999.000     999.000     999.000     999.000
+    PROP_P_19      999.000     999.000     999.000     999.000     999.000     999.000     999.000
+
+ M_VIC    BY
+    PROP_R_15        0.423       0.453       0.468       0.548       0.628       0.643       0.673
+    PROP_R_17        0.425       0.458       0.474       0.561       0.648       0.665       0.697
+    PROP_R_19        0.369       0.398       0.412       0.490       0.568       0.583       0.612
+
+ M_LOC    BY
+    PROP_F_15        0.289       0.327       0.346       0.445       0.545       0.564       0.601
+    PROP_F_17        0.253       0.285       0.302       0.387       0.472       0.489       0.521
+    PROP_F_19        0.237       0.270       0.287       0.376       0.465       0.482       0.515
+
+ T2       ON
+    T1               0.790       0.812       0.824       0.884       0.945       0.956       0.979
+
+ T3       ON
+    T2               0.895       0.907       0.914       0.947       0.980       0.987       0.999
+
+ M_VIC    WITH
+    M_REP          999.000     999.000     999.000     999.000     999.000     999.000     999.000
+    M_LOC            0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    T1               0.000       0.000       0.000       0.000       0.000       0.000       0.000
+
+ M_REP    WITH
+    M_LOC          999.000     999.000     999.000     999.000     999.000     999.000     999.000
+    T1             999.000     999.000     999.000     999.000     999.000     999.000     999.000
+
+ M_LOC    WITH
+    T1               0.000       0.000       0.000       0.000       0.000       0.000       0.000
+
+ Intercepts
+    PROP_P_1         0.623       0.711       0.755       0.988       1.222       1.266       1.354
+    PROP_P_1         0.745       0.834       0.880       1.118       1.356       1.402       1.491
+    PROP_P_1         0.689       0.780       0.826       1.070       1.313       1.360       1.451
+    PROP_R_1         1.972       2.091       2.151       2.468       2.785       2.845       2.964
+    PROP_R_1         2.283       2.426       2.499       2.879       3.260       3.333       3.475
+    PROP_R_1         1.978       2.099       2.160       2.482       2.803       2.865       2.985
+    PROP_F_1         1.310       1.412       1.464       1.738       2.011       2.063       2.165
+    PROP_F_1         1.458       1.563       1.616       1.895       2.174       2.228       2.332
+    PROP_F_1         1.474       1.586       1.643       1.942       2.242       2.299       2.411
+
+ Variances
+    T1               1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    M_REP          999.000     999.000     999.000     999.000     999.000     999.000     999.000
+    M_VIC            1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    M_LOC            1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ Residual Variances
+    PROP_P_1         0.058       0.089       0.105       0.189       0.272       0.288       0.319
+    PROP_P_1         0.056       0.086       0.101       0.183       0.264       0.279       0.309
+    PROP_P_1         0.046       0.068       0.080       0.139       0.198       0.209       0.231
+    PROP_R_1         0.091       0.120       0.134       0.210       0.285       0.300       0.328
+    PROP_R_1        -0.028      -0.010      -0.001       0.046       0.093       0.102       0.120
+    PROP_R_1         0.060       0.083       0.094       0.154       0.213       0.225       0.247
+    PROP_F_1        -0.025      -0.002       0.011       0.074       0.137       0.149       0.173
+    PROP_F_1         0.061       0.086       0.099       0.165       0.232       0.245       0.270
+    PROP_F_1        -0.017       0.000       0.009       0.055       0.101       0.109       0.127
+    T2               0.051       0.091       0.112       0.218       0.325       0.345       0.385
+    T3               0.005       0.028       0.040       0.103       0.166       0.178       0.202
+
+
+MODEL COMMAND WITH FINAL ESTIMATES USED AS STARTING VALUES
+
+     t1 BY prop_f_15@1;
+     t1 BY prop_p_15@1;
+     t1 BY prop_r_15@1;
+     t2 BY prop_f_17@1;
+     t2 BY prop_p_17@1;
+     t2 BY prop_r_17@1;
+     t3 BY prop_f_19@1;
+     t3 BY prop_p_19@1;
+     t3 BY prop_r_19@1;
+     m_rep BY prop_p_15@1;
+     m_rep BY prop_p_17@1;
+     m_rep BY prop_p_19@1;
+     m_vic BY prop_r_15@1;
+     m_vic BY prop_r_17@1;
+     m_vic BY prop_r_19@1;
+     m_loc BY prop_f_15@1;
+     m_loc BY prop_f_17@1;
+     m_loc BY prop_f_19@1;
+
+     t2 ON t1*0.98661;
+     t3 ON t2*1.05600;
+
+     m_vic WITH m_rep@0;
+     m_vic WITH m_loc@0;
+     m_vic WITH t1@0;
+     m_rep WITH m_loc@0;
+     m_rep WITH t1@0;
+     m_loc WITH t1@0;
+
+     [ prop_p_15*0.85678 ];
+     [ prop_p_17*1.07709 ];
+     [ prop_p_19*1.11963 ];
+     [ prop_r_15*2.75270 ];
+     [ prop_r_17*3.13690 ];
+     [ prop_r_19*3.09670 ];
+     [ prop_f_15*1.59005 ];
+     [ prop_f_17*1.99509 ];
+     [ prop_f_19*2.10457 ];
+
+     prop_p_15*0.14185;
+     prop_p_17*0.16943;
+     prop_p_19*0.15180;
+     prop_r_15*0.26073;
+     prop_r_17*0.05436;
+     prop_r_19*0.23928;
+     prop_f_15*0.06182;
+     prop_f_17*0.18341;
+     prop_f_19*0.06416;
+     t1*0.60949;
+     t2*0.16557;
+     t3*0.09750;
+     m_rep@0;
+     m_vic*0.37389;
+     m_loc*0.16600;
+
+
+
+RESIDUAL OUTPUT
+
+
+     ESTIMATED MODEL AND RESIDUALS (OBSERVED - ESTIMATED)
+
+
+           Model Estimated Means
+              PROP_P_1      PROP_P_1      PROP_P_1      PROP_R_1      PROP_R_1
+              ________      ________      ________      ________      ________
+                0.857         1.077         1.120         2.753         3.137
+
+
+           Model Estimated Means
+              PROP_R_1      PROP_F_1      PROP_F_1      PROP_F_1
+              ________      ________      ________      ________
+                3.097         1.590         1.995         2.105
+
+
+           Residuals for Means
+              PROP_P_1      PROP_P_1      PROP_P_1      PROP_R_1      PROP_R_1
+              ________      ________      ________      ________      ________
+                0.000         0.000         0.000         0.000         0.000
+
+
+           Residuals for Means
+              PROP_R_1      PROP_F_1      PROP_F_1      PROP_F_1
+              ________      ________      ________      ________
+                0.000         0.000         0.000         0.000
+
+
+           Standardized Residuals (z-scores) for Means
+              PROP_P_1      PROP_P_1      PROP_P_1      PROP_R_1      PROP_R_1
+              ________      ________      ________      ________      ________
+                0.000         0.000         0.000         0.000         0.000
+
+
+           Standardized Residuals (z-scores) for Means
+              PROP_R_1      PROP_F_1      PROP_F_1      PROP_F_1
+              ________      ________      ________      ________
+                0.000         0.000         0.000         0.000
+
+
+           Normalized Residuals for Means
+              PROP_P_1      PROP_P_1      PROP_P_1      PROP_R_1      PROP_R_1
+              ________      ________      ________      ________      ________
+                0.000         0.000         0.000         0.000         0.000
+
+
+           Normalized Residuals for Means
+              PROP_R_1      PROP_F_1      PROP_F_1      PROP_F_1
+              ________      ________      ________      ________
+                0.000         0.000         0.000         0.000
+
+
+           Model Estimated Covariances
+              PROP_P_1      PROP_P_1      PROP_P_1      PROP_R_1      PROP_R_1
+              ________      ________      ________      ________      ________
+ PROP_P_1       0.751
+ PROP_P_1       0.601         0.928
+ PROP_P_1       0.635         0.801         1.096
+ PROP_R_1       0.609         0.601         0.635         1.244
+ PROP_R_1       0.601         0.759         0.801         0.975         1.187
+ PROP_R_1       0.635         0.801         0.944         1.009         1.175
+ PROP_F_1       0.609         0.601         0.635         0.609         0.601
+ PROP_F_1       0.601         0.759         0.801         0.601         0.759
+ PROP_F_1       0.635         0.801         0.944         0.635         0.801
+
+
+           Model Estimated Covariances
+              PROP_R_1      PROP_F_1      PROP_F_1      PROP_F_1
+              ________      ________      ________      ________
+ PROP_R_1       1.557
+ PROP_F_1       0.635         0.837
+ PROP_F_1       0.801         0.767         1.108
+ PROP_F_1       0.944         0.801         0.967         1.174
+
+
+           Model Estimated Correlations
+              PROP_P_1      PROP_P_1      PROP_P_1      PROP_R_1      PROP_R_1
+              ________      ________      ________      ________      ________
+ PROP_P_1       1.000
+ PROP_P_1       0.720         1.000
+ PROP_P_1       0.700         0.795         1.000
+ PROP_R_1       0.630         0.560         0.544         1.000
+ PROP_R_1       0.637         0.723         0.703         0.802         1.000
+ PROP_R_1       0.587         0.667         0.723         0.725         0.864
+ PROP_F_1       0.768         0.682         0.663         0.597         0.603
+ PROP_F_1       0.659         0.748         0.727         0.512         0.662
+ PROP_F_1       0.676         0.768         0.832         0.525         0.679
+
+
+           Model Estimated Correlations
+              PROP_R_1      PROP_F_1      PROP_F_1      PROP_F_1
+              ________      ________      ________      ________
+ PROP_R_1       1.000
+ PROP_F_1       0.556         1.000
+ PROP_F_1       0.610         0.797         1.000
+ PROP_F_1       0.698         0.808         0.848         1.000
+
+
+           Residuals for Covariances
+              PROP_P_1      PROP_P_1      PROP_P_1      PROP_R_1      PROP_R_1
+              ________      ________      ________      ________      ________
+ PROP_P_1      -0.094
+ PROP_P_1      -0.088         0.034
+ PROP_P_1      -0.141        -0.093        -0.240
+ PROP_R_1      -0.170        -0.020         0.002        -0.122
+ PROP_R_1      -0.143        -0.096        -0.174        -0.073        -0.163
+ PROP_R_1      -0.059        -0.051        -0.178         0.054        -0.117
+ PROP_F_1       0.179         0.259         0.150         0.149         0.165
+ PROP_F_1       0.128         0.361         0.150         0.211         0.214
+ PROP_F_1       0.172         0.303         0.135         0.280         0.160
+
+
+           Residuals for Covariances
+              PROP_R_1      PROP_F_1      PROP_F_1      PROP_F_1
+              ________      ________      ________      ________
+ PROP_R_1      -0.069
+ PROP_F_1       0.314         0.388
+ PROP_F_1       0.299         0.372         0.481
+ PROP_F_1       0.286         0.485         0.515         0.565
+
+
+           Residuals for Correlations
+              PROP_P_1      PROP_P_1      PROP_P_1      PROP_R_1      PROP_R_1
+              ________      ________      ________      ________      ________
+ PROP_P_1       0.000
+ PROP_P_1      -0.075         0.000
+ PROP_P_1      -0.041        -0.014         0.000
+ PROP_R_1      -0.118         0.000         0.107         0.000
+ PROP_R_1      -0.078        -0.055        -0.032         0.039         0.000
+ PROP_R_1      -0.004        -0.039        -0.044         0.097        -0.007
+ PROP_F_1       0.110         0.110         0.104         0.050         0.081
+ PROP_F_1       0.055         0.158         0.089         0.097         0.101
+ PROP_F_1       0.079         0.087         0.052         0.130         0.042
+
+
+           Residuals for Correlations
+              PROP_R_1      PROP_F_1      PROP_F_1      PROP_F_1
+              ________      ________      ________      ________
+ PROP_R_1       0.000
+ PROP_F_1       0.147         0.000
+ PROP_F_1       0.106         0.020         0.000
+ PROP_F_1       0.066         0.073         0.044         0.000
+
+
+           Standardized Residuals (z-scores) for Covariances
+              PROP_P_1      PROP_P_1      PROP_P_1      PROP_R_1      PROP_R_1
+              ________      ________      ________      ________      ________
+ PROP_P_1     999.000
+ PROP_P_1     999.000         0.461
+ PROP_P_1     999.000       999.000       999.000
+ PROP_R_1     999.000        -0.257         0.043        -1.180
+ PROP_R_1     999.000       999.000       999.000        -0.857        -3.998
+ PROP_R_1      -1.374        -0.679       999.000         0.420        -1.282
+ PROP_F_1       2.247         2.296         1.832         1.284         1.529
+ PROP_F_1       1.429         2.662         1.563         1.498         1.719
+ PROP_F_1       1.872         2.271         1.694         1.884         1.297
+
+
+           Standardized Residuals (z-scores) for Covariances
+              PROP_R_1      PROP_F_1      PROP_F_1      PROP_F_1
+              ________      ________      ________      ________
+ PROP_R_1      -0.464
+ PROP_F_1       2.155         2.308
+ PROP_F_1       1.815         2.111         2.181
+ PROP_F_1       1.766         2.551         2.388         2.419
+
+
+           Normalized Residuals for Covariances
+              PROP_P_1      PROP_P_1      PROP_P_1      PROP_R_1      PROP_R_1
+              ________      ________      ________      ________      ________
+ PROP_P_1      -0.867
+ PROP_P_1      -0.798         0.212
+ PROP_P_1      -1.346        -0.692        -1.697
+ PROP_R_1      -1.504        -0.141         0.016        -0.658
+ PROP_R_1      -1.304        -0.684        -1.317        -0.445        -0.961
+ PROP_R_1      -0.440        -0.306        -1.115         0.274        -0.616
+ PROP_F_1       1.280         1.596         0.992         0.913         1.039
+ PROP_F_1       0.870         1.849         0.853         1.155         1.141
+ PROP_F_1       1.099         1.524         0.707         1.433         0.833
+
+
+           Normalized Residuals for Covariances
+              PROP_R_1      PROP_F_1      PROP_F_1      PROP_F_1
+              ________      ________      ________      ________
+ PROP_R_1      -0.280
+ PROP_F_1       1.625         1.912
+ PROP_F_1       1.352         1.763         1.827
+ PROP_F_1       1.205         2.131         1.976         1.963
+
+
+TECHNICAL 1 OUTPUT
+
+
+     PARAMETER SPECIFICATION
+
+
+           NU
+              PROP_P_1      PROP_P_1      PROP_P_1      PROP_R_1      PROP_R_1
+              ________      ________      ________      ________      ________
+                  1             2             3             4             5
+
+
+           NU
+              PROP_R_1      PROP_F_1      PROP_F_1      PROP_F_1
+              ________      ________      ________      ________
+                  6             7             8             9
+
+
+           LAMBDA
+              T1            T2            T3            M_REP         M_VIC
+              ________      ________      ________      ________      ________
+ PROP_P_1           0             0             0             0             0
+ PROP_P_1           0             0             0             0             0
+ PROP_P_1           0             0             0             0             0
+ PROP_R_1           0             0             0             0             0
+ PROP_R_1           0             0             0             0             0
+ PROP_R_1           0             0             0             0             0
+ PROP_F_1           0             0             0             0             0
+ PROP_F_1           0             0             0             0             0
+ PROP_F_1           0             0             0             0             0
+
+
+           LAMBDA
+              M_LOC
+              ________
+ PROP_P_1           0
+ PROP_P_1           0
+ PROP_P_1           0
+ PROP_R_1           0
+ PROP_R_1           0
+ PROP_R_1           0
+ PROP_F_1           0
+ PROP_F_1           0
+ PROP_F_1           0
+
+
+           THETA
+              PROP_P_1      PROP_P_1      PROP_P_1      PROP_R_1      PROP_R_1
+              ________      ________      ________      ________      ________
+ PROP_P_1          10
+ PROP_P_1           0            11
+ PROP_P_1           0             0            12
+ PROP_R_1           0             0             0            13
+ PROP_R_1           0             0             0             0            14
+ PROP_R_1           0             0             0             0             0
+ PROP_F_1           0             0             0             0             0
+ PROP_F_1           0             0             0             0             0
+ PROP_F_1           0             0             0             0             0
+
+
+           THETA
+              PROP_R_1      PROP_F_1      PROP_F_1      PROP_F_1
+              ________      ________      ________      ________
+ PROP_R_1          15
+ PROP_F_1           0            16
+ PROP_F_1           0             0            17
+ PROP_F_1           0             0             0            18
+
+
+           ALPHA
+              T1            T2            T3            M_REP         M_VIC
+              ________      ________      ________      ________      ________
+                  0             0             0             0             0
+
+
+           ALPHA
+              M_LOC
+              ________
+                  0
+
+
+           BETA
+              T1            T2            T3            M_REP         M_VIC
+              ________      ________      ________      ________      ________
+ T1                 0             0             0             0             0
+ T2                19             0             0             0             0
+ T3                 0            20             0             0             0
+ M_REP              0             0             0             0             0
+ M_VIC              0             0             0             0             0
+ M_LOC              0             0             0             0             0
+
+
+           BETA
+              M_LOC
+              ________
+ T1                 0
+ T2                 0
+ T3                 0
+ M_REP              0
+ M_VIC              0
+ M_LOC              0
+
+
+           PSI
+              T1            T2            T3            M_REP         M_VIC
+              ________      ________      ________      ________      ________
+ T1                21
+ T2                 0            22
+ T3                 0             0            23
+ M_REP              0             0             0             0
+ M_VIC              0             0             0             0            24
+ M_LOC              0             0             0             0             0
+
+
+           PSI
+              M_LOC
+              ________
+ M_LOC             25
+
+
+     STARTING VALUES
+
+
+           NU
+              PROP_P_1      PROP_P_1      PROP_P_1      PROP_R_1      PROP_R_1
+              ________      ________      ________      ________      ________
+                0.857         1.077         1.120         2.753         3.137
+
+
+           NU
+              PROP_R_1      PROP_F_1      PROP_F_1      PROP_F_1
+              ________      ________      ________      ________
+                3.097         1.590         1.995         2.105
+
+
+           LAMBDA
+              T1            T2            T3            M_REP         M_VIC
+              ________      ________      ________      ________      ________
+ PROP_P_1       1.000         0.000         0.000         1.000         0.000
+ PROP_P_1       0.000         1.000         0.000         1.000         0.000
+ PROP_P_1       0.000         0.000         1.000         1.000         0.000
+ PROP_R_1       1.000         0.000         0.000         0.000         1.000
+ PROP_R_1       0.000         1.000         0.000         0.000         1.000
+ PROP_R_1       0.000         0.000         1.000         0.000         1.000
+ PROP_F_1       1.000         0.000         0.000         0.000         0.000
+ PROP_F_1       0.000         1.000         0.000         0.000         0.000
+ PROP_F_1       0.000         0.000         1.000         0.000         0.000
+
+
+           LAMBDA
+              M_LOC
+              ________
+ PROP_P_1       0.000
+ PROP_P_1       0.000
+ PROP_P_1       0.000
+ PROP_R_1       0.000
+ PROP_R_1       0.000
+ PROP_R_1       0.000
+ PROP_F_1       1.000
+ PROP_F_1       1.000
+ PROP_F_1       1.000
+
+
+           THETA
+              PROP_P_1      PROP_P_1      PROP_P_1      PROP_R_1      PROP_R_1
+              ________      ________      ________      ________      ________
+ PROP_P_1       0.329
+ PROP_P_1       0.000         0.481
+ PROP_P_1       0.000         0.000         0.428
+ PROP_R_1       0.000         0.000         0.000         0.561
+ PROP_R_1       0.000         0.000         0.000         0.000         0.512
+ PROP_R_1       0.000         0.000         0.000         0.000         0.000
+ PROP_F_1       0.000         0.000         0.000         0.000         0.000
+ PROP_F_1       0.000         0.000         0.000         0.000         0.000
+ PROP_F_1       0.000         0.000         0.000         0.000         0.000
+
+
+           THETA
+              PROP_R_1      PROP_F_1      PROP_F_1      PROP_F_1
+              ________      ________      ________      ________
+ PROP_R_1       0.744
+ PROP_F_1       0.000         0.612
+ PROP_F_1       0.000         0.000         0.794
+ PROP_F_1       0.000         0.000         0.000         0.869
+
+
+           ALPHA
+              T1            T2            T3            M_REP         M_VIC
+              ________      ________      ________      ________      ________
+                0.000         0.000         0.000         0.000         0.000
+
+
+           ALPHA
+              M_LOC
+              ________
+                0.000
+
+
+           BETA
+              T1            T2            T3            M_REP         M_VIC
+              ________      ________      ________      ________      ________
+ T1             0.000         0.000         0.000         0.000         0.000
+ T2             0.000         0.000         0.000         0.000         0.000
+ T3             0.000         0.000         0.000         0.000         0.000
+ M_REP          0.000         0.000         0.000         0.000         0.000
+ M_VIC          0.000         0.000         0.000         0.000         0.000
+ M_LOC          0.000         0.000         0.000         0.000         0.000
+
+
+           BETA
+              M_LOC
+              ________
+ T1             0.000
+ T2             0.000
+ T3             0.000
+ M_REP          0.000
+ M_VIC          0.000
+ M_LOC          0.000
+
+
+           PSI
+              T1            T2            T3            M_REP         M_VIC
+              ________      ________      ________      ________      ________
+ T1             0.050
+ T2             0.000         0.050
+ T3             0.000         0.000         0.050
+ M_REP          0.000         0.000         0.000         0.000
+ M_VIC          0.000         0.000         0.000         0.000         0.050
+ M_LOC          0.000         0.000         0.000         0.000         0.000
+
+
+           PSI
+              M_LOC
+              ________
+ M_LOC          0.050
+
+
+TECHNICAL 5/6 OUTPUT
+
+
+
+TECHNICAL OUTPUT FROM EM ALGORITHM ITERATIONS FOR THE H1 MODEL
+
+   ITER        FUNCTION     ABS CHANGE   REL CHANGE
+
+      1     0.10141073D+02
+      2    -0.19418601D+01  -12.0829327   -1.1914847
+      3    -0.19418601D+01  -12.0829327   -1.1914847
+
+   TECHNICAL OUTPUT FROM QUASI-NEWTON ITERATIONS
+
+
+   ITERATIONS USING GRADIENT
+
+
+   ITER STEP   FUNCTION     ABS CHANGE   REL CHANGE   STEP LENGTH   DERIVATIVE
+
+      1   0 0.56919204D+01                           0.000000D+00 -.102420D+02
+          1 0.49246130D+01   -0.7673075   -0.1348064 0.100000D+00 -.566937D+01
+          2 0.44094809D+01   -0.5151320   -0.1046036 0.223984D+00 -.297159D+01
+          3 0.41148673D+01   -0.2946136   -0.0668137 0.360551D+00 -.150612D+01
+          4 0.39651955D+01   -0.1496718   -0.0363734 0.500906D+00 -.704947D+00
+      1   0 0.56919204D+01                           0.000000D+00 -.102420D+02
+          1 0.49246130D+01   -0.7673075   -0.1348064 0.100000D+00 -.566937D+01
+          2 0.44094809D+01   -0.5151320   -0.1046036 0.223984D+00 -.297159D+01
+          3 0.41148673D+01   -0.2946136   -0.0668137 0.360551D+00 -.150612D+01
+          4 0.39651955D+01   -0.1496718   -0.0363734 0.500906D+00 -.704947D+00
+      2   0 0.39651955D+01                           0.000000D+00 -.150712D+01
+          1 0.32967679D+01   -0.6684276   -0.1685737 0.500906D+00 -.115936D+01
+          2 0.29283225D+01   -0.3684454   -0.1117596 0.204139D+01 0.463344D+01
+          3 0.24775741D+01   -0.4507484   -0.1539272 0.151713D+01 -.362016D+00
+          4 0.24525203D+01   -0.0250538   -0.0101122 0.175414D+01 0.262087D+00
+          5 0.24438840D+01   -0.0086362   -0.0035214 0.168159D+01 -.678312D-02
+      2   0 0.39651955D+01                           0.000000D+00 -.150712D+01
+          1 0.32967679D+01   -0.6684276   -0.1685737 0.500906D+00 -.115936D+01
+          2 0.29283225D+01   -0.3684454   -0.1117596 0.204139D+01 0.463344D+01
+          3 0.24775741D+01   -0.4507484   -0.1539272 0.151713D+01 -.362016D+00
+          4 0.24525203D+01   -0.0250538   -0.0101122 0.175414D+01 0.262087D+00
+          5 0.24438840D+01   -0.0086362   -0.0035214 0.168159D+01 -.678312D-02
+      3   0 0.24438840D+01                           0.000000D+00 -.201474D+01
+          1                                          0.168159D+01
+          2 0.26328489D+01    0.1889649    0.0773215 0.924872D+00 0.628103D+01
+          3 0.20664085D+01   -0.5664404   -0.2151435 0.538460D+00 -.134438D+00
+      3   0 0.24438840D+01                           0.000000D+00 -.201474D+01
+          1                                          0.168159D+01
+          2 0.26328489D+01    0.1889649    0.0773215 0.924872D+00 0.628103D+01
+          3 0.20664085D+01   -0.5664404   -0.2151435 0.538460D+00 -.134438D+00
+      4   0 0.20664085D+01                           0.000000D+00 -.139439D+01
+          1 0.27512495D+01    0.6848410    0.3314161 0.538460D+00 0.248373D+02
+          2 0.17680350D+01   -0.9832144   -0.3573701 0.332566D+00 -.775425D-01
+      4   0 0.20664085D+01                           0.000000D+00 -.139439D+01
+          1 0.27512495D+01    0.6848410    0.3314161 0.538460D+00 0.248373D+02
+          2 0.17680350D+01   -0.9832144   -0.3573701 0.332566D+00 -.775425D-01
+      5   0 0.17680350D+01                           0.000000D+00 -.202754D+01
+          1 0.16274016D+01   -0.1406335   -0.0795422 0.332566D+00 0.654165D-01
+      5   0 0.17680350D+01                           0.000000D+00 -.202754D+01
+          1 0.16274016D+01   -0.1406335   -0.0795422 0.332566D+00 0.654165D-01
+      6   0 0.16274016D+01                           0.000000D+00 -.145509D+01
+          1 0.12935894D+01   -0.3338122   -0.2051197 0.332566D+00 0.623234D+00
+          2 0.12879779D+01   -0.0056115   -0.0043379 0.292561D+00 -.252861D+00
+          3 0.12861119D+01   -0.0018660   -0.0014488 0.306941D+00 0.233235D-02
+      6   0 0.16274016D+01                           0.000000D+00 -.145509D+01
+          1 0.12935894D+01   -0.3338122   -0.2051197 0.332566D+00 0.623234D+00
+          2 0.12879779D+01   -0.0056115   -0.0043379 0.292561D+00 -.252861D+00
+          3 0.12861119D+01   -0.0018660   -0.0014488 0.306941D+00 0.233235D-02
+      7   0 0.12861119D+01                           0.000000D+00 -.138302D+01
+          1 0.12635960D+01   -0.0225158   -0.0175069 0.306941D+00 0.478435D+00
+          2 0.12130943D+01   -0.0505017   -0.0399666 0.135596D+00 0.767051D-02
+      7   0 0.12861119D+01                           0.000000D+00 -.138302D+01
+          1 0.12635960D+01   -0.0225158   -0.0175069 0.306941D+00 0.478435D+00
+          2 0.12130943D+01   -0.0505017   -0.0399666 0.135596D+00 0.767051D-02
+      8   0 0.12130943D+01                           0.000000D+00 -.118247D+01
+          1 0.11505559D+01   -0.0625384   -0.0515528 0.135596D+00 0.852322D+00
+          2 0.11383794D+01   -0.0121765   -0.0105832 0.101210D+00 -.613854D-01
+      8   0 0.12130943D+01                           0.000000D+00 -.118247D+01
+          1 0.11505559D+01   -0.0625384   -0.0515528 0.135596D+00 0.852322D+00
+          2 0.11383794D+01   -0.0121765   -0.0105832 0.101210D+00 -.613854D-01
+      9   0 0.11383794D+01                           0.000000D+00 -.959794D+00
+          1 0.10906757D+01   -0.0477037   -0.0419049 0.101210D+00 -.146291D+00
+          2 0.10886692D+01   -0.0020065   -0.0018397 0.119411D+00 -.763778D-01
+      9   0 0.11383794D+01                           0.000000D+00 -.959794D+00
+          1 0.10906757D+01   -0.0477037   -0.0419049 0.101210D+00 -.146291D+00
+          2 0.10886692D+01   -0.0020065   -0.0018397 0.119411D+00 -.763778D-01
+     10   0 0.10886692D+01                           0.000000D+00 -.110342D+01
+          1 0.10331593D+01   -0.0555099   -0.0509888 0.119411D+00 0.673752D+00
+          2 0.10254289D+01   -0.0077304   -0.0074823 0.919776D-01 -.528658D-01
+     10   0 0.10886692D+01                           0.000000D+00 -.110342D+01
+          1 0.10331593D+01   -0.0555099   -0.0509888 0.119411D+00 0.673752D+00
+          2 0.10254289D+01   -0.0077304   -0.0074823 0.919776D-01 -.528658D-01
+     11   0 0.10254289D+01                           0.000000D+00 -.848964D+00
+          1 0.98838548D+00   -0.0370434   -0.0361248 0.919776D-01 -.872442D-01
+          2 0.98773085D+00   -0.0006546   -0.0006623 0.102512D+00 -.377561D-01
+     11   0 0.10254289D+01                           0.000000D+00 -.848964D+00
+          1 0.98838548D+00   -0.0370434   -0.0361248 0.919776D-01 -.872442D-01
+          2 0.98773085D+00   -0.0006546   -0.0006623 0.102512D+00 -.377561D-01
+     12   0 0.98773085D+00                           0.000000D+00 -.915225D+00
+          1 0.97219164D+00   -0.0155392   -0.0157322 0.102512D+00 0.116920D+01
+          2 0.95299417D+00   -0.0191975   -0.0197466 0.642421D-01 -.267686D-01
+     12   0 0.98773085D+00                           0.000000D+00 -.915225D+00
+          1 0.97219164D+00   -0.0155392   -0.0157322 0.102512D+00 0.116920D+01
+          2 0.95299417D+00   -0.0191975   -0.0197466 0.642421D-01 -.267686D-01
+     13   0 0.95299417D+00                           0.000000D+00 -.468331D+00
+          1 0.94011191D+00   -0.0128823   -0.0135177 0.642421D-01 0.266079D-01
+     13   0 0.95299417D+00                           0.000000D+00 -.468331D+00
+          1 0.94011191D+00   -0.0128823   -0.0135177 0.642421D-01 0.266079D-01
+     14   0 0.94011191D+00                           0.000000D+00 -.476724D+00
+          1 0.94994121D+00    0.0098293    0.0104555 0.642421D-01 0.107354D+01
+          2 0.93284549D+00   -0.0170957   -0.0179966 0.286903D-01 0.766950D-02
+     14   0 0.94011191D+00                           0.000000D+00 -.476723D+00
+          1 0.94987396D+00    0.0097621    0.0103839 0.642421D-01 0.107068D+01
+          2 0.93283641D+00   -0.0170376   -0.0179367 0.287216D-01 0.759651D-02
+     15   0 0.93283641D+00                           0.000000D+00 -.226812D+00
+          1 0.92993396D+00   -0.0029024   -0.0031114 0.286903D-01 0.148873D-01
+     15   0 0.93283641D+00                           0.000000D+00 -.226805D+00
+          1 0.92991819D+00   -0.0029182   -0.0031283 0.287216D-01 0.140828D-01
+     16   0 0.92991819D+00                           0.000000D+00 -.276710D+00
+          1 0.92989386D+00   -0.0000243   -0.0000262 0.286903D-01 0.325632D+00
+          2 0.92775604D+00   -0.0021378   -0.0022990 0.149847D-01 -.100019D-03
+     16   0 0.92991819D+00                           0.000000D+00 -.276705D+00
+          1 0.92987869D+00   -0.0000395   -0.0000425 0.287216D-01 0.324452D+00
+          2 0.92774999D+00   -0.0021287   -0.0022892 0.150258D-01 -.106743D-03
+     17   0 0.92774999D+00                           0.000000D+00 -.135583D+00
+          1 0.92658306D+00   -0.0011669   -0.0012578 0.149847D-01 -.223500D-01
+          2 0.92654776D+00   -0.0000353   -0.0000381 0.181654D-01 0.655675D-04
+     17   0 0.92774999D+00                           0.000000D+00 -.135567D+00
+          1 0.92657678D+00   -0.0011732   -0.0012646 0.150258D-01 -.227483D-01
+          2 0.92653999D+00   -0.0000368   -0.0000397 0.182827D-01 0.662571D-04
+     18   0 0.92653999D+00                           0.000000D+00 -.171679D+00
+          1 0.92670240D+00    0.0001624    0.0001753 0.181654D-01 0.210070D+00
+          2 0.92575640D+00   -0.0009460   -0.0010208 0.890096D-02 0.343411D-04
+     18   0 0.92653999D+00                           0.000000D+00 -.171676D+00
+          1 0.92671844D+00    0.0001784    0.0001926 0.182827D-01 0.211917D+00
+          2 0.92575451D+00   -0.0009639   -0.0010402 0.892262D-02 0.391247D-04
+     19   0 0.92575451D+00                           0.000000D+00 -.836199D-01
+          1 0.92531114D+00   -0.0004434   -0.0004789 0.890096D-02 -.167838D-01
+          2 0.92529160D+00   -0.0000195   -0.0000211 0.112397D-01 0.199734D-04
+     19   0 0.92575451D+00                           0.000000D+00 -.836072D-01
+          1 0.92530954D+00   -0.0004450   -0.0004807 0.892262D-02 -.169065D-01
+          2 0.92528962D+00   -0.0000199   -0.0000215 0.112884D-01 0.199349D-04
+     20   0 0.92528962D+00                           0.000000D+00 -.108606D+00
+          1 0.92533657D+00    0.0000469    0.0000507 0.112397D-01 0.124814D+00
+          2 0.92498538D+00   -0.0003512   -0.0003795 0.551320D-02 0.674142D-05
+     20   0 0.92528962D+00                           0.000000D+00 -.108605D+00
+          1 0.92534095D+00    0.0000513    0.0000555 0.112884D-01 0.125611D+00
+          2 0.92498500D+00   -0.0003560   -0.0003847 0.552023D-02 0.757925D-05
+     21   0 0.92498500D+00                           0.000000D+00 -.532033D-01
+          1 0.92480555D+00   -0.0001794   -0.0001940 0.551320D-02 -.122004D-01
+          2 0.92479527D+00   -0.0000103   -0.0000111 0.720320D-02 0.649727D-05
+     21   0 0.92498500D+00                           0.000000D+00 -.531968D-01
+          1 0.92480530D+00   -0.0001797   -0.0001943 0.552023D-02 -.122130D-01
+          2 0.92479498D+00   -0.0000103   -0.0000112 0.721466D-02 0.644365D-05
+     22   0 0.92479498D+00                           0.000000D+00 -.706166D-01
+          1 0.92480894D+00    0.0000140    0.0000151 0.720320D-02 0.776920D-01
+          2 0.92466845D+00   -0.0001405   -0.0001519 0.354634D-02 0.133666D-05
+     22   0 0.92479498D+00                           0.000000D+00 -.706165D-01
+          1 0.92480962D+00    0.0000146    0.0000158 0.721466D-02 0.778839D-01
+          2 0.92466840D+00   -0.0001412   -0.0001527 0.354771D-02 0.142075D-05
+     23   0 0.92466840D+00                           0.000000D+00 -.348356D-01
+          1 0.92459143D+00   -0.0000770   -0.0000832 0.354634D-02 -.870001D-02
+          2 0.92458621D+00   -0.0000052   -0.0000057 0.475083D-02 0.214303D-05
+     23   0 0.92466840D+00                           0.000000D+00 -.348330D-01
+          1 0.92459144D+00   -0.0000770   -0.0000832 0.354771D-02 -.868246D-02
+          2 0.92458623D+00   -0.0000052   -0.0000056 0.474944D-02 0.212211D-05
+     24   0 0.92458621D+00                           0.000000D+00 -.471416D-01
+          1 0.92458984D+00    0.0000036    0.0000039 0.475083D-02 0.500552D-01
+          2 0.92453031D+00   -0.0000595   -0.0000644 0.235485D-02 0.223236D-06
+     24   0 0.92458621D+00                           0.000000D+00 -.471416D-01
+          1 0.92458979D+00    0.0000036    0.0000039 0.474944D-02 0.500323D-01
+          2 0.92453031D+00   -0.0000595   -0.0000643 0.235469D-02 0.218898D-06
+     25   0 0.92453031D+00                           0.000000D+00 -.234157D-01
+          1 0.92449550D+00   -0.0000348   -0.0000376 0.235485D-02 -.620494D-02
+          2 0.92449284D+00   -0.0000027   -0.0000029 0.321575D-02 0.732330D-06
+     25   0 0.92453031D+00                           0.000000D+00 -.234148D-01
+          1 0.92449553D+00   -0.0000348   -0.0000376 0.235469D-02 -.618777D-02
+          2 0.92449288D+00   -0.0000026   -0.0000029 0.321230D-02 0.725977D-06
+     26   0 0.92449284D+00                           0.000000D+00 -.321848D-01
+          1 0.92449361D+00    0.0000008    0.0000008 0.321575D-02 0.332976D-01
+          2 0.92446690D+00   -0.0000267   -0.0000289 0.160373D-02 0.276758D-07
+     26   0 0.92449284D+00                           0.000000D+00 -.321847D-01
+          1 0.92449352D+00    0.0000007    0.0000007 0.321230D-02 0.332407D-01
+          2 0.92446691D+00   -0.0000266   -0.0000288 0.160336D-02 0.227847D-07
+     27   0 0.92446690D+00                           0.000000D+00 -.160955D-01
+          1 0.92445044D+00   -0.0000165   -0.0000178 0.160373D-02 -.446672D-02
+          2 0.92444905D+00   -0.0000014   -0.0000015 0.222583D-02 0.260999D-06
+     27   0 0.92446690D+00                           0.000000D+00 -.160953D-01
+          1 0.92445045D+00   -0.0000165   -0.0000178 0.160336D-02 -.445662D-02
+          2 0.92444907D+00   -0.0000014   -0.0000015 0.222337D-02 0.259410D-06
+     28   0 0.92444905D+00                           0.000000D+00 -.224430D-01
+          1 0.92444901D+00    0.0000000    0.0000000 0.222583D-02 0.227027D-01
+          2 0.92443647D+00   -0.0000125   -0.0000136 0.111760D-02 -.503554D-08
+     28   0 0.92444905D+00                           0.000000D+00 -.224428D-01
+          1 0.92444896D+00   -0.0000001   -0.0000001 0.222337D-02 0.226602D-01
+          2 0.92443647D+00   -0.0000125   -0.0000135 0.111739D-02 -.675670D-08
+     29   0 0.92443647D+00                           0.000000D+00 -.113051D-01
+          1 0.92442833D+00   -0.0000081   -0.0000088 0.111760D-02 -.326242D-02
+          2 0.92442759D+00   -0.0000007   -0.0000008 0.157417D-02 0.977377D-07
+     29   0 0.92443647D+00                           0.000000D+00 -.113050D-01
+          1 0.92442834D+00   -0.0000081   -0.0000088 0.111739D-02 -.325816D-02
+          2 0.92442760D+00   -0.0000007   -0.0000008 0.157303D-02 0.974137D-07
+     30   0 0.92442759D+00                           0.000000D+00 -.159791D-01
+          1 0.92442736D+00   -0.0000002   -0.0000002 0.157417D-02 0.158393D-01
+          2 0.92442121D+00   -0.0000061   -0.0000067 0.796083D-03 -.686944D-08
+     30   0 0.92442759D+00                           0.000000D+00 -.159789D-01
+          1 0.92442735D+00   -0.0000002   -0.0000003 0.157303D-02 0.158173D-01
+          2 0.92442122D+00   -0.0000061   -0.0000066 0.796044D-03 -.729860D-08
+
+   ITERATIONS USING QUASI-NEWTON
+
+
+   ITER STEP   FUNCTION     ABS CHANGE   REL CHANGE   STEP LENGTH   DERIVATIVE
+
+      1   0 0.92442121D+00                           0.000000D+00 -.810914D-02
+          1 0.95118548D+00    0.0267643    0.0289525 0.100000D+00 0.480554D+00
+          2 0.92441663D+00   -0.0267689   -0.0281426 0.120150D-02 0.458631D-03
+      2   0 0.92441663D+00                           0.000000D+00 -.670586D-02
+          1 0.92440988D+00   -0.0000068   -0.0000073 0.120150D-02 -.453373D-02
+          2 0.92440420D+00   -0.0000057   -0.0000061 0.370931D-02 0.889990D-05
+      3   0 0.92440420D+00                           0.000000D+00 -.193887D-02
+          1 0.92440636D+00    0.0000022    0.0000023 0.370931D-02 0.311285D-02
+          2 0.92440281D+00   -0.0000035   -0.0000038 0.142861D-02 0.694300D-08
+      4   0 0.92440281D+00                           0.000000D+00 -.863157D-03
+          1 0.92440782D+00    0.0000050    0.0000054 0.142861D-02 0.789097D-02
+          2 0.92440275D+00   -0.0000051   -0.0000055 0.141398D-03 0.693391D-08
+      5   0 0.92440275D+00                           0.000000D+00 -.617310D-03
+          1 0.92440270D+00   -0.0000001   -0.0000001 0.141398D-03 -.175316D-03
+          2 0.92440269D+00    0.0000000    0.0000000 0.197484D-03 -.317293D-07
+      6   0 0.92440269D+00                           0.000000D+00 -.404526D-03
+          1 0.92440273D+00    0.0000000    0.0000000 0.197484D-03 0.825260D-03
+          2 0.92440268D+00   -0.0000001   -0.0000001 0.649603D-04 0.124982D-06
+      7   0 0.92440268D+00                           0.000000D+00 -.139276D-03
+          1 0.92440269D+00    0.0000000    0.0000000 0.649603D-04 0.506778D-03
+          2 0.92440268D+00    0.0000000    0.0000000 0.140041D-04 -.151410D-07
+
+
+DIAGRAM INFORMATION
+
+  Use View Diagram under the Diagram menu in the Mplus Editor to view the diagram.
+  If running Mplus from the Mplus Diagrammer, the diagram opens automatically.
+
+  Diagram output
+    c:\users\msassac6\dropbox (the university of manchester)\grants\measurement error and crime - project\longitudinal c
+
+     Beginning Time:  08:45:48
+        Ending Time:  08:45:48
+       Elapsed Time:  00:00:00
+
+
+
+MUTHEN & MUTHEN
+3463 Stoner Ave.
+Los Angeles, CA  90066
+
+Tel: (310) 391-9971
+Fax: (310) 391-8971
+Web: www.StatModel.com
+Support: Support@StatModel.com
+
+Copyright (c) 1998-2021 Muthen & Muthen

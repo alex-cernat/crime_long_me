@@ -1,0 +1,151 @@
+VERSION 1.1.0
+INPUT
+TITLE:
+ Your title goes here
+DATA:
+ FILE = b6yw2_wo.dat;
+VARIABLE:
+NAMES = prop prop_r_wo prop_f_wo prop_p_wo prop_rp_wo prop_pers
+     prop_p_r_wo prop_p_f_wo prop_p_p_wo prop_p_rp_wo viol viol_r_wo
+     viol_f_wo viol_p_wo viol_rp_wo;
+USEVARIABLE = prop_r_wo prop_f_wo prop_p_wo prop_rp_wo
+     prop_p_r_wo prop_p_f_wo prop_p_p_wo prop_p_rp_wo viol_r_wo
+     viol_f_wo viol_p_wo viol_rp_wo;
+MISSING=.;
+ANALYSIS:
+  ESTIMATOR = BAYES;
+  PROCESSORS = 4;
+  BCONVERGENCE = 0.05;
+  THIN = 3000;
+  BITERATIONS = 500000 20000;
+  CHAINS = 4;
+  BSEED = 201509;
+  ALGORITHM = GIBBS(PX1);
+OUTPUT:
+ CINTERVAL STANDARDIZED(STDYX) RESIDUAL SVALUES
+ TECH1 TECH5 TECH8 TECH10 TECH16 TECH12 TECH16;
+MODEL:
+t_viol BY viol_f_wo@1 viol_p_wo@1 viol_r_wo@1 viol_rp_wo@1;
+t_veh BY prop_f_wo@1 prop_p_wo@1 prop_r_wo@1 prop_rp_wo@1;
+t_pers BY prop_p_f_wo@1 prop_p_p_wo@1 prop_p_r_wo@1 prop_p_rp_wo@1;
+m_rep BY viol_p_wo@1 prop_p_wo@1 prop_p_p_wo@1;
+m_vic BY viol_r_wo@1 prop_r_wo@1 prop_p_r_wo@1;
+m_loc BY viol_f_wo@1 prop_f_wo@1 prop_p_f_wo@1;
+m_vicrep BY viol_rp_wo@1 prop_rp_wo@1 prop_p_rp_wo@1;
+m_vic WITH m_rep@0;
+m_vic WITH m_loc@0;
+m_vic WITH m_vicrep@0;
+m_vic WITH t_viol@0;
+m_vic WITH t_veh@0;
+m_vic WITH t_pers@0;
+m_rep WITH m_loc@0;
+m_rep WITH m_vicrep@0;
+m_rep WITH t_viol@0;
+m_rep WITH t_veh@0;
+m_rep WITH t_pers@0;
+m_loc WITH m_vicrep@0;
+m_loc WITH t_viol@0;
+m_loc WITH t_veh@0;
+m_loc WITH t_pers@0;
+m_vicrep WITH t_viol@0;
+m_vicrep WITH t_veh@0;
+m_vicrep WITH t_pers@0;
+[t_viol t_veh t_pers m_vic m_rep m_loc m_vicrep];
+[viol_p_wo@0 prop_p_wo@0 prop_p_p_wo@0 viol_r_wo@0 prop_r_wo@0
+prop_p_r_wo@0 viol_f_wo@0 prop_f_wo@0 prop_p_f_wo@0 viol_rp_wo@0
+prop_rp_wo@0 prop_p_rp_wo@0];
+INPUT_END
+1
+1
+0
+1
+BAYES
+1
+GENERAL
+0
+12
+7
+0
+prop_r_wo prop_f_wo prop_p_wo prop_rp_wo prop_p_r_wo prop_p_f_wo prop_p_p_wo prop_p_rp_wo viol_r_wo viol_f_wo viol_p_wo viol_rp_wo t_viol t_veh t_pers m_rep m_vic m_loc m_vicrep
+1
+-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 0 0 0 0 0 0 0
+0
+7
+t_viol
+viol_f_wo viol_p_wo viol_r_wo viol_rp_wo
+t_veh
+prop_f_wo prop_p_wo prop_r_wo prop_rp_wo
+t_pers
+prop_p_f_wo prop_p_p_wo prop_p_r_wo prop_p_rp_wo
+m_rep
+viol_p_wo prop_p_wo prop_p_p_wo
+m_vic
+viol_r_wo prop_r_wo prop_p_r_wo
+m_loc
+viol_f_wo prop_f_wo prop_p_f_wo
+m_vicrep
+viol_rp_wo prop_rp_wo prop_p_rp_wo
+1 1 t_viol viol_f_wo    1.000
+1 1 t_viol viol_p_wo    1.000
+1 1 t_viol viol_r_wo    1.000
+1 1 t_viol viol_rp_wo    1.000
+1 1 t_veh prop_f_wo    1.000
+1 1 t_veh prop_p_wo    1.000
+1 1 t_veh prop_r_wo    1.000
+1 1 t_veh prop_rp_wo    1.000
+1 1 t_pers prop_p_f_wo    1.000
+1 1 t_pers prop_p_p_wo    1.000
+1 1 t_pers prop_p_r_wo    1.000
+1 1 t_pers prop_p_rp_wo    1.000
+1 1 m_rep viol_p_wo    1.000
+1 1 m_rep prop_p_wo    1.000
+1 1 m_rep prop_p_p_wo    1.000
+1 1 m_vic viol_r_wo    1.000
+1 1 m_vic prop_r_wo    1.000
+1 1 m_vic prop_p_r_wo    1.000
+1 1 m_loc viol_f_wo    1.000
+1 1 m_loc prop_f_wo    1.000
+1 1 m_loc prop_p_f_wo    1.000
+1 1 m_vicrep viol_rp_wo    1.000
+1 1 m_vicrep prop_rp_wo    1.000
+1 1 m_vicrep prop_p_rp_wo    1.000
+2 1 m_vic m_rep    0.000
+2 1 m_vic m_loc    0.000
+2 1 m_vic m_vicrep    0.000
+2 1 m_vic t_viol    0.000
+2 1 m_vic t_veh    0.000
+2 1 m_vic t_pers    0.000
+2 1 m_rep m_loc    0.000
+2 1 m_rep m_vicrep    0.000
+2 1 m_rep t_viol    0.000
+2 1 m_rep t_veh    0.000
+2 1 m_rep t_pers    0.000
+2 1 m_loc m_vicrep    0.000
+2 1 m_loc t_viol    0.000
+2 1 m_loc t_veh    0.000
+2 1 m_loc t_pers    0.000
+2 1 m_vicrep t_viol    0.000
+2 1 m_vicrep t_veh    0.000
+2 1 m_vicrep t_pers    0.000
+2 1 t_veh t_viol    0.741
+2 1 t_pers t_viol    0.821
+2 1 t_pers t_veh    0.930
+4 1 prop_r_wo    0.038
+4 1 prop_f_wo    0.013
+4 1 prop_p_wo    0.044
+4 1 prop_rp_wo    0.041
+4 1 prop_p_r_wo    0.060
+4 1 prop_p_f_wo    0.511
+4 1 prop_p_p_wo    0.517
+4 1 prop_p_rp_wo    0.133
+4 1 viol_r_wo    0.029
+4 1 viol_f_wo    0.232
+4 1 viol_p_wo    0.335
+4 1 viol_rp_wo    0.389
+5 1 t_viol    0.693
+5 1 t_veh    0.918
+5 1 t_pers    1.037
+5 1 m_rep    0.026
+5 1 m_vic    0.132
+5 1 m_loc    0.129
+5 1 m_vicrep    0.029

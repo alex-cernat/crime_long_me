@@ -1,0 +1,102 @@
+VERSION 1.1.0
+INPUT
+TITLE:
+ Your title goes here
+DATA:
+ FILE = "./mplus/b2yw_wo.dat";
+VARIABLE:
+NAMES = id prop_vh_15 prop_vh_17 prop_vh_19 prop_vh_r_15 prop_vh_r_17 prop_vh_r_19
+     prop_vh_f_15 prop_vh_f_17 prop_vh_f_19 prop_vh_p_15 prop_vh_p_17 prop_vh_p_19
+     prop_vh_rp_15 prop_vh_rp_17 prop_vh_rp_19 prop_15 prop_17 prop_19 prop_r_15
+     prop_r_17 prop_r_19 prop_f_15 prop_f_17 prop_f_19 prop_p_15 prop_p_17 prop_p_19
+     prop_rp_15 prop_rp_17 prop_rp_19 viol_15 viol_17 viol_19 viol_r_15 viol_r_17
+     viol_r_19 viol_f_15 viol_f_17 viol_f_19 viol_p_15 viol_p_17 viol_p_19
+     viol_rp_15 viol_rp_17 viol_rp_19;
+USEVARIABLE = prop_f_15 prop_f_17 prop_f_19;
+MISSING=.;
+ANALYSIS:
+  ESTIMATOR = BAYES;
+  PROCESSORS = 4;
+  BCONVERGENCE = 0.05;
+  THIN = 3000;
+  FBITERATIONS = 1000;
+  BITERATIONS = 500000 10000;
+  CHAINS = 4;
+  BSEED = 2015011;
+OUTPUT:
+ CINTERVAL STANDARDIZED(STDYX) RESIDUAL SVALUES
+ TECH1 TECH5 TECH8 TECH10 TECH16 TECH12 TECH16;
+MODEL:
+t1 BY prop_f_15@1;
+t2 BY prop_f_17@1;
+t3 BY prop_f_19@1;
+t2 ON t1;
+t3 ON t2;
+prop_f_15 (a)
+prop_f_17 (a)
+prop_f_19 (a);
+INPUT_END
+3
+3
+0
+3
+BAYES
+1
+GENERAL
+0
+3
+3
+0
+prop_f_15 prop_f_17 prop_f_19 t1 t2 t3
+3
+-1 -1 -1 0 1 2
+0
+3
+t1
+prop_f_15
+t2
+prop_f_17
+t3
+prop_f_19
+1 1 t1 prop_f_15    1.000    0.000    1.000    1.000
+1 1 t2 prop_f_17    1.000    0.000    1.000    1.000
+1 1 t3 prop_f_19    1.000    0.000    1.000    1.000
+1 1 t1 t2    1.103    0.093    0.934    1.297
+1 1 t2 t3    1.055    0.067    0.929    1.192
+4 1 prop_f_15    0.175    0.031    0.118    0.236
+94 1 prop_f_15 a
+4 1 prop_f_17    0.175    0.031    0.118    0.236
+94 1 prop_f_17 a
+4 1 prop_f_19    0.175    0.031    0.118    0.236
+94 1 prop_f_19 a
+4 1 t2    0.112    0.085    0.008    0.320
+4 1 t3    0.031    0.039    0.001    0.147
+5 1 t1    1.107    0.229    0.755    1.659
+11 1 t1 prop_f_15    0.930    0.018    0.887    0.959
+11 1 t2 prop_f_17    0.946    0.013    0.916    0.969
+11 1 t3 prop_f_19    0.952    0.012    0.925    0.972
+11 1 t1 t2    0.961    0.030    0.888    0.997
+11 1 t2 t3    0.991    0.012    0.957    1.000
+14 1 prop_f_15    0.134    0.033    0.081    0.213
+94 1 prop_f_15 a
+14 1 prop_f_17    0.105    0.025    0.061    0.161
+94 1 prop_f_17 a
+14 1 prop_f_19    0.093    0.023    0.055    0.144
+94 1 prop_f_19 a
+14 1 t2    0.076    0.056    0.005    0.211
+14 1 t3    0.018    0.023    0.001    0.084
+15 1 t1    1.000    0.000    1.000    1.000
+31 1 t1 prop_f_15    0.930    0.018    0.887    0.959
+31 1 t2 prop_f_17    0.946    0.013    0.916    0.969
+31 1 t3 prop_f_19    0.952    0.012    0.925    0.972
+31 1 t1 t2    0.961    0.030    0.888    0.997
+31 1 t2 t3    0.991    0.012    0.957    1.000
+34 1 prop_f_15    0.134    0.033    0.081    0.213
+94 1 prop_f_15 a
+34 1 prop_f_17    0.105    0.025    0.061    0.161
+94 1 prop_f_17 a
+34 1 prop_f_19    0.093    0.023    0.055    0.144
+94 1 prop_f_19 a
+34 1 t2    0.076    0.056    0.005    0.211
+34 1 t3    0.018    0.023    0.001    0.084
+35 1 t1    1.000    0.000    1.000    1.000

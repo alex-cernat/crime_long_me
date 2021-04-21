@@ -1,0 +1,1685 @@
+Mplus VERSION 8.6
+MUTHEN & MUTHEN
+04/20/2021   9:08 AM
+
+INPUT INSTRUCTIONS
+
+  TITLE: Your title goes here
+  DATA: FILE = "./mplus/b2yw_wo.dat";
+  VARIABLE:
+  NAMES = id prop_15 prop_17 prop_19 prop_r_15 prop_r_17
+       prop_r_19 prop_f_15 prop_f_17 prop_f_19 prop_p_15
+       prop_p_17 prop_p_19 prop_rp_15 prop_rp_17
+       prop_rp_19 prop_pers_15 prop_pers_17 prop_pers_19 prop_pers_r_15
+       prop_pers_r_17 prop_pers_r_19 prop_pers_f_15 prop_pers_f_17
+       prop_pers_f_19 prop_pers_p_15 prop_pers_p_17 prop_pers_p_19
+       prop_pers_rp_15 prop_pers_rp_17 prop_pers_rp_19 viol_15 viol_17
+       viol_19 viol_r_15 viol_r_17 viol_r_19 viol_f_15 viol_f_17
+       viol_f_19 viol_p_15 viol_p_17 viol_p_19 viol_rp_15 viol_rp_17
+       viol_rp_19;
+
+  USEVARIABLE = viol_p_15 viol_p_17 viol_p_19 viol_r_15 viol_r_17
+      viol_r_19 viol_f_15 viol_f_17 viol_f_19 viol_rp_15
+      viol_rp_17 viol_rp_19;
+
+  MISSING=.;
+
+  Analysis:
+
+
+    !COVERAGE = 0;
+    !ESTIMATOR = BAYES;
+    !PROCESSORS = 4;
+    !BCONVERGENCE = 0.05;
+    !THIN = 3000;
+    ! FBITERATIONS = 100;
+    !BITERATIONS = 500000 20000;
+    !CHAINS = 4;
+    !BSEED = 2015011;
+    !ALGORITHM = GIBBS(PX1);
+
+
+
+  MODEL:
+
+  t1 BY viol_f_15@1 viol_p_15@1 viol_r_15@1 viol_rp_15@1;
+  t2 BY viol_f_17@1 viol_p_17@1 viol_r_17@1 viol_rp_17@1;
+  t3 BY viol_f_19@1 viol_p_19@1 viol_r_19@1 viol_rp_19@1;
+
+  t2 ON t1;
+  t3 ON t2;
+
+  m_rep BY viol_p_15@1 viol_p_17@1 viol_p_19@1;
+  m_vic BY viol_r_15@1 viol_r_17@1 viol_r_19@1;
+  m_loc BY viol_f_15@1 viol_f_17@1 viol_f_19@1;
+  m_vicrep BY viol_rp_15@1 viol_rp_17@1 viol_rp_19@1;
+
+  m_vic WITH m_rep@0;
+  m_vic WITH m_loc@0;
+  m_vic WITH m_vicrep@0;
+  m_vic WITH t1@0;
+  m_rep WITH m_loc@0;
+  m_rep WITH m_vicrep@0;
+  m_rep WITH t1@0;
+  m_loc WITH m_vicrep@0;
+  m_loc WITH t1@0;
+  m_vicrep WITH t1@0;
+
+
+  ! [t1 t2 t3 m_vic m_rep m_loc m_vicrep];
+
+  ! [viol_p_15@0 viol_p_17@0 viol_p_19@0 viol_r_15@0 viol_r_17@0
+  ! viol_r_19@0 viol_f_15@0 viol_f_17@0 viol_f_19@0 viol_rp_15@0
+  ! viol_rp_17@0 viol_rp_19@0];
+
+  ! m_rep@0;
+
+
+  OUTPUT:
+  	CINTERVAL STANDARDIZED(STDYX) RESIDUAL SVALUES
+  	TECH1 TECH5 TECH8 TECH10 TECH16 TECH12 TECH16;
+
+
+
+*** WARNING in VARIABLE command
+  Note that only the first 8 characters of variable names are used in the output.
+  Shorten variable names to avoid any confusion.
+*** WARNING in OUTPUT command
+  TECH8 option is available only with analysis types MIXTURE, RANDOM, or
+  TWOLEVEL with estimators ML, MLF, or MLR or ALGORITHM=INTEGRATION.
+  Request for TECH8 is ignored.
+*** WARNING in OUTPUT command
+  TECH10 option is available only with estimators ML, MLF, and MLR for TYPE=MIXTURE or
+  analysis with ALGORITHM=INTEGRATION.
+  Request for TECH10 is ignored.
+*** WARNING in OUTPUT command
+  TECH12 option is available only with TYPE=MIXTURE.
+  Request for TECH12 is ignored.
+*** WARNING in OUTPUT command
+  TECH16 option is only available with ESTIMATOR=BAYES.
+  Request for TECH16 will be ignored.
+   5 WARNING(S) FOUND IN THE INPUT INSTRUCTIONS
+
+
+
+Your title goes here
+
+SUMMARY OF ANALYSIS
+
+Number of groups                                                 1
+Number of observations                                          73
+
+Number of dependent variables                                   12
+Number of independent variables                                  0
+Number of continuous latent variables                            7
+
+Observed dependent variables
+
+  Continuous
+   VIOL_P_15   VIOL_P_17   VIOL_P_19   VIOL_R_15   VIOL_R_17   VIOL_R_19
+   VIOL_F_15   VIOL_F_17   VIOL_F_19   VIOL_RP_15  VIOL_RP_17  VIOL_RP_19
+
+Continuous latent variables
+   T1          T2          T3          M_REP       M_VIC       M_LOC
+   M_VICREP
+
+
+Estimator                                                       ML
+Information matrix                                        OBSERVED
+Maximum number of iterations                                  1000
+Convergence criterion                                    0.500D-04
+Maximum number of steepest descent iterations                   20
+Maximum number of iterations for H1                           2000
+Convergence criterion for H1                             0.100D-03
+
+Input data file(s)
+  ./mplus/b2yw_wo.dat
+
+Input data format  FREE
+
+
+SUMMARY OF DATA
+
+     Number of missing data patterns             1
+
+
+COVARIANCE COVERAGE OF DATA
+
+Minimum covariance coverage value   0.100
+
+
+     PROPORTION OF DATA PRESENT
+
+
+           Covariance Coverage
+              VIOL_P_1      VIOL_P_1      VIOL_P_1      VIOL_R_1      VIOL_R_1
+              ________      ________      ________      ________      ________
+ VIOL_P_1       1.000
+ VIOL_P_1       1.000         1.000
+ VIOL_P_1       1.000         1.000         1.000
+ VIOL_R_1       1.000         1.000         1.000         1.000
+ VIOL_R_1       1.000         1.000         1.000         1.000         1.000
+ VIOL_R_1       1.000         1.000         1.000         1.000         1.000
+ VIOL_F_1       1.000         1.000         1.000         1.000         1.000
+ VIOL_F_1       1.000         1.000         1.000         1.000         1.000
+ VIOL_F_1       1.000         1.000         1.000         1.000         1.000
+ VIOL_RP_       1.000         1.000         1.000         1.000         1.000
+ VIOL_RP_       1.000         1.000         1.000         1.000         1.000
+ VIOL_RP_       1.000         1.000         1.000         1.000         1.000
+
+
+           Covariance Coverage
+              VIOL_R_1      VIOL_F_1      VIOL_F_1      VIOL_F_1      VIOL_RP_
+              ________      ________      ________      ________      ________
+ VIOL_R_1       1.000
+ VIOL_F_1       1.000         1.000
+ VIOL_F_1       1.000         1.000         1.000
+ VIOL_F_1       1.000         1.000         1.000         1.000
+ VIOL_RP_       1.000         1.000         1.000         1.000         1.000
+ VIOL_RP_       1.000         1.000         1.000         1.000         1.000
+ VIOL_RP_       1.000         1.000         1.000         1.000         1.000
+
+
+           Covariance Coverage
+              VIOL_RP_      VIOL_RP_
+              ________      ________
+ VIOL_RP_       1.000
+ VIOL_RP_       1.000         1.000
+
+
+
+UNIVARIATE SAMPLE STATISTICS
+
+
+     UNIVARIATE HIGHER-ORDER MOMENT DESCRIPTIVE STATISTICS
+
+         Variable/         Mean/     Skewness/   Minimum/ % with                Percentiles
+        Sample Size      Variance    Kurtosis    Maximum  Min/Max      20%/60%    40%/80%    Median
+
+     VIOL_P_15             0.548       1.182       0.000   49.32%       0.000      0.000      0.221
+              73.000       0.479       0.566       2.703    1.37%       0.601      0.991
+     VIOL_P_17             0.560       0.625       0.000   46.58%       0.000      0.000      0.499
+              73.000       0.368      -0.844       2.125    1.37%       0.687      1.117
+     VIOL_P_19             0.671       0.646       0.000   43.84%       0.000      0.000      0.629
+              73.000       0.496      -0.687       2.561    1.37%       0.750      1.252
+     VIOL_R_15             2.117      -0.586       0.000    6.85%       1.295      1.932      2.273
+              73.000       0.955      -0.410       3.727    1.37%       2.553      2.981
+     VIOL_R_17             2.397      -0.809       0.000    5.48%       1.580      2.400      2.631
+              73.000       0.991      -0.022       3.952    1.37%       2.821      3.137
+     VIOL_R_19             2.325      -0.701       0.000    6.85%       1.723      2.217      2.472
+              73.000       0.985       0.191       4.268    1.37%       2.615      3.026
+     VIOL_F_15             1.277       0.279       0.000   17.81%       0.232      1.041      1.219
+              73.000       0.804      -0.639       3.386    1.37%       1.393      1.996
+     VIOL_F_17             1.491       0.076       0.000   17.81%       0.506      1.229      1.633
+              73.000       0.986      -0.610       3.936    1.37%       1.903      2.238
+     VIOL_F_19             1.545       0.171       0.000   15.07%       0.629      1.283      1.620
+              73.000       0.964      -0.402       3.888    1.37%       1.807      2.274
+     VIOL_RP_15            0.694       0.745       0.000   36.99%       0.000      0.232      0.710
+              73.000       0.480      -0.165       2.703    1.37%       0.813      1.296
+     VIOL_RP_17            0.695       0.421       0.000   36.99%       0.000      0.604      0.662
+              73.000       0.408      -0.838       2.258    1.37%       0.781      1.307
+     VIOL_RP_19            0.753       0.577       0.000   34.25%       0.000      0.528      0.685
+              73.000       0.489      -0.634       2.549    1.37%       0.823      1.370
+
+
+THE MODEL ESTIMATION TERMINATED NORMALLY
+
+
+
+MODEL FIT INFORMATION
+
+Number of Free Parameters                       33
+
+Loglikelihood
+
+          H0 Value                        -768.788
+          H1 Value                        -679.709
+
+Information Criteria
+
+          Akaike (AIC)                    1603.575
+          Bayesian (BIC)                  1679.160
+          Sample-Size Adjusted BIC        1575.176
+            (n* = (n + 2) / 24)
+
+Chi-Square Test of Model Fit
+
+          Value                            178.156
+          Degrees of Freedom                    57
+          P-Value                           0.0000
+
+RMSEA (Root Mean Square Error Of Approximation)
+
+          Estimate                           0.171
+          90 Percent C.I.                    0.143  0.199
+          Probability RMSEA <= .05           0.000
+
+CFI/TLI
+
+          CFI                                0.824
+          TLI                                0.796
+
+Chi-Square Test of Model Fit for the Baseline Model
+
+          Value                            752.781
+          Degrees of Freedom                    66
+          P-Value                           0.0000
+
+SRMR (Standardized Root Mean Square Residual)
+
+          Value                              0.179
+
+
+
+MODEL RESULTS
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+ T1       BY
+    VIOL_F_15          1.000      0.000    999.000    999.000
+    VIOL_P_15          1.000      0.000    999.000    999.000
+    VIOL_R_15          1.000      0.000    999.000    999.000
+    VIOL_RP_15         1.000      0.000    999.000    999.000
+
+ T2       BY
+    VIOL_F_17          1.000      0.000    999.000    999.000
+    VIOL_P_17          1.000      0.000    999.000    999.000
+    VIOL_R_17          1.000      0.000    999.000    999.000
+    VIOL_RP_17         1.000      0.000    999.000    999.000
+
+ T3       BY
+    VIOL_F_19          1.000      0.000    999.000    999.000
+    VIOL_P_19          1.000      0.000    999.000    999.000
+    VIOL_R_19          1.000      0.000    999.000    999.000
+    VIOL_RP_19         1.000      0.000    999.000    999.000
+
+ M_REP    BY
+    VIOL_P_15          1.000      0.000    999.000    999.000
+    VIOL_P_17          1.000      0.000    999.000    999.000
+    VIOL_P_19          1.000      0.000    999.000    999.000
+
+ M_VIC    BY
+    VIOL_R_15          1.000      0.000    999.000    999.000
+    VIOL_R_17          1.000      0.000    999.000    999.000
+    VIOL_R_19          1.000      0.000    999.000    999.000
+
+ M_LOC    BY
+    VIOL_F_15          1.000      0.000    999.000    999.000
+    VIOL_F_17          1.000      0.000    999.000    999.000
+    VIOL_F_19          1.000      0.000    999.000    999.000
+
+ M_VICREP BY
+    VIOL_RP_15         1.000      0.000    999.000    999.000
+    VIOL_RP_17         1.000      0.000    999.000    999.000
+    VIOL_RP_19         1.000      0.000    999.000    999.000
+
+ T2       ON
+    T1                 0.505      0.101      5.006      0.000
+
+ T3       ON
+    T2                 0.826      0.119      6.947      0.000
+
+ M_VIC    WITH
+    M_REP              0.000      0.000    999.000    999.000
+    M_LOC              0.000      0.000    999.000    999.000
+    M_VICREP           0.000      0.000    999.000    999.000
+    T1                 0.000      0.000    999.000    999.000
+
+ M_REP    WITH
+    M_LOC              0.000      0.000    999.000    999.000
+    M_VICREP           0.000      0.000    999.000    999.000
+    T1                 0.000      0.000    999.000    999.000
+
+ M_LOC    WITH
+    M_VICREP           0.000      0.000    999.000    999.000
+    T1                 0.000      0.000    999.000    999.000
+
+ M_VICREP WITH
+    T1                 0.000      0.000    999.000    999.000
+
+ Intercepts
+    VIOL_P_15          0.548      0.082      6.705      0.000
+    VIOL_P_17          0.560      0.080      7.035      0.000
+    VIOL_P_19          0.671      0.087      7.686      0.000
+    VIOL_R_15          2.117      0.109     19.506      0.000
+    VIOL_R_17          2.397      0.101     23.735      0.000
+    VIOL_R_19          2.325      0.103     22.607      0.000
+    VIOL_F_15          1.277      0.095     13.471      0.000
+    VIOL_F_17          1.491      0.095     15.719      0.000
+    VIOL_F_19          1.545      0.098     15.768      0.000
+    VIOL_RP_15         0.694      0.084      8.242      0.000
+    VIOL_RP_17         0.695      0.084      8.271      0.000
+    VIOL_RP_19         0.753      0.089      8.437      0.000
+
+ Variances
+    T1                 0.388      0.072      5.393      0.000
+    M_REP              0.027      0.024      1.127      0.260
+    M_VIC              0.257      0.062      4.127      0.000
+    M_LOC              0.160      0.044      3.655      0.000
+    M_VICREP           0.034      0.026      1.273      0.203
+
+ Residual Variances
+    VIOL_P_15          0.072      0.026      2.762      0.006
+    VIOL_P_17          0.141      0.036      3.949      0.000
+    VIOL_P_19          0.185      0.045      4.118      0.000
+    VIOL_R_15          0.215      0.056      3.871      0.000
+    VIOL_R_17          0.193      0.052      3.699      0.000
+    VIOL_R_19          0.171      0.051      3.372      0.001
+    VIOL_F_15          0.109      0.037      2.941      0.003
+    VIOL_F_17          0.203      0.052      3.918      0.000
+    VIOL_F_19          0.197      0.051      3.831      0.000
+    VIOL_RP_15         0.096      0.030      3.217      0.001
+    VIOL_RP_17         0.188      0.044      4.261      0.000
+    VIOL_RP_19         0.204      0.048      4.234      0.000
+    T2                 0.195      0.043      4.567      0.000
+    T3                 0.143      0.038      3.812      0.000
+
+
+QUALITY OF NUMERICAL RESULTS
+
+     Condition Number for the Information Matrix              0.466E-02
+       (ratio of smallest to largest eigenvalue)
+
+
+STANDARDIZED MODEL RESULTS
+
+
+STDYX Standardization
+
+                                                    Two-Tailed
+                    Estimate       S.E.  Est./S.E.    P-Value
+
+ T1       BY
+    VIOL_F_15          0.769      0.045     16.905      0.000
+    VIOL_P_15          0.893      0.031     28.342      0.000
+    VIOL_R_15          0.671      0.047     14.229      0.000
+    VIOL_RP_15         0.866      0.034     25.416      0.000
+
+ T2       BY
+    VIOL_F_17          0.669      0.055     12.175      0.000
+    VIOL_P_17          0.798      0.044     17.935      0.000
+    VIOL_R_17          0.629      0.055     11.334      0.000
+    VIOL_RP_17         0.755      0.047     16.135      0.000
+
+ T3       BY
+    VIOL_F_19          0.700      0.053     13.200      0.000
+    VIOL_P_19          0.786      0.048     16.467      0.000
+    VIOL_R_19          0.667      0.052     12.861      0.000
+    VIOL_RP_19         0.769      0.047     16.526      0.000
+
+ M_REP    BY
+    VIOL_P_15          0.235      0.102      2.303      0.021
+    VIOL_P_17          0.242      0.102      2.359      0.018
+    VIOL_P_19          0.220      0.096      2.304      0.021
+
+ M_VIC    BY
+    VIOL_R_15          0.547      0.057      9.679      0.000
+    VIOL_R_17          0.588      0.059      9.956      0.000
+    VIOL_R_19          0.577      0.059      9.704      0.000
+
+ M_LOC    BY
+    VIOL_F_15          0.494      0.063      7.891      0.000
+    VIOL_F_17          0.494      0.062      7.926      0.000
+    VIOL_F_19          0.478      0.062      7.686      0.000
+
+ M_VICREP BY
+    VIOL_RP_15         0.255      0.097      2.637      0.008
+    VIOL_RP_17         0.255      0.097      2.623      0.009
+    VIOL_RP_19         0.240      0.088      2.716      0.007
+
+ T2       ON
+    T1                 0.580      0.094      6.170      0.000
+
+ T3       ON
+    T2                 0.764      0.071     10.830      0.000
+
+ M_VIC    WITH
+    M_REP              0.000      0.000    999.000    999.000
+    M_LOC              0.000      0.000    999.000    999.000
+    M_VICREP           0.000      0.000    999.000    999.000
+    T1                 0.000      0.000    999.000    999.000
+
+ M_REP    WITH
+    M_LOC              0.000      0.000    999.000    999.000
+    M_VICREP           0.000      0.000    999.000    999.000
+    T1                 0.000      0.000    999.000    999.000
+
+ M_LOC    WITH
+    M_VICREP           0.000      0.000    999.000    999.000
+    T1                 0.000      0.000    999.000    999.000
+
+ M_VICREP WITH
+    T1                 0.000      0.000    999.000    999.000
+
+ Intercepts
+    VIOL_P_15          0.785      0.132      5.947      0.000
+    VIOL_P_17          0.823      0.135      6.085      0.000
+    VIOL_P_19          0.900      0.135      6.645      0.000
+    VIOL_R_15          2.283      0.184     12.392      0.000
+    VIOL_R_17          2.778      0.208     13.369      0.000
+    VIOL_R_19          2.646      0.206     12.824      0.000
+    VIOL_F_15          1.577      0.157     10.069      0.000
+    VIOL_F_17          1.840      0.160     11.496      0.000
+    VIOL_F_19          1.845      0.163     11.296      0.000
+    VIOL_RP_15         0.965      0.139      6.960      0.000
+    VIOL_RP_17         0.968      0.138      6.996      0.000
+    VIOL_RP_19         0.987      0.141      7.020      0.000
+
+ Variances
+    T1                 1.000      0.000    999.000    999.000
+    M_REP              1.000      0.000    999.000    999.000
+    M_VIC              1.000      0.000    999.000    999.000
+    M_LOC              1.000      0.000    999.000    999.000
+    M_VICREP           1.000      0.000    999.000    999.000
+
+ Residual Variances
+    VIOL_P_15          0.148      0.055      2.685      0.007
+    VIOL_P_17          0.305      0.070      4.370      0.000
+    VIOL_P_19          0.333      0.070      4.730      0.000
+    VIOL_R_15          0.250      0.056      4.465      0.000
+    VIOL_R_17          0.259      0.062      4.185      0.000
+    VIOL_R_19          0.222      0.060      3.714      0.000
+    VIOL_F_15          0.165      0.052      3.181      0.001
+    VIOL_F_17          0.309      0.070      4.388      0.000
+    VIOL_F_19          0.281      0.064      4.393      0.000
+    VIOL_RP_15         0.186      0.058      3.204      0.001
+    VIOL_RP_17         0.365      0.074      4.925      0.000
+    VIOL_RP_19         0.351      0.072      4.884      0.000
+    T2                 0.664      0.109      6.087      0.000
+    T3                 0.416      0.108      3.859      0.000
+
+
+R-SQUARE
+
+    Observed                                        Two-Tailed
+    Variable        Estimate       S.E.  Est./S.E.    P-Value
+
+    VIOL_P_1           0.852      0.055     15.451      0.000
+    VIOL_P_1           0.695      0.070      9.971      0.000
+    VIOL_P_1           0.667      0.070      9.473      0.000
+    VIOL_R_1           0.750      0.056     13.396      0.000
+    VIOL_R_1           0.741      0.062     11.967      0.000
+    VIOL_R_1           0.778      0.060     13.048      0.000
+    VIOL_F_1           0.835      0.052     16.043      0.000
+    VIOL_F_1           0.691      0.070      9.823      0.000
+    VIOL_F_1           0.719      0.064     11.241      0.000
+    VIOL_RP_           0.814      0.058     14.036      0.000
+    VIOL_RP_           0.635      0.074      8.582      0.000
+    VIOL_RP_           0.649      0.072      9.016      0.000
+
+     Latent                                         Two-Tailed
+    Variable        Estimate       S.E.  Est./S.E.    P-Value
+
+    T2                 0.336      0.109      3.085      0.002
+    T3                 0.584      0.108      5.415      0.000
+
+
+CONFIDENCE INTERVALS OF MODEL RESULTS
+
+                  Lower .5%  Lower 2.5%    Lower 5%    Estimate    Upper 5%  Upper 2.5%   Upper .5%
+
+ T1       BY
+    VIOL_F_15        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    VIOL_P_15        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    VIOL_R_15        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    VIOL_RP_15       1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ T2       BY
+    VIOL_F_17        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    VIOL_P_17        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    VIOL_R_17        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    VIOL_RP_17       1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ T3       BY
+    VIOL_F_19        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    VIOL_P_19        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    VIOL_R_19        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    VIOL_RP_19       1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ M_REP    BY
+    VIOL_P_15        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    VIOL_P_17        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    VIOL_P_19        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ M_VIC    BY
+    VIOL_R_15        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    VIOL_R_17        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    VIOL_R_19        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ M_LOC    BY
+    VIOL_F_15        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    VIOL_F_17        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    VIOL_F_19        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ M_VICREP BY
+    VIOL_RP_15       1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    VIOL_RP_17       1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    VIOL_RP_19       1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ T2       ON
+    T1               0.245       0.307       0.339       0.505       0.671       0.703       0.765
+
+ T3       ON
+    T2               0.520       0.593       0.630       0.826       1.021       1.059       1.132
+
+ M_VIC    WITH
+    M_REP            0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    M_LOC            0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    M_VICREP         0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    T1               0.000       0.000       0.000       0.000       0.000       0.000       0.000
+
+ M_REP    WITH
+    M_LOC            0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    M_VICREP         0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    T1               0.000       0.000       0.000       0.000       0.000       0.000       0.000
+
+ M_LOC    WITH
+    M_VICREP         0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    T1               0.000       0.000       0.000       0.000       0.000       0.000       0.000
+
+ M_VICREP WITH
+    T1               0.000       0.000       0.000       0.000       0.000       0.000       0.000
+
+ Intercepts
+    VIOL_P_1         0.337       0.387       0.413       0.548       0.682       0.708       0.758
+    VIOL_P_1         0.355       0.404       0.429       0.560       0.690       0.716       0.765
+    VIOL_P_1         0.446       0.500       0.527       0.671       0.814       0.842       0.895
+    VIOL_R_1         1.838       1.904       1.939       2.117       2.296       2.330       2.397
+    VIOL_R_1         2.137       2.199       2.231       2.397       2.563       2.595       2.657
+    VIOL_R_1         2.060       2.123       2.156       2.325       2.494       2.526       2.590
+    VIOL_F_1         1.033       1.092       1.121       1.277       1.433       1.463       1.522
+    VIOL_F_1         1.247       1.305       1.335       1.491       1.648       1.677       1.736
+    VIOL_F_1         1.292       1.353       1.384       1.545       1.706       1.737       1.797
+    VIOL_RP_         0.477       0.529       0.555       0.694       0.832       0.859       0.911
+    VIOL_RP_         0.479       0.530       0.557       0.695       0.834       0.860       0.912
+    VIOL_RP_         0.523       0.578       0.606       0.753       0.900       0.928       0.983
+
+ Variances
+    T1               0.203       0.247       0.269       0.388       0.506       0.529       0.573
+    M_REP           -0.035      -0.020      -0.012       0.027       0.066       0.074       0.089
+    M_VIC            0.097       0.135       0.155       0.257       0.360       0.379       0.418
+    M_LOC            0.047       0.074       0.088       0.160       0.232       0.246       0.273
+    M_VICREP        -0.034      -0.018      -0.010       0.034       0.077       0.085       0.101
+
+ Residual Variances
+    VIOL_P_1         0.005       0.021       0.029       0.072       0.115       0.123       0.139
+    VIOL_P_1         0.049       0.071       0.082       0.141       0.199       0.211       0.233
+    VIOL_P_1         0.069       0.097       0.111       0.185       0.259       0.273       0.301
+    VIOL_R_1         0.072       0.106       0.124       0.215       0.306       0.324       0.358
+    VIOL_R_1         0.059       0.091       0.107       0.193       0.279       0.295       0.327
+    VIOL_R_1         0.040       0.072       0.088       0.171       0.254       0.270       0.302
+    VIOL_F_1         0.013       0.036       0.048       0.109       0.169       0.181       0.204
+    VIOL_F_1         0.070       0.101       0.118       0.203       0.288       0.304       0.336
+    VIOL_F_1         0.064       0.096       0.112       0.197       0.281       0.298       0.329
+    VIOL_RP_         0.019       0.038       0.047       0.096       0.145       0.155       0.173
+    VIOL_RP_         0.074       0.102       0.115       0.188       0.261       0.275       0.302
+    VIOL_RP_         0.080       0.110       0.125       0.204       0.284       0.299       0.329
+    T2               0.085       0.111       0.125       0.195       0.266       0.279       0.305
+    T3               0.046       0.069       0.081       0.143       0.205       0.217       0.240
+
+
+CONFIDENCE INTERVALS OF STANDARDIZED MODEL RESULTS
+
+
+STDYX Standardization
+
+                  Lower .5%  Lower 2.5%    Lower 5%    Estimate    Upper 5%  Upper 2.5%   Upper .5%
+
+ T1       BY
+    VIOL_F_15        0.651       0.679       0.694       0.769       0.843       0.858       0.886
+    VIOL_P_15        0.811       0.831       0.841       0.893       0.944       0.954       0.974
+    VIOL_R_15        0.550       0.579       0.594       0.671       0.749       0.764       0.793
+    VIOL_RP_15       0.778       0.799       0.810       0.866       0.922       0.932       0.953
+
+ T2       BY
+    VIOL_F_17        0.528       0.561       0.579       0.669       0.759       0.777       0.811
+    VIOL_P_17        0.683       0.711       0.725       0.798       0.871       0.885       0.913
+    VIOL_R_17        0.486       0.520       0.537       0.629       0.720       0.737       0.772
+    VIOL_RP_17       0.635       0.663       0.678       0.755       0.832       0.847       0.876
+
+ T3       BY
+    VIOL_F_19        0.564       0.596       0.613       0.700       0.788       0.804       0.837
+    VIOL_P_19        0.663       0.693       0.708       0.786       0.865       0.880       0.909
+    VIOL_R_19        0.534       0.566       0.582       0.667       0.753       0.769       0.801
+    VIOL_RP_19       0.649       0.678       0.692       0.769       0.845       0.860       0.889
+
+ M_REP    BY
+    VIOL_P_15       -0.028       0.035       0.067       0.235       0.403       0.436       0.498
+    VIOL_P_17       -0.022       0.041       0.073       0.242       0.410       0.442       0.505
+    VIOL_P_19       -0.026       0.033       0.063       0.220       0.377       0.408       0.466
+
+ M_VIC    BY
+    VIOL_R_15        0.401       0.436       0.454       0.547       0.640       0.658       0.693
+    VIOL_R_17        0.436       0.472       0.491       0.588       0.685       0.704       0.740
+    VIOL_R_19        0.424       0.461       0.479       0.577       0.675       0.694       0.731
+
+ M_LOC    BY
+    VIOL_F_15        0.333       0.371       0.391       0.494       0.597       0.616       0.655
+    VIOL_F_17        0.333       0.371       0.391       0.494       0.596       0.616       0.654
+    VIOL_F_19        0.318       0.356       0.376       0.478       0.580       0.600       0.638
+
+ M_VICREP BY
+    VIOL_RP_15       0.006       0.065       0.096       0.255       0.413       0.444       0.503
+    VIOL_RP_17       0.005       0.064       0.095       0.255       0.415       0.446       0.505
+    VIOL_RP_19       0.012       0.067       0.095       0.240       0.386       0.414       0.468
+
+ T2       ON
+    T1               0.338       0.396       0.425       0.580       0.735       0.764       0.822
+
+ T3       ON
+    T2               0.582       0.626       0.648       0.764       0.880       0.902       0.946
+
+ M_VIC    WITH
+    M_REP            0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    M_LOC            0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    M_VICREP         0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    T1               0.000       0.000       0.000       0.000       0.000       0.000       0.000
+
+ M_REP    WITH
+    M_LOC            0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    M_VICREP         0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    T1               0.000       0.000       0.000       0.000       0.000       0.000       0.000
+
+ M_LOC    WITH
+    M_VICREP         0.000       0.000       0.000       0.000       0.000       0.000       0.000
+    T1               0.000       0.000       0.000       0.000       0.000       0.000       0.000
+
+ M_VICREP WITH
+    T1               0.000       0.000       0.000       0.000       0.000       0.000       0.000
+
+ Intercepts
+    VIOL_P_1         0.445       0.526       0.568       0.785       1.002       1.043       1.125
+    VIOL_P_1         0.475       0.558       0.601       0.823       1.046       1.089       1.172
+    VIOL_P_1         0.551       0.634       0.677       0.900       1.122       1.165       1.248
+    VIOL_R_1         1.808       1.922       1.980       2.283       2.586       2.644       2.758
+    VIOL_R_1         2.243       2.371       2.436       2.778       3.120       3.185       3.313
+    VIOL_R_1         2.115       2.242       2.307       2.646       2.985       3.050       3.177
+    VIOL_F_1         1.173       1.270       1.319       1.577       1.834       1.884       1.980
+    VIOL_F_1         1.428       1.526       1.577       1.840       2.103       2.153       2.252
+    VIOL_F_1         1.425       1.525       1.577       1.845       2.114       2.166       2.266
+    VIOL_RP_         0.608       0.693       0.737       0.965       1.193       1.236       1.322
+    VIOL_RP_         0.612       0.697       0.740       0.968       1.196       1.239       1.324
+    VIOL_RP_         0.625       0.712       0.756       0.987       1.219       1.263       1.350
+
+ Variances
+    T1               1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    M_REP            1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    M_VIC            1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    M_LOC            1.000       1.000       1.000       1.000       1.000       1.000       1.000
+    M_VICREP         1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ Residual Variances
+    VIOL_P_1         0.006       0.040       0.057       0.148       0.239       0.256       0.290
+    VIOL_P_1         0.125       0.168       0.190       0.305       0.419       0.441       0.484
+    VIOL_P_1         0.152       0.195       0.217       0.333       0.449       0.471       0.514
+    VIOL_R_1         0.106       0.140       0.158       0.250       0.342       0.360       0.394
+    VIOL_R_1         0.100       0.138       0.157       0.259       0.361       0.380       0.419
+    VIOL_R_1         0.068       0.105       0.123       0.222       0.320       0.338       0.375
+    VIOL_F_1         0.031       0.064       0.080       0.165       0.251       0.267       0.299
+    VIOL_F_1         0.127       0.171       0.193       0.309       0.425       0.447       0.490
+    VIOL_F_1         0.116       0.156       0.176       0.281       0.386       0.406       0.446
+    VIOL_RP_         0.036       0.072       0.090       0.186       0.281       0.300       0.335
+    VIOL_RP_         0.174       0.220       0.243       0.365       0.486       0.510       0.555
+    VIOL_RP_         0.166       0.210       0.233       0.351       0.470       0.492       0.537
+    T2               0.383       0.450       0.484       0.664       0.843       0.877       0.944
+    T3               0.138       0.205       0.239       0.416       0.593       0.627       0.694
+
+
+MODEL COMMAND WITH FINAL ESTIMATES USED AS STARTING VALUES
+
+     t1 BY viol_f_15@1;
+     t1 BY viol_p_15@1;
+     t1 BY viol_r_15@1;
+     t1 BY viol_rp_15@1;
+     t2 BY viol_f_17@1;
+     t2 BY viol_p_17@1;
+     t2 BY viol_r_17@1;
+     t2 BY viol_rp_17@1;
+     t3 BY viol_f_19@1;
+     t3 BY viol_p_19@1;
+     t3 BY viol_r_19@1;
+     t3 BY viol_rp_19@1;
+     m_rep BY viol_p_15@1;
+     m_rep BY viol_p_17@1;
+     m_rep BY viol_p_19@1;
+     m_vic BY viol_r_15@1;
+     m_vic BY viol_r_17@1;
+     m_vic BY viol_r_19@1;
+     m_loc BY viol_f_15@1;
+     m_loc BY viol_f_17@1;
+     m_loc BY viol_f_19@1;
+     m_vicrep BY viol_rp_15@1;
+     m_vicrep BY viol_rp_17@1;
+     m_vicrep BY viol_rp_19@1;
+
+     t2 ON t1*0.50518;
+     t3 ON t2*0.82588;
+
+     m_vic WITH m_rep@0;
+     m_vic WITH m_loc@0;
+     m_vic WITH m_vicrep@0;
+     m_vic WITH t1@0;
+     m_rep WITH m_loc@0;
+     m_rep WITH m_vicrep@0;
+     m_rep WITH t1@0;
+     m_loc WITH m_vicrep@0;
+     m_loc WITH t1@0;
+     m_vicrep WITH t1@0;
+
+     [ viol_p_15*0.54754 ];
+     [ viol_p_17*0.55963 ];
+     [ viol_p_19*0.67054 ];
+     [ viol_r_15*2.11717 ];
+     [ viol_r_17*2.39675 ];
+     [ viol_r_19*2.32486 ];
+     [ viol_f_15*1.27746 ];
+     [ viol_f_17*1.49146 ];
+     [ viol_f_19*1.54466 ];
+     [ viol_rp_15*0.69389 ];
+     [ viol_rp_17*0.69525 ];
+     [ viol_rp_19*0.75303 ];
+
+     viol_p_15*0.07206;
+     viol_p_17*0.14075;
+     viol_p_19*0.18502;
+     viol_r_15*0.21499;
+     viol_r_17*0.19287;
+     viol_r_19*0.17105;
+     viol_f_15*0.10864;
+     viol_f_17*0.20291;
+     viol_f_19*0.19685;
+     viol_rp_15*0.09616;
+     viol_rp_17*0.18809;
+     viol_rp_19*0.20434;
+     t1*0.38775;
+     t2*0.19524;
+     t3*0.14299;
+     m_rep*0.02695;
+     m_vic*0.25729;
+     m_loc*0.16009;
+     m_vicrep*0.03355;
+
+
+
+RESIDUAL OUTPUT
+
+
+     ESTIMATED MODEL AND RESIDUALS (OBSERVED - ESTIMATED)
+
+
+           Model Estimated Means
+              VIOL_P_1      VIOL_P_1      VIOL_P_1      VIOL_R_1      VIOL_R_1
+              ________      ________      ________      ________      ________
+                0.548         0.560         0.671         2.117         2.397
+
+
+           Model Estimated Means
+              VIOL_R_1      VIOL_F_1      VIOL_F_1      VIOL_F_1      VIOL_RP_
+              ________      ________      ________      ________      ________
+                2.325         1.277         1.491         1.545         0.694
+
+
+           Model Estimated Means
+              VIOL_RP_      VIOL_RP_
+              ________      ________
+                0.695         0.753
+
+
+           Residuals for Means
+              VIOL_P_1      VIOL_P_1      VIOL_P_1      VIOL_R_1      VIOL_R_1
+              ________      ________      ________      ________      ________
+                0.000         0.000         0.000         0.000         0.000
+
+
+           Residuals for Means
+              VIOL_R_1      VIOL_F_1      VIOL_F_1      VIOL_F_1      VIOL_RP_
+              ________      ________      ________      ________      ________
+                0.000         0.000         0.000         0.000         0.000
+
+
+           Residuals for Means
+              VIOL_RP_      VIOL_RP_
+              ________      ________
+                0.000         0.000
+
+
+           Standardized Residuals (z-scores) for Means
+              VIOL_P_1      VIOL_P_1      VIOL_P_1      VIOL_R_1      VIOL_R_1
+              ________      ________      ________      ________      ________
+                0.000         0.000         0.000         0.000         0.000
+
+
+           Standardized Residuals (z-scores) for Means
+              VIOL_R_1      VIOL_F_1      VIOL_F_1      VIOL_F_1      VIOL_RP_
+              ________      ________      ________      ________      ________
+                0.000         0.000         0.000         0.000         0.000
+
+
+           Standardized Residuals (z-scores) for Means
+              VIOL_RP_      VIOL_RP_
+              ________      ________
+                0.000         0.000
+
+
+           Normalized Residuals for Means
+              VIOL_P_1      VIOL_P_1      VIOL_P_1      VIOL_R_1      VIOL_R_1
+              ________      ________      ________      ________      ________
+                0.000         0.000         0.000         0.000         0.000
+
+
+           Normalized Residuals for Means
+              VIOL_R_1      VIOL_F_1      VIOL_F_1      VIOL_F_1      VIOL_RP_
+              ________      ________      ________      ________      ________
+                0.000         0.000         0.000         0.000         0.000
+
+
+           Normalized Residuals for Means
+              VIOL_RP_      VIOL_RP_
+              ________      ________
+                0.000         0.000
+
+
+           Model Estimated Covariances
+              VIOL_P_1      VIOL_P_1      VIOL_P_1      VIOL_R_1      VIOL_R_1
+              ________      ________      ________      ________      ________
+ VIOL_P_1       0.487
+ VIOL_P_1       0.223         0.462
+ VIOL_P_1       0.189         0.270         0.556
+ VIOL_R_1       0.388         0.196         0.162         0.860
+ VIOL_R_1       0.196         0.294         0.243         0.453         0.744
+ VIOL_R_1       0.162         0.243         0.344         0.419         0.500
+ VIOL_F_1       0.388         0.196         0.162         0.388         0.196
+ VIOL_F_1       0.196         0.294         0.243         0.196         0.294
+ VIOL_F_1       0.162         0.243         0.344         0.162         0.243
+ VIOL_RP_       0.388         0.196         0.162         0.388         0.196
+ VIOL_RP_       0.196         0.294         0.243         0.196         0.294
+ VIOL_RP_       0.162         0.243         0.344         0.162         0.243
+
+
+           Model Estimated Covariances
+              VIOL_R_1      VIOL_F_1      VIOL_F_1      VIOL_F_1      VIOL_RP_
+              ________      ________      ________      ________      ________
+ VIOL_R_1       0.772
+ VIOL_F_1       0.162         0.656
+ VIOL_F_1       0.243         0.356         0.657
+ VIOL_F_1       0.344         0.322         0.403         0.701
+ VIOL_RP_       0.162         0.388         0.196         0.162         0.517
+ VIOL_RP_       0.243         0.196         0.294         0.243         0.229
+ VIOL_RP_       0.344         0.162         0.243         0.344         0.195
+
+
+           Model Estimated Covariances
+              VIOL_RP_      VIOL_RP_
+              ________      ________
+ VIOL_RP_       0.516
+ VIOL_RP_       0.277         0.582
+
+
+           Model Estimated Correlations
+              VIOL_P_1      VIOL_P_1      VIOL_P_1      VIOL_R_1      VIOL_R_1
+              ________      ________      ________      ________      ________
+ VIOL_P_1       1.000
+ VIOL_P_1       0.470         1.000
+ VIOL_P_1       0.363         0.533         1.000
+ VIOL_R_1       0.599         0.311         0.234         1.000
+ VIOL_R_1       0.325         0.502         0.378         0.566         1.000
+ VIOL_R_1       0.264         0.407         0.525         0.514         0.660
+ VIOL_F_1       0.686         0.356         0.268         0.516         0.280
+ VIOL_F_1       0.346         0.534         0.402         0.261         0.421
+ VIOL_F_1       0.277         0.427         0.551         0.208         0.336
+ VIOL_RP_       0.773         0.401         0.302         0.581         0.316
+ VIOL_RP_       0.391         0.603         0.454         0.294         0.475
+ VIOL_RP_       0.304         0.469         0.605         0.229         0.369
+
+
+           Model Estimated Correlations
+              VIOL_R_1      VIOL_F_1      VIOL_F_1      VIOL_F_1      VIOL_RP_
+              ________      ________      ________      ________      ________
+ VIOL_R_1       1.000
+ VIOL_F_1       0.227         1.000
+ VIOL_F_1       0.341         0.542         1.000
+ VIOL_F_1       0.467         0.475         0.594         1.000
+ VIOL_RP_       0.256         0.665         0.336         0.269         1.000
+ VIOL_RP_       0.385         0.337         0.505         0.404         0.444
+ VIOL_RP_       0.513         0.262         0.393         0.538         0.356
+
+
+           Model Estimated Correlations
+              VIOL_RP_      VIOL_RP_
+              ________      ________
+ VIOL_RP_       1.000
+ VIOL_RP_       0.505         1.000
+
+
+           Residuals for Covariances
+              VIOL_P_1      VIOL_P_1      VIOL_P_1      VIOL_R_1      VIOL_R_1
+              ________      ________      ________      ________      ________
+ VIOL_P_1      -0.007
+ VIOL_P_1      -0.066        -0.094
+ VIOL_P_1       0.009        -0.096        -0.059
+ VIOL_R_1      -0.002         0.052         0.092         0.095
+ VIOL_R_1       0.058         0.017         0.033         0.212         0.247
+ VIOL_R_1       0.085         0.057        -0.014         0.233         0.259
+ VIOL_F_1       0.103         0.018         0.199         0.270         0.290
+ VIOL_F_1       0.146         0.135         0.121         0.436         0.464
+ VIOL_F_1       0.153         0.133         0.161         0.367         0.386
+ VIOL_RP_      -0.019        -0.086        -0.067         0.067         0.110
+ VIOL_RP_      -0.110        -0.106        -0.132         0.083         0.095
+ VIOL_RP_       0.021        -0.136        -0.037         0.188         0.127
+
+
+           Residuals for Covariances
+              VIOL_R_1      VIOL_F_1      VIOL_F_1      VIOL_F_1      VIOL_RP_
+              ________      ________      ________      ________      ________
+ VIOL_R_1       0.213
+ VIOL_F_1       0.307         0.148
+ VIOL_F_1       0.400         0.221         0.329
+ VIOL_F_1       0.343         0.231         0.308         0.263
+ VIOL_RP_       0.110         0.033         0.119         0.059        -0.037
+ VIOL_RP_       0.084        -0.054         0.050        -0.003        -0.084
+ VIOL_RP_       0.112         0.144         0.060         0.020        -0.034
+
+
+           Residuals for Covariances
+              VIOL_RP_      VIOL_RP_
+              ________      ________
+ VIOL_RP_      -0.108
+ VIOL_RP_      -0.126        -0.093
+
+
+           Residuals for Correlations
+              VIOL_P_1      VIOL_P_1      VIOL_P_1      VIOL_R_1      VIOL_R_1
+              ________      ________      ________      ________      ________
+ VIOL_P_1       0.000
+ VIOL_P_1      -0.097         0.000
+ VIOL_P_1       0.042        -0.125         0.000
+ VIOL_R_1      -0.029         0.107         0.135         0.000
+ VIOL_R_1       0.043         0.014         0.015         0.117         0.000
+ VIOL_R_1       0.096         0.092        -0.054         0.158         0.108
+ VIOL_F_1       0.104         0.038         0.303         0.234         0.264
+ VIOL_F_1       0.151         0.179         0.118         0.390         0.347
+ VIOL_F_1       0.186         0.205         0.179         0.343         0.307
+ VIOL_RP_      -0.005        -0.140        -0.108         0.090         0.128
+ VIOL_RP_      -0.196        -0.117        -0.206         0.153         0.138
+ VIOL_RP_       0.073        -0.216         0.019         0.283         0.162
+
+
+           Residuals for Correlations
+              VIOL_R_1      VIOL_F_1      VIOL_F_1      VIOL_F_1      VIOL_RP_
+              ________      ________      ________      ________      ________
+ VIOL_R_1       0.000
+ VIOL_F_1       0.299         0.000
+ VIOL_F_1       0.311         0.106         0.000
+ VIOL_F_1       0.237         0.153         0.135         0.000
+ VIOL_RP_       0.139         0.011         0.122         0.056         0.000
+ VIOL_RP_       0.130        -0.089         0.037        -0.022        -0.116
+ VIOL_RP_       0.144         0.225         0.043        -0.009        -0.024
+
+
+           Residuals for Correlations
+              VIOL_RP_      VIOL_RP_
+              ________      ________
+ VIOL_RP_       0.000
+ VIOL_RP_      -0.167         0.000
+
+
+           Standardized Residuals (z-scores) for Covariances
+              VIOL_P_1      VIOL_P_1      VIOL_P_1      VIOL_R_1      VIOL_R_1
+              ________      ________      ________      ________      ________
+ VIOL_P_1      -0.308
+ VIOL_P_1     999.000       999.000
+ VIOL_P_1       0.295       999.000       999.000
+ VIOL_R_1      -0.028         0.970         1.313         0.819
+ VIOL_R_1       0.859         0.340         0.477         1.864         1.816
+ VIOL_R_1       1.224         1.034        -0.251         2.054         2.114
+ VIOL_F_1       1.757         0.426         2.869         2.541         2.726
+ VIOL_F_1       2.012         2.207         1.645         3.496         3.508
+ VIOL_F_1       2.108         2.196         2.242         3.102         3.113
+ VIOL_RP_     999.000       999.000        -2.174         1.069         1.563
+ VIOL_RP_     999.000       999.000       999.000         1.388         1.529
+ VIOL_RP_       0.593       999.000       999.000         2.507         1.729
+
+
+           Standardized Residuals (z-scores) for Covariances
+              VIOL_R_1      VIOL_F_1      VIOL_F_1      VIOL_F_1      VIOL_RP_
+              ________      ________      ________      ________      ________
+ VIOL_R_1       1.646
+ VIOL_F_1       2.869         1.462
+ VIOL_F_1       3.175         2.073         2.293
+ VIOL_F_1       2.841         2.176         2.454         1.965
+ VIOL_RP_       1.545         0.652         1.681         0.872       999.000
+ VIOL_RP_       1.350        -1.225         0.858        -0.063       999.000
+ VIOL_RP_       1.661         2.208         0.865         0.337        -2.888
+
+
+           Standardized Residuals (z-scores) for Covariances
+              VIOL_RP_      VIOL_RP_
+              ________      ________
+ VIOL_RP_     999.000
+ VIOL_RP_     999.000       999.000
+
+
+           Normalized Residuals for Covariances
+              VIOL_P_1      VIOL_P_1      VIOL_P_1      VIOL_R_1      VIOL_R_1
+              ________      ________      ________      ________      ________
+ VIOL_P_1      -0.094
+ VIOL_P_1      -1.260        -1.550
+ VIOL_P_1       0.142        -1.769        -0.720
+ VIOL_R_1      -0.018         0.687         1.075         0.602
+ VIOL_R_1       0.676         0.217         0.369         1.536         1.503
+ VIOL_R_1       1.000         0.729        -0.159         1.703         1.775
+ VIOL_F_1       1.107         0.269         2.338         2.104         2.439
+ VIOL_F_1       1.623         1.560         1.310         3.216         3.184
+ VIOL_F_1       1.742         1.615         1.607         2.863         2.838
+ VIOL_RP_      -0.273        -1.700        -1.154         0.704         1.249
+ VIOL_RP_      -2.082        -2.108        -2.424         1.039         1.090
+ VIOL_RP_       0.344        -2.656        -0.538         2.095         1.376
+
+
+           Normalized Residuals for Covariances
+              VIOL_R_1      VIOL_F_1      VIOL_F_1      VIOL_F_1      VIOL_RP_
+              ________      ________      ________      ________      ________
+ VIOL_R_1       1.307
+ VIOL_F_1       2.605         1.111
+ VIOL_F_1       2.902         1.779         2.014
+ VIOL_F_1       2.459         1.898         2.180         1.651
+ VIOL_RP_       1.270         0.375         1.345         0.705        -0.465
+ VIOL_RP_       1.003        -0.783         0.591        -0.044        -1.547
+ VIOL_RP_       1.154         1.759         0.671         0.215        -0.573
+
+
+           Normalized Residuals for Covariances
+              VIOL_RP_      VIOL_RP_
+              ________      ________
+ VIOL_RP_      -1.600
+ VIOL_RP_      -2.277        -1.145
+
+
+TECHNICAL 1 OUTPUT
+
+
+     PARAMETER SPECIFICATION
+
+
+           NU
+              VIOL_P_1      VIOL_P_1      VIOL_P_1      VIOL_R_1      VIOL_R_1
+              ________      ________      ________      ________      ________
+                  1             2             3             4             5
+
+
+           NU
+              VIOL_R_1      VIOL_F_1      VIOL_F_1      VIOL_F_1      VIOL_RP_
+              ________      ________      ________      ________      ________
+                  6             7             8             9            10
+
+
+           NU
+              VIOL_RP_      VIOL_RP_
+              ________      ________
+                 11            12
+
+
+           LAMBDA
+              T1            T2            T3            M_REP         M_VIC
+              ________      ________      ________      ________      ________
+ VIOL_P_1           0             0             0             0             0
+ VIOL_P_1           0             0             0             0             0
+ VIOL_P_1           0             0             0             0             0
+ VIOL_R_1           0             0             0             0             0
+ VIOL_R_1           0             0             0             0             0
+ VIOL_R_1           0             0             0             0             0
+ VIOL_F_1           0             0             0             0             0
+ VIOL_F_1           0             0             0             0             0
+ VIOL_F_1           0             0             0             0             0
+ VIOL_RP_           0             0             0             0             0
+ VIOL_RP_           0             0             0             0             0
+ VIOL_RP_           0             0             0             0             0
+
+
+           LAMBDA
+              M_LOC         M_VICREP
+              ________      ________
+ VIOL_P_1           0             0
+ VIOL_P_1           0             0
+ VIOL_P_1           0             0
+ VIOL_R_1           0             0
+ VIOL_R_1           0             0
+ VIOL_R_1           0             0
+ VIOL_F_1           0             0
+ VIOL_F_1           0             0
+ VIOL_F_1           0             0
+ VIOL_RP_           0             0
+ VIOL_RP_           0             0
+ VIOL_RP_           0             0
+
+
+           THETA
+              VIOL_P_1      VIOL_P_1      VIOL_P_1      VIOL_R_1      VIOL_R_1
+              ________      ________      ________      ________      ________
+ VIOL_P_1          13
+ VIOL_P_1           0            14
+ VIOL_P_1           0             0            15
+ VIOL_R_1           0             0             0            16
+ VIOL_R_1           0             0             0             0            17
+ VIOL_R_1           0             0             0             0             0
+ VIOL_F_1           0             0             0             0             0
+ VIOL_F_1           0             0             0             0             0
+ VIOL_F_1           0             0             0             0             0
+ VIOL_RP_           0             0             0             0             0
+ VIOL_RP_           0             0             0             0             0
+ VIOL_RP_           0             0             0             0             0
+
+
+           THETA
+              VIOL_R_1      VIOL_F_1      VIOL_F_1      VIOL_F_1      VIOL_RP_
+              ________      ________      ________      ________      ________
+ VIOL_R_1          18
+ VIOL_F_1           0            19
+ VIOL_F_1           0             0            20
+ VIOL_F_1           0             0             0            21
+ VIOL_RP_           0             0             0             0            22
+ VIOL_RP_           0             0             0             0             0
+ VIOL_RP_           0             0             0             0             0
+
+
+           THETA
+              VIOL_RP_      VIOL_RP_
+              ________      ________
+ VIOL_RP_          23
+ VIOL_RP_           0            24
+
+
+           ALPHA
+              T1            T2            T3            M_REP         M_VIC
+              ________      ________      ________      ________      ________
+                  0             0             0             0             0
+
+
+           ALPHA
+              M_LOC         M_VICREP
+              ________      ________
+                  0             0
+
+
+           BETA
+              T1            T2            T3            M_REP         M_VIC
+              ________      ________      ________      ________      ________
+ T1                 0             0             0             0             0
+ T2                25             0             0             0             0
+ T3                 0            26             0             0             0
+ M_REP              0             0             0             0             0
+ M_VIC              0             0             0             0             0
+ M_LOC              0             0             0             0             0
+ M_VICREP           0             0             0             0             0
+
+
+           BETA
+              M_LOC         M_VICREP
+              ________      ________
+ T1                 0             0
+ T2                 0             0
+ T3                 0             0
+ M_REP              0             0
+ M_VIC              0             0
+ M_LOC              0             0
+ M_VICREP           0             0
+
+
+           PSI
+              T1            T2            T3            M_REP         M_VIC
+              ________      ________      ________      ________      ________
+ T1                27
+ T2                 0            28
+ T3                 0             0            29
+ M_REP              0             0             0            30
+ M_VIC              0             0             0             0            31
+ M_LOC              0             0             0             0             0
+ M_VICREP           0             0             0             0             0
+
+
+           PSI
+              M_LOC         M_VICREP
+              ________      ________
+ M_LOC             32
+ M_VICREP           0            33
+
+
+     STARTING VALUES
+
+
+           NU
+              VIOL_P_1      VIOL_P_1      VIOL_P_1      VIOL_R_1      VIOL_R_1
+              ________      ________      ________      ________      ________
+                0.548         0.560         0.671         2.117         2.397
+
+
+           NU
+              VIOL_R_1      VIOL_F_1      VIOL_F_1      VIOL_F_1      VIOL_RP_
+              ________      ________      ________      ________      ________
+                2.325         1.277         1.491         1.545         0.694
+
+
+           NU
+              VIOL_RP_      VIOL_RP_
+              ________      ________
+                0.695         0.753
+
+
+           LAMBDA
+              T1            T2            T3            M_REP         M_VIC
+              ________      ________      ________      ________      ________
+ VIOL_P_1       1.000         0.000         0.000         1.000         0.000
+ VIOL_P_1       0.000         1.000         0.000         1.000         0.000
+ VIOL_P_1       0.000         0.000         1.000         1.000         0.000
+ VIOL_R_1       1.000         0.000         0.000         0.000         1.000
+ VIOL_R_1       0.000         1.000         0.000         0.000         1.000
+ VIOL_R_1       0.000         0.000         1.000         0.000         1.000
+ VIOL_F_1       1.000         0.000         0.000         0.000         0.000
+ VIOL_F_1       0.000         1.000         0.000         0.000         0.000
+ VIOL_F_1       0.000         0.000         1.000         0.000         0.000
+ VIOL_RP_       1.000         0.000         0.000         0.000         0.000
+ VIOL_RP_       0.000         1.000         0.000         0.000         0.000
+ VIOL_RP_       0.000         0.000         1.000         0.000         0.000
+
+
+           LAMBDA
+              M_LOC         M_VICREP
+              ________      ________
+ VIOL_P_1       0.000         0.000
+ VIOL_P_1       0.000         0.000
+ VIOL_P_1       0.000         0.000
+ VIOL_R_1       0.000         0.000
+ VIOL_R_1       0.000         0.000
+ VIOL_R_1       0.000         0.000
+ VIOL_F_1       1.000         0.000
+ VIOL_F_1       1.000         0.000
+ VIOL_F_1       1.000         0.000
+ VIOL_RP_       0.000         1.000
+ VIOL_RP_       0.000         1.000
+ VIOL_RP_       0.000         1.000
+
+
+           THETA
+              VIOL_P_1      VIOL_P_1      VIOL_P_1      VIOL_R_1      VIOL_R_1
+              ________      ________      ________      ________      ________
+ VIOL_P_1       0.240
+ VIOL_P_1       0.000         0.184
+ VIOL_P_1       0.000         0.000         0.248
+ VIOL_R_1       0.000         0.000         0.000         0.478
+ VIOL_R_1       0.000         0.000         0.000         0.000         0.495
+ VIOL_R_1       0.000         0.000         0.000         0.000         0.000
+ VIOL_F_1       0.000         0.000         0.000         0.000         0.000
+ VIOL_F_1       0.000         0.000         0.000         0.000         0.000
+ VIOL_F_1       0.000         0.000         0.000         0.000         0.000
+ VIOL_RP_       0.000         0.000         0.000         0.000         0.000
+ VIOL_RP_       0.000         0.000         0.000         0.000         0.000
+ VIOL_RP_       0.000         0.000         0.000         0.000         0.000
+
+
+           THETA
+              VIOL_R_1      VIOL_F_1      VIOL_F_1      VIOL_F_1      VIOL_RP_
+              ________      ________      ________      ________      ________
+ VIOL_R_1       0.493
+ VIOL_F_1       0.000         0.402
+ VIOL_F_1       0.000         0.000         0.493
+ VIOL_F_1       0.000         0.000         0.000         0.482
+ VIOL_RP_       0.000         0.000         0.000         0.000         0.240
+ VIOL_RP_       0.000         0.000         0.000         0.000         0.000
+ VIOL_RP_       0.000         0.000         0.000         0.000         0.000
+
+
+           THETA
+              VIOL_RP_      VIOL_RP_
+              ________      ________
+ VIOL_RP_       0.204
+ VIOL_RP_       0.000         0.244
+
+
+           ALPHA
+              T1            T2            T3            M_REP         M_VIC
+              ________      ________      ________      ________      ________
+                0.000         0.000         0.000         0.000         0.000
+
+
+           ALPHA
+              M_LOC         M_VICREP
+              ________      ________
+                0.000         0.000
+
+
+           BETA
+              T1            T2            T3            M_REP         M_VIC
+              ________      ________      ________      ________      ________
+ T1             0.000         0.000         0.000         0.000         0.000
+ T2             0.000         0.000         0.000         0.000         0.000
+ T3             0.000         0.000         0.000         0.000         0.000
+ M_REP          0.000         0.000         0.000         0.000         0.000
+ M_VIC          0.000         0.000         0.000         0.000         0.000
+ M_LOC          0.000         0.000         0.000         0.000         0.000
+ M_VICREP       0.000         0.000         0.000         0.000         0.000
+
+
+           BETA
+              M_LOC         M_VICREP
+              ________      ________
+ T1             0.000         0.000
+ T2             0.000         0.000
+ T3             0.000         0.000
+ M_REP          0.000         0.000
+ M_VIC          0.000         0.000
+ M_LOC          0.000         0.000
+ M_VICREP       0.000         0.000
+
+
+           PSI
+              T1            T2            T3            M_REP         M_VIC
+              ________      ________      ________      ________      ________
+ T1             0.050
+ T2             0.000         0.050
+ T3             0.000         0.000         0.050
+ M_REP          0.000         0.000         0.000         0.050
+ M_VIC          0.000         0.000         0.000         0.000         0.050
+ M_LOC          0.000         0.000         0.000         0.000         0.000
+ M_VICREP       0.000         0.000         0.000         0.000         0.000
+
+
+           PSI
+              M_LOC         M_VICREP
+              ________      ________
+ M_LOC          0.050
+ M_VICREP       0.000         0.050
+
+
+TECHNICAL 5/6 OUTPUT
+
+
+
+TECHNICAL OUTPUT FROM EM ALGORITHM ITERATIONS FOR THE H1 MODEL
+
+   ITER        FUNCTION     ABS CHANGE   REL CHANGE
+
+      1     0.68808573D+01
+      2    -0.34323468D+01  -10.3132041   -1.4988255
+      3    -0.34323468D+01  -10.3132041   -1.4988255
+
+   TECHNICAL OUTPUT FROM QUASI-NEWTON ITERATIONS
+
+
+   ITERATIONS USING GRADIENT
+
+
+   ITER STEP   FUNCTION     ABS CHANGE   REL CHANGE   STEP LENGTH   DERIVATIVE
+
+      1   0 0.37409503D+01                           0.000000D+00 -.117445D+02
+          1 0.29779247D+01   -0.7630256   -0.2039657 0.100000D+00 -.474361D+01
+          2 0.27331517D+01   -0.2447730   -0.0821958 0.167757D+00 -.267801D+01
+          3 0.25690962D+01   -0.1640556   -0.0600243 0.255603D+00 -.121192D+01
+          4 0.25083273D+01   -0.0607688   -0.0236538 0.328219D+00 -.515572D+00
+      1   0 0.37409503D+01                           0.000000D+00 -.117445D+02
+          1 0.29779247D+01   -0.7630256   -0.2039657 0.100000D+00 -.474361D+01
+          2 0.27331517D+01   -0.2447730   -0.0821958 0.167757D+00 -.267801D+01
+          3 0.25690962D+01   -0.1640556   -0.0600243 0.255603D+00 -.121192D+01
+          4 0.25083273D+01   -0.0607688   -0.0236538 0.328219D+00 -.515572D+00
+      2   0 0.25083273D+01                           0.000000D+00 -.239270D+01
+          1                                          0.328219D+00
+          2 0.22848109D+01   -0.2235164   -0.0891098 0.180520D+00 0.314928D+01
+          3 0.22483295D+01   -0.0364814   -0.0159669 0.136337D+00 -.659437D+00
+          4 0.22438064D+01   -0.0045231   -0.0020118 0.150292D+00 0.566882D-01
+      2   0 0.25083273D+01                           0.000000D+00 -.239270D+01
+          1                                          0.328219D+00
+          2 0.22848109D+01   -0.2235164   -0.0891098 0.180520D+00 0.314928D+01
+          3 0.22483295D+01   -0.0364814   -0.0159669 0.136337D+00 -.659437D+00
+          4 0.22438064D+01   -0.0045231   -0.0020118 0.150292D+00 0.566882D-01
+      3   0 0.22438064D+01                           0.000000D+00 -.241163D+01
+          1 0.21682785D+01   -0.0755279   -0.0336606 0.150292D+00 0.220604D+00
+      3   0 0.22438064D+01                           0.000000D+00 -.241163D+01
+          1 0.21682785D+01   -0.0755279   -0.0336606 0.150292D+00 0.220604D+00
+      4   0 0.21682785D+01                           0.000000D+00 -.241882D+01
+          1 0.19545848D+01   -0.2136937   -0.0985546 0.150292D+00 0.208110D+01
+          2 0.19383935D+01   -0.0161912   -0.0082837 0.120596D+00 -.554461D+00
+          3 0.19357437D+01   -0.0026498   -0.0013670 0.130041D+00 0.217103D-01
+      4   0 0.21682785D+01                           0.000000D+00 -.241882D+01
+          1 0.19545848D+01   -0.2136937   -0.0985546 0.150292D+00 0.208110D+01
+          2 0.19383935D+01   -0.0161912   -0.0082837 0.120596D+00 -.554461D+00
+          3 0.19357437D+01   -0.0026498   -0.0013670 0.130041D+00 0.217103D-01
+      5   0 0.19357437D+01                           0.000000D+00 -.182041D+01
+          1 0.18850550D+01   -0.0506887   -0.0261856 0.130041D+00 0.278953D+00
+          2 0.18787384D+01   -0.0063166   -0.0033509 0.790042D-01 -.706356D-01
+      5   0 0.19357437D+01                           0.000000D+00 -.182041D+01
+          1 0.18850550D+01   -0.0506887   -0.0261856 0.130041D+00 0.278953D+00
+          2 0.18787384D+01   -0.0063166   -0.0033509 0.790042D-01 -.706356D-01
+      6   0 0.18787384D+01                           0.000000D+00 -.185895D+01
+          1 0.18286137D+01   -0.0501247   -0.0266800 0.790042D-01 0.196684D+01
+          2 0.18108448D+01   -0.0177689   -0.0097171 0.559947D-01 -.147315D+00
+      6   0 0.18787384D+01                           0.000000D+00 -.185895D+01
+          1 0.18286137D+01   -0.0501247   -0.0266800 0.790042D-01 0.196684D+01
+          2 0.18108448D+01   -0.0177689   -0.0097171 0.559947D-01 -.147315D+00
+      7   0 0.18108448D+01                           0.000000D+00 -.129348D+01
+          1 0.17701462D+01   -0.0406986   -0.0224749 0.559947D-01 -.329034D+00
+          2 0.17654769D+01   -0.0046693   -0.0026378 0.750980D-01 -.168328D+00
+          3 0.17633639D+01   -0.0021130   -0.0011969 0.113414D+00 0.379248D-01
+      7   0 0.18108448D+01                           0.000000D+00 -.129348D+01
+          1 0.17701462D+01   -0.0406986   -0.0224749 0.559947D-01 -.329034D+00
+          2 0.17654769D+01   -0.0046693   -0.0026378 0.750980D-01 -.168328D+00
+          3 0.17633639D+01   -0.0021130   -0.0011969 0.113414D+00 0.379248D-01
+      8   0 0.17633639D+01                           0.000000D+00 -.194502D+01
+          1 0.18177159D+01    0.0543520    0.0308229 0.113414D+00 0.898416D+01
+          2 0.16768336D+01   -0.1408823   -0.0775051 0.661864D-01 -.108663D+00
+      8   0 0.17633639D+01                           0.000000D+00 -.194502D+01
+          1 0.18177159D+01    0.0543520    0.0308229 0.113414D+00 0.898416D+01
+          2 0.16768336D+01   -0.1408823   -0.0775051 0.661864D-01 -.108663D+00
+      9   0 0.16768336D+01                           0.000000D+00 -.110750D+01
+          1 0.16331539D+01   -0.0436798   -0.0260490 0.661864D-01 -.337056D+00
+          2 0.16260143D+01   -0.0071396   -0.0043717 0.951418D-01 -.165922D+00
+          3 0.16233747D+01   -0.0026396   -0.0016234 0.153928D+00 0.564891D-01
+      9   0 0.16768336D+01                           0.000000D+00 -.110750D+01
+          1 0.16331539D+01   -0.0436798   -0.0260490 0.661864D-01 -.337056D+00
+          2 0.16260143D+01   -0.0071396   -0.0043717 0.951418D-01 -.165922D+00
+          3 0.16233747D+01   -0.0026396   -0.0016234 0.153928D+00 0.564891D-01
+     10   0 0.16233747D+01                           0.000000D+00 -.197004D+01
+          1 0.30116353D+01    1.3882607    0.8551696 0.153928D+00 0.113769D+03
+          2 0.15521512D+01   -1.4594841   -0.4846151 0.923880D-01 0.222751D+01
+          3 0.15317825D+01   -0.0203687   -0.0131229 0.670234D-01 -.241907D+00
+          4 0.15313174D+01   -0.0004651   -0.0003036 0.710792D-01 0.184840D-01
+     10   0 0.16233747D+01                           0.000000D+00 -.197004D+01
+          1 0.30116353D+01    1.3882607    0.8551696 0.153928D+00 0.113769D+03
+          2 0.15521512D+01   -1.4594841   -0.4846152 0.923880D-01 0.222751D+01
+          3 0.15317825D+01   -0.0203687   -0.0131229 0.670234D-01 -.241907D+00
+          4 0.15313174D+01   -0.0004651   -0.0003036 0.710792D-01 0.184840D-01
+     11   0 0.15313174D+01                           0.000000D+00 -.107038D+01
+          1 0.15077011D+01   -0.0236163   -0.0154222 0.710792D-01 0.122485D+00
+          2 0.15068434D+01   -0.0008577   -0.0005689 0.548582D-01 -.235419D-01
+     11   0 0.15313174D+01                           0.000000D+00 -.107038D+01
+          1 0.15077011D+01   -0.0236163   -0.0154222 0.710792D-01 0.122485D+00
+          2 0.15068434D+01   -0.0008577   -0.0005689 0.548582D-01 -.235419D-01
+     12   0 0.15068434D+01                           0.000000D+00 -.123903D+01
+          1 0.14953185D+01   -0.0115249   -0.0076484 0.548582D-01 0.157357D+01
+          2 0.14815064D+01   -0.0138121   -0.0092369 0.344777D-01 -.360949D-01
+     12   0 0.15068434D+01                           0.000000D+00 -.123903D+01
+          1 0.14953185D+01   -0.0115249   -0.0076484 0.548582D-01 0.157357D+01
+          2 0.14815064D+01   -0.0138121   -0.0092369 0.344777D-01 -.360949D-01
+     13   0 0.14815064D+01                           0.000000D+00 -.953078D+00
+          1 0.14659809D+01   -0.0155255   -0.0104795 0.344777D-01 -.672852D-01
+     13   0 0.14815064D+01                           0.000000D+00 -.953078D+00
+          1 0.14659809D+01   -0.0155255   -0.0104795 0.344777D-01 -.672852D-01
+     14   0 0.14659809D+01                           0.000000D+00 -.104259D+01
+          1 0.14493670D+01   -0.0166139   -0.0113330 0.344777D-01 0.286747D+00
+          2 0.14486547D+01   -0.0007122   -0.0004914 0.291531D-01 -.113264D-01
+     14   0 0.14659809D+01                           0.000000D+00 -.104259D+01
+          1 0.14493670D+01   -0.0166139   -0.0113330 0.344777D-01 0.286747D+00
+          2 0.14486547D+01   -0.0007122   -0.0004914 0.291531D-01 -.113264D-01
+     15   0 0.14486547D+01                           0.000000D+00 -.918900D+00
+          1 0.14362105D+01   -0.0124442   -0.0085902 0.291531D-01 -.400492D-01
+     15   0 0.14486547D+01                           0.000000D+00 -.918900D+00
+          1 0.14362105D+01   -0.0124442   -0.0085902 0.291531D-01 -.400492D-01
+     16   0 0.14362105D+01                           0.000000D+00 -.947486D+00
+          1 0.14217663D+01   -0.0144442   -0.0100572 0.291531D-01 0.901869D-01
+     16   0 0.14362105D+01                           0.000000D+00 -.947486D+00
+          1 0.14217663D+01   -0.0144442   -0.0100572 0.291531D-01 0.901869D-01
+     17   0 0.14217663D+01                           0.000000D+00 -.985360D+00
+          1 0.14119576D+01   -0.0098087   -0.0068990 0.291531D-01 0.155878D+00
+          2 0.14115040D+01   -0.0004536   -0.0003212 0.232282D-01 -.708963D-02
+     17   0 0.14217663D+01                           0.000000D+00 -.985360D+00
+          1 0.14119576D+01   -0.0098087   -0.0068990 0.291531D-01 0.155878D+00
+          2 0.14115040D+01   -0.0004536   -0.0003212 0.232282D-01 -.708963D-02
+     18   0 0.14115040D+01                           0.000000D+00 -.814143D+00
+          1 0.13996335D+01   -0.0118705   -0.0084098 0.232282D-01 -.146488D+00
+          2 0.13993578D+01   -0.0002757   -0.0001970 0.270835D-01 0.594621D-02
+     18   0 0.14115040D+01                           0.000000D+00 -.814143D+00
+          1 0.13996335D+01   -0.0118705   -0.0084098 0.232282D-01 -.146488D+00
+          2 0.13993578D+01   -0.0002757   -0.0001970 0.270835D-01 0.594621D-02
+     19   0 0.13993578D+01                           0.000000D+00 -.940234D+00
+          1 0.13906710D+01   -0.0086868   -0.0062077 0.270835D-01 0.156726D+00
+          2 0.13902381D+01   -0.0004329   -0.0003113 0.214902D-01 -.609365D-02
+     19   0 0.13993578D+01                           0.000000D+00 -.940234D+00
+          1 0.13906710D+01   -0.0086868   -0.0062077 0.270835D-01 0.156726D+00
+          2 0.13902381D+01   -0.0004329   -0.0003113 0.214902D-01 -.609365D-02
+     20   0 0.13902381D+01                           0.000000D+00 -.755093D+00
+          1 0.13799319D+01   -0.0103062   -0.0074133 0.214902D-01 -.153646D+00
+          2 0.13796136D+01   -0.0003183   -0.0002306 0.257104D-01 0.562156D-02
+     20   0 0.13902381D+01                           0.000000D+00 -.755093D+00
+          1 0.13799319D+01   -0.0103062   -0.0074133 0.214902D-01 -.153646D+00
+          2 0.13796136D+01   -0.0003183   -0.0002306 0.257104D-01 0.562156D-02
+     21   0 0.13796136D+01                           0.000000D+00 -.894254D+00
+          1 0.13720365D+01   -0.0075772   -0.0054923 0.257104D-01 0.172050D+00
+          2 0.13715367D+01   -0.0004997   -0.0003642 0.198773D-01 -.550712D-02
+     21   0 0.13796136D+01                           0.000000D+00 -.894254D+00
+          1 0.13720365D+01   -0.0075772   -0.0054923 0.257104D-01 0.172050D+00
+          2 0.13715367D+01   -0.0004997   -0.0003642 0.198773D-01 -.550712D-02
+     22   0 0.13715367D+01                           0.000000D+00 -.698849D+00
+          1 0.13626135D+01   -0.0089233   -0.0065060 0.198773D-01 -.157688D+00
+          2 0.13622619D+01   -0.0003516   -0.0002580 0.243988D-01 0.518476D-02
+     22   0 0.13715367D+01                           0.000000D+00 -.698849D+00
+          1 0.13626135D+01   -0.0089233   -0.0065060 0.198773D-01 -.157688D+00
+          2 0.13622619D+01   -0.0003516   -0.0002580 0.243988D-01 0.518476D-02
+     23   0 0.13622619D+01                           0.000000D+00 -.848844D+00
+          1 0.13556774D+01   -0.0065845   -0.0048335 0.243988D-01 0.185337D+00
+          2 0.13551203D+01   -0.0005571   -0.0004109 0.184025D-01 -.489181D-02
+     23   0 0.13622619D+01                           0.000000D+00 -.848844D+00
+          1 0.13556774D+01   -0.0065845   -0.0048335 0.243988D-01 0.185337D+00
+          2 0.13551203D+01   -0.0005571   -0.0004109 0.184025D-01 -.489181D-02
+     24   0 0.13551203D+01                           0.000000D+00 -.646308D+00
+          1 0.13473965D+01   -0.0077238   -0.0056997 0.184025D-01 -.159239D+00
+          2 0.13470209D+01   -0.0003756   -0.0002788 0.231673D-01 0.470263D-02
+     24   0 0.13551203D+01                           0.000000D+00 -.646308D+00
+          1 0.13473965D+01   -0.0077238   -0.0056997 0.184025D-01 -.159239D+00
+          2 0.13470209D+01   -0.0003756   -0.0002788 0.231673D-01 0.470263D-02
+     25   0 0.13470209D+01                           0.000000D+00 -.805066D+00
+          1 0.13413046D+01   -0.0057163   -0.0042437 0.231673D-01 0.196408D+00
+          2 0.13407016D+01   -0.0006030   -0.0004496 0.170744D-01 -.429438D-02
+     25   0 0.13470209D+01                           0.000000D+00 -.805066D+00
+          1 0.13413046D+01   -0.0057163   -0.0042437 0.231673D-01 0.196408D+00
+          2 0.13407016D+01   -0.0006030   -0.0004496 0.170744D-01 -.429438D-02
+     26   0 0.13407016D+01                           0.000000D+00 -.598175D+00
+          1 0.13339995D+01   -0.0067021   -0.0049990 0.170744D-01 -.158952D+00
+          2 0.13336080D+01   -0.0003915   -0.0002935 0.220333D-01 0.422446D-02
+     26   0 0.13407016D+01                           0.000000D+00 -.598175D+00
+          1 0.13339995D+01   -0.0067021   -0.0049990 0.170744D-01 -.158952D+00
+          2 0.13336080D+01   -0.0003915   -0.0002935 0.220333D-01 0.422446D-02
+     27   0 0.13336080D+01                           0.000000D+00 -.763870D+00
+          1 0.13286371D+01   -0.0049708   -0.0037273 0.220333D-01 0.205439D+00
+          2 0.13279989D+01   -0.0006382   -0.0004803 0.158938D-01 -.374670D-02
+     27   0 0.13336080D+01                           0.000000D+00 -.763870D+00
+          1 0.13286371D+01   -0.0049708   -0.0037273 0.220333D-01 0.205439D+00
+          2 0.13279989D+01   -0.0006382   -0.0004803 0.158938D-01 -.374670D-02
+     28   0 0.13279989D+01                           0.000000D+00 -.554789D+00
+          1 0.13221551D+01   -0.0058438   -0.0044005 0.158938D-01 -.157396D+00
+          2 0.13217543D+01   -0.0004008   -0.0003032 0.210066D-01 0.377907D-02
+     28   0 0.13279989D+01                           0.000000D+00 -.554789D+00
+          1 0.13221551D+01   -0.0058438   -0.0044005 0.158938D-01 -.157396D+00
+          2 0.13217543D+01   -0.0004008   -0.0003032 0.210066D-01 0.377907D-02
+     29   0 0.13217543D+01                           0.000000D+00 -.725847D+00
+          1 0.13174162D+01   -0.0043381   -0.0032821 0.210066D-01 0.212795D+00
+          2 0.13167515D+01   -0.0006647   -0.0005045 0.148533D-01 -.326346D-02
+     29   0 0.13217543D+01                           0.000000D+00 -.725847D+00
+          1 0.13174162D+01   -0.0043381   -0.0032821 0.210066D-01 0.212795D+00
+          2 0.13167515D+01   -0.0006647   -0.0005045 0.148533D-01 -.326346D-02
+     30   0 0.13167515D+01                           0.000000D+00 -.516095D+00
+          1 0.13116235D+01   -0.0051280   -0.0038945 0.148533D-01 -.154988D+00
+          2 0.13112185D+01   -0.0004050   -0.0003088 0.200871D-01 0.337801D-02
+     30   0 0.13167515D+01                           0.000000D+00 -.516095D+00
+          1 0.13116235D+01   -0.0051280   -0.0038945 0.148533D-01 -.154988D+00
+          2 0.13112185D+01   -0.0004050   -0.0003088 0.200871D-01 0.337801D-02
+
+   ITERATIONS USING QUASI-NEWTON
+
+
+   ITER STEP   FUNCTION     ABS CHANGE   REL CHANGE   STEP LENGTH   DERIVATIVE
+
+      1   0 0.13112185D+01                           0.000000D+00 -.691146D+00
+          1 0.13815038D+01    0.0702854    0.0536031 0.100000D+00 0.128223D+01
+          2 0.13069371D+01   -0.0745667   -0.0539750 0.173029D-01 0.123468D+00
+          3 0.13067306D+01   -0.0002065   -0.0001580 0.139567D-01 -.215062D-02
+      2   0 0.13067306D+01                           0.000000D+00 -.396266D+00
+          1 0.13012985D+01   -0.0054322   -0.0041571 0.139567D-01 -.382067D+00
+          2 0.12503661D+01   -0.0509324   -0.0391396 0.278680D+00 0.704586D-01
+          3 0.12494340D+01   -0.0009321   -0.0007454 0.249906D+00 -.412696D-02
+      3   0 0.12494340D+01                           0.000000D+00 -.298497D+00
+          1 0.12337432D+01   -0.0156909   -0.0125584 0.249906D+00 0.150388D+00
+          2 0.12266879D+01   -0.0070553   -0.0057186 0.157407D+00 -.414944D-03
+      4   0 0.12266879D+01                           0.000000D+00 -.193213D+00
+          1 0.12558184D+01    0.0291305    0.0237473 0.157407D+00 0.687515D+00
+          2 0.12219329D+01   -0.0338855   -0.0269828 0.487679D-01 0.599614D-02
+      5   0 0.12219329D+01                           0.000000D+00 -.111175D+00
+          1 0.12247251D+01    0.0027922    0.0022850 0.487679D-01 0.218578D+00
+          2 0.12210678D+01   -0.0036572   -0.0029862 0.157526D-01 0.305393D-03
+      6   0 0.12210678D+01                           0.000000D+00 -.698179D-01
+          1 0.12207972D+01   -0.0002706   -0.0002216 0.157526D-01 0.362647D-01
+          2 0.12207013D+01   -0.0000959   -0.0000786 0.104472D-01 -.783673D-05
+      7   0 0.12207013D+01                           0.000000D+00 -.451382D-01
+          1 0.12206661D+01   -0.0000353   -0.0000289 0.104472D-01 0.385975D-01
+          2 0.12205736D+01   -0.0000924   -0.0000757 0.565102D-02 -.147472D-05
+      8   0 0.12205736D+01                           0.000000D+00 -.335853D-01
+          1 0.12204243D+01   -0.0001493   -0.0001223 0.565102D-02 -.192655D-01
+          2 0.12203509D+01   -0.0000734   -0.0000601 0.132750D-01 0.276484D-05
+      9   0 0.12203509D+01                           0.000000D+00 -.224508D-01
+          1 0.12203716D+01    0.0000206    0.0000169 0.132750D-01 0.254749D-01
+          2 0.12202814D+01   -0.0000902   -0.0000739 0.620068D-02 0.156762D-06
+     10   0 0.12202814D+01                           0.000000D+00 -.152921D-01
+          1 0.12202769D+01   -0.0000044   -0.0000036 0.620068D-02 0.138423D-01
+          2 0.12202565D+01   -0.0000204   -0.0000167 0.325215D-02 -.461274D-07
+     10   0 0.12202814D+01                           0.000000D+00 -.159909D-01
+          1                                          0.100000D+01
+          2 0.23897906D+01    1.1695092    0.9583930 0.550000D+00 0.935258D+01
+          3 0.13141516D+01   -1.0756389   -0.4500976 0.213635D+00 0.934861D+00
+          4 0.12202521D+01   -0.0938995   -0.0714525 0.410148D-02 0.170435D-02
+          5 0.12202518D+01   -0.0000003   -0.0000003 0.370535D-02 -.438177D-07
+     11   0 0.12202518D+01                           0.000000D+00 -.672559D-02
+          1 0.12202686D+01    0.0000168    0.0000138 0.325215D-02 0.170651D-01
+          2 0.12202487D+01   -0.0000199   -0.0000163 0.920069D-03 0.995512D-07
+     12   0 0.12202487D+01                           0.000000D+00 -.263011D-02
+          1 0.12202479D+01   -0.0000008   -0.0000007 0.920069D-03 0.902980D-03
+          2 0.12202478D+01   -0.0000001   -0.0000001 0.684920D-03 0.174281D-06
+     13   0 0.12202478D+01                           0.000000D+00 -.657903D-03
+          1 0.12202485D+01    0.0000007    0.0000006 0.684920D-03 0.283311D-02
+          2 0.12202478D+01   -0.0000008   -0.0000006 0.129078D-03 -.317808D-06
+     14   0 0.12202478D+01                           0.000000D+00 -.154270D-03
+          1 0.12202478D+01    0.0000000    0.0000000 0.129078D-03 0.398893D-03
+          2 0.12202478D+01    0.0000000    0.0000000 0.359981D-04 -.210403D-07
+
+
+DIAGRAM INFORMATION
+
+  Use View Diagram under the Diagram menu in the Mplus Editor to view the diagram.
+  If running Mplus from the Mplus Diagrammer, the diagram opens automatically.
+
+  Diagram output
+    c:\users\msassac6\dropbox (the university of manchester)\grants\measurement error and crime - project\longitudinal c
+
+     Beginning Time:  09:08:20
+        Ending Time:  09:08:20
+       Elapsed Time:  00:00:00
+
+
+
+MUTHEN & MUTHEN
+3463 Stoner Ave.
+Los Angeles, CA  90066
+
+Tel: (310) 391-9971
+Fax: (310) 391-8971
+Web: www.StatModel.com
+Support: Support@StatModel.com
+
+Copyright (c) 1998-2021 Muthen & Muthen

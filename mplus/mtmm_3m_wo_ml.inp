@@ -1,0 +1,66 @@
+TITLE: Your title goes here
+DATA: FILE = b6yw2_wo.dat;
+VARIABLE: 
+NAMES = prop_vh prop_vh_r prop_vh_f prop_vh_p prop_vh_rp prop prop_r prop_f prop_p
+     prop_rp viol viol_r viol_f viol_p viol_rp; 
+USEVARIABLE = prop_vh_r prop_vh_f prop_vh_p prop_r prop_f prop_p
+     viol_r viol_f viol_p;
+
+MISSING=.;
+
+
+
+Analysis:
+
+
+  !COVERAGE = 0;
+  !ESTIMATOR = BAYES;
+  !PROCESSORS = 4;
+  !BCONVERGENCE = 0.05;
+  !THIN = 3000;
+  ! FBITERATIONS = 100;
+  !BITERATIONS = 500000 20000;
+  !CHAINS = 4;
+  !BSEED = 201509;
+  !ALGORITHM = GIBBS(PX1);
+
+
+MODEL:
+
+t_viol BY viol_f@1 viol_p@1 viol_r@1;
+t_pers BY prop_f@1 prop_p@1 prop_r@1;
+t_veh BY prop_vh_f@1 prop_vh_p@1 prop_vh_r@1;
+
+m_rep BY viol_p@1 prop_p@1 prop_vh_p@1;
+m_vic BY viol_r@1 prop_r@1 prop_vh_r@1;
+m_loc BY viol_f@1 prop_f@1 prop_vh_f@1;
+
+m_vic WITH m_rep@0;
+m_vic WITH m_loc@0;
+m_vic WITH t_viol@0;
+m_vic WITH t_veh@0;
+m_vic WITH t_pers@0;
+
+
+m_rep WITH m_loc@0;
+m_rep WITH t_viol@0;
+m_rep WITH t_veh@0;
+m_rep WITH t_pers@0;
+
+m_loc WITH t_viol@0;
+m_loc WITH t_veh@0;
+m_loc WITH t_pers@0;
+
+
+! [t_viol t_veh t_pers m_vic m_rep m_loc ];
+
+! [viol_p@0 prop_p@0 prop_vh_p@0 viol_r@0 prop_r@0 
+! prop_vh_r@0 viol_f@0 prop_f@0 prop_vh_f@0];
+
+m_loc@0;
+!m_rep@0;
+
+
+OUTPUT:
+	CINTERVAL STANDARDIZED(STDYX) RESIDUAL SVALUES
+	TECH1 TECH5 TECH8 TECH10 TECH16 TECH12 TECH16;

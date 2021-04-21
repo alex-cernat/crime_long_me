@@ -1,0 +1,221 @@
+VERSION 1.1.0
+INPUT
+TITLE:
+ Your title goes here
+DATA:
+ FILE = b6yw2_wo.dat;
+VARIABLE:
+NAMES = prop prop_r_wo prop_f_wo prop_p_wo prop_rp_wo prop_pers
+     prop_p_r_wo prop_p_f_wo prop_p_p_wo prop_p_rp_wo viol viol_r_wo
+     viol_f_wo viol_p_wo viol_rp_wo;
+USEVARIABLE = prop_r_wo prop_f_wo prop_p_wo
+     prop_p_r_wo prop_p_f_wo prop_p_p_wo viol_r_wo
+     viol_f_wo viol_p_wo ;
+MISSING=.;
+ANALYSIS:
+  ESTIMATOR = BAYES;
+  PROCESSORS = 4;
+  BCONVERGENCE = 0.05;
+  THIN = 3000;
+  BITERATIONS = 500000 20000;
+  CHAINS = 4;
+  BSEED = 201509;
+  ALGORITHM = GIBBS(PX1);
+OUTPUT:
+ CINTERVAL STANDARDIZED(STDYX) RESIDUAL SVALUES
+ TECH1 TECH5 TECH8 TECH10 TECH16 TECH12 TECH16;
+MODEL:
+t_viol BY viol_f_wo@1 viol_p_wo@1 viol_r_wo@1;
+t_veh BY prop_f_wo@1 prop_p_wo@1 prop_r_wo@1;
+t_pers BY prop_p_f_wo@1 prop_p_p_wo@1 prop_p_r_wo@1;
+m_rep BY viol_p_wo@1 prop_p_wo@1 prop_p_p_wo@1;
+m_vic BY viol_r_wo@1 prop_r_wo@1 prop_p_r_wo@1;
+m_loc BY viol_f_wo@1 prop_f_wo@1 prop_p_f_wo@1;
+m_vic WITH m_rep@0;
+m_vic WITH m_loc@0;
+m_vic WITH t_viol@0;
+m_vic WITH t_veh@0;
+m_vic WITH t_pers@0;
+m_rep WITH m_loc@0;
+m_rep WITH t_viol@0;
+m_rep WITH t_veh@0;
+m_rep WITH t_pers@0;
+m_loc WITH t_viol@0;
+m_loc WITH t_veh@0;
+m_loc WITH t_pers@0;
+[t_viol t_veh t_pers m_vic m_rep m_loc ];
+[viol_p_wo@0 prop_p_wo@0 prop_p_p_wo@0 viol_r_wo@0 prop_r_wo@0
+prop_p_r_wo@0 viol_f_wo@0 prop_f_wo@0 prop_p_f_wo@0];
+INPUT_END
+3
+3
+0
+3
+BAYES
+1
+GENERAL
+0
+9
+6
+0
+prop_r_wo prop_f_wo prop_p_wo prop_p_r_wo prop_p_f_wo prop_p_p_wo viol_r_wo viol_f_wo viol_p_wo t_viol t_veh t_pers m_rep m_vic m_loc
+1
+-1 -1 -1 -1 -1 -1 -1 -1 -1 0 0 0 0 0 0
+0
+6
+t_viol
+viol_f_wo viol_p_wo viol_r_wo
+t_veh
+prop_f_wo prop_p_wo prop_r_wo
+t_pers
+prop_p_f_wo prop_p_p_wo prop_p_r_wo
+m_rep
+viol_p_wo prop_p_wo prop_p_p_wo
+m_vic
+viol_r_wo prop_r_wo prop_p_r_wo
+m_loc
+viol_f_wo prop_f_wo prop_p_f_wo
+1 1 t_viol viol_f_wo    1.000    0.000    1.000    1.000
+1 1 t_viol viol_p_wo    1.000    0.000    1.000    1.000
+1 1 t_viol viol_r_wo    1.000    0.000    1.000    1.000
+1 1 t_veh prop_f_wo    1.000    0.000    1.000    1.000
+1 1 t_veh prop_p_wo    1.000    0.000    1.000    1.000
+1 1 t_veh prop_r_wo    1.000    0.000    1.000    1.000
+1 1 t_pers prop_p_f_wo    1.000    0.000    1.000    1.000
+1 1 t_pers prop_p_p_wo    1.000    0.000    1.000    1.000
+1 1 t_pers prop_p_r_wo    1.000    0.000    1.000    1.000
+1 1 m_rep viol_p_wo    1.000    0.000    1.000    1.000
+1 1 m_rep prop_p_wo    1.000    0.000    1.000    1.000
+1 1 m_rep prop_p_p_wo    1.000    0.000    1.000    1.000
+1 1 m_vic viol_r_wo    1.000    0.000    1.000    1.000
+1 1 m_vic prop_r_wo    1.000    0.000    1.000    1.000
+1 1 m_vic prop_p_r_wo    1.000    0.000    1.000    1.000
+1 1 m_loc viol_f_wo    1.000    0.000    1.000    1.000
+1 1 m_loc prop_f_wo    1.000    0.000    1.000    1.000
+1 1 m_loc prop_p_f_wo    1.000    0.000    1.000    1.000
+2 1 m_vic m_rep    0.000    0.000    0.000    0.000
+2 1 m_vic m_loc    0.000    0.000    0.000    0.000
+2 1 m_vic t_viol    0.000    0.000    0.000    0.000
+2 1 m_vic t_veh    0.000    0.000    0.000    0.000
+2 1 m_vic t_pers    0.000    0.000    0.000    0.000
+2 1 m_rep m_loc    0.000    0.000    0.000    0.000
+2 1 m_rep t_viol    0.000    0.000    0.000    0.000
+2 1 m_rep t_veh    0.000    0.000    0.000    0.000
+2 1 m_rep t_pers    0.000    0.000    0.000    0.000
+2 1 m_loc t_viol    0.000    0.000    0.000    0.000
+2 1 m_loc t_veh    0.000    0.000    0.000    0.000
+2 1 m_loc t_pers    0.000    0.000    0.000    0.000
+2 1 t_veh t_viol    0.970    0.195    0.674    1.432
+2 1 t_pers t_viol    1.103    0.216    0.775    1.618
+2 1 t_pers t_veh    1.161    0.229    0.815    1.708
+4 1 prop_r_wo    0.046    0.026    0.008    0.108
+4 1 prop_f_wo    0.051    0.028    0.009    0.117
+4 1 prop_p_wo    0.150    0.043    0.082    0.250
+4 1 prop_p_r_wo    0.103    0.034    0.058    0.188
+4 1 prop_p_f_wo    0.317    0.080    0.189    0.500
+4 1 prop_p_p_wo    0.292    0.075    0.174    0.470
+4 1 viol_r_wo    0.033    0.021    0.004    0.084
+4 1 viol_f_wo    0.152    0.042    0.087    0.251
+4 1 viol_p_wo    0.413    0.088    0.278    0.621
+5 1 t_viol    0.961    0.190    0.673    1.412
+5 1 t_veh    1.107    0.218    0.776    1.624
+5 1 t_pers    1.306    0.261    0.913    1.931
+5 1 m_rep    0.021    0.023    0.001    0.086
+5 1 m_vic    0.159    0.048    0.089    0.275
+5 1 m_loc    0.015    0.016    0.001    0.059
+11 1 t_viol viol_f_wo    0.922    0.023    0.868    0.956
+11 1 t_viol viol_p_wo    0.828    0.034    0.754    0.886
+11 1 t_viol viol_r_wo    0.912    0.024    0.856    0.948
+11 1 t_veh prop_f_wo    0.970    0.016    0.929    0.992
+11 1 t_veh prop_p_wo    0.929    0.019    0.885    0.958
+11 1 t_veh prop_r_wo    0.918    0.027    0.854    0.957
+11 1 t_pers prop_p_f_wo    0.892    0.029    0.826    0.939
+11 1 t_pers prop_p_p_wo    0.897    0.028    0.832    0.942
+11 1 t_pers prop_p_r_wo    0.911    0.021    0.862    0.945
+11 1 m_rep viol_p_wo    0.121    0.058    0.025    0.245
+11 1 m_rep prop_p_wo    0.126    0.060    0.026    0.253
+11 1 m_rep prop_p_p_wo    0.112    0.053    0.023    0.224
+11 1 m_vic viol_r_wo    0.370    0.055    0.271    0.487
+11 1 m_vic prop_r_wo    0.347    0.054    0.251    0.460
+11 1 m_vic prop_p_r_wo    0.317    0.049    0.230    0.421
+11 1 m_loc viol_f_wo    0.114    0.056    0.024    0.237
+11 1 m_loc prop_f_wo    0.112    0.055    0.023    0.233
+11 1 m_loc prop_p_f_wo    0.095    0.046    0.020    0.196
+12 1 m_vic m_rep    0.000    0.000    0.000    0.000
+12 1 m_vic m_loc    0.000    0.000    0.000    0.000
+12 1 m_vic t_viol    0.000    0.000    0.000    0.000
+12 1 m_vic t_veh    0.000    0.000    0.000    0.000
+12 1 m_vic t_pers    0.000    0.000    0.000    0.000
+12 1 m_rep m_loc    0.000    0.000    0.000    0.000
+12 1 m_rep t_viol    0.000    0.000    0.000    0.000
+12 1 m_rep t_veh    0.000    0.000    0.000    0.000
+12 1 m_rep t_pers    0.000    0.000    0.000    0.000
+12 1 m_loc t_viol    0.000    0.000    0.000    0.000
+12 1 m_loc t_veh    0.000    0.000    0.000    0.000
+12 1 m_loc t_pers    0.000    0.000    0.000    0.000
+12 1 t_veh t_viol    0.943    0.019    0.896    0.970
+12 1 t_pers t_viol    0.987    0.009    0.963    0.998
+12 1 t_pers t_veh    0.968    0.014    0.933    0.987
+14 1 prop_r_wo    0.034    0.019    0.006    0.082
+14 1 prop_f_wo    0.043    0.025    0.007    0.106
+14 1 prop_p_wo    0.116    0.035    0.061    0.196
+14 1 prop_p_r_wo    0.066    0.021    0.035    0.118
+14 1 prop_p_f_wo    0.192    0.050    0.108    0.305
+14 1 prop_p_p_wo    0.179    0.048    0.101    0.287
+14 1 viol_r_wo    0.028    0.019    0.003    0.075
+14 1 viol_f_wo    0.134    0.039    0.073    0.223
+14 1 viol_p_wo    0.295    0.056    0.196    0.415
+15 1 t_viol    1.000    0.000    1.000    1.000
+15 1 t_veh    1.000    0.000    1.000    1.000
+15 1 t_pers    1.000    0.000    1.000    1.000
+15 1 m_rep    1.000    0.000    1.000    1.000
+15 1 m_vic    1.000    0.000    1.000    1.000
+15 1 m_loc    1.000    0.000    1.000    1.000
+31 1 t_viol viol_f_wo    0.922    0.023    0.868    0.956
+31 1 t_viol viol_p_wo    0.828    0.034    0.754    0.886
+31 1 t_viol viol_r_wo    0.912    0.024    0.856    0.948
+31 1 t_veh prop_f_wo    0.970    0.016    0.929    0.992
+31 1 t_veh prop_p_wo    0.929    0.019    0.885    0.958
+31 1 t_veh prop_r_wo    0.918    0.027    0.854    0.957
+31 1 t_pers prop_p_f_wo    0.892    0.029    0.826    0.939
+31 1 t_pers prop_p_p_wo    0.897    0.028    0.832    0.942
+31 1 t_pers prop_p_r_wo    0.911    0.021    0.862    0.945
+31 1 m_rep viol_p_wo    0.121    0.058    0.025    0.245
+31 1 m_rep prop_p_wo    0.126    0.060    0.026    0.253
+31 1 m_rep prop_p_p_wo    0.112    0.053    0.023    0.224
+31 1 m_vic viol_r_wo    0.370    0.055    0.271    0.487
+31 1 m_vic prop_r_wo    0.347    0.054    0.251    0.460
+31 1 m_vic prop_p_r_wo    0.317    0.049    0.230    0.421
+31 1 m_loc viol_f_wo    0.114    0.056    0.024    0.237
+31 1 m_loc prop_f_wo    0.112    0.055    0.023    0.233
+31 1 m_loc prop_p_f_wo    0.095    0.046    0.020    0.196
+32 1 m_vic m_rep    0.000    0.000    0.000    0.000
+32 1 m_vic m_loc    0.000    0.000    0.000    0.000
+32 1 m_vic t_viol    0.000    0.000    0.000    0.000
+32 1 m_vic t_veh    0.000    0.000    0.000    0.000
+32 1 m_vic t_pers    0.000    0.000    0.000    0.000
+32 1 m_rep m_loc    0.000    0.000    0.000    0.000
+32 1 m_rep t_viol    0.000    0.000    0.000    0.000
+32 1 m_rep t_veh    0.000    0.000    0.000    0.000
+32 1 m_rep t_pers    0.000    0.000    0.000    0.000
+32 1 m_loc t_viol    0.000    0.000    0.000    0.000
+32 1 m_loc t_veh    0.000    0.000    0.000    0.000
+32 1 m_loc t_pers    0.000    0.000    0.000    0.000
+32 1 t_veh t_viol    0.943    0.019    0.896    0.970
+32 1 t_pers t_viol    0.987    0.009    0.963    0.998
+32 1 t_pers t_veh    0.968    0.014    0.933    0.987
+34 1 prop_r_wo    0.034    0.019    0.006    0.082
+34 1 prop_f_wo    0.043    0.025    0.007    0.106
+34 1 prop_p_wo    0.116    0.035    0.061    0.196
+34 1 prop_p_r_wo    0.066    0.021    0.035    0.118
+34 1 prop_p_f_wo    0.192    0.050    0.108    0.305
+34 1 prop_p_p_wo    0.179    0.048    0.101    0.287
+34 1 viol_r_wo    0.028    0.019    0.003    0.075
+34 1 viol_f_wo    0.134    0.039    0.073    0.223
+34 1 viol_p_wo    0.295    0.056    0.196    0.415
+35 1 t_viol    1.000    0.000    1.000    1.000
+35 1 t_veh    1.000    0.000    1.000    1.000
+35 1 t_pers    1.000    0.000    1.000    1.000
+35 1 m_rep    1.000    0.000    1.000    1.000
+35 1 m_vic    1.000    0.000    1.000    1.000
+35 1 m_loc    1.000    0.000    1.000    1.000

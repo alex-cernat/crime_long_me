@@ -1,0 +1,120 @@
+VERSION 1.1.0
+INPUT
+TITLE:
+ Your title goes here
+DATA:
+ FILE = "./mplus/b2yw_wo.dat";
+VARIABLE:
+NAMES = id p_15 p_17 p_19 p_r_wo_15 p_r_wo_17
+     p_r_wo_19 p_f_wo_15 p_f_wo_17 p_f_wo_19 p_p_wo_15
+     p_p_wo_17 p_p_wo_19 p_rp_wo_15 p_rp_wo_17
+     p_rp_wo_19 p_pers_15 p_pers_17 p_pers_19 p_pers_r_wo_15
+     p_pers_r_wo_17 p_pers_r_wo_19 p_pers_f_wo_15 p_pers_f_wo_17
+     p_pers_f_wo_19 p_pers_p_wo_15 p_pers_p_wo_17 p_pers_p_wo_19
+     p_pers_rp_wo_15 p_pers_rp_wo_17 p_pers_rp_wo_19 viol_15 viol_17
+     viol_19 viol_r_wo_15 viol_r_wo_17 viol_r_wo_19 viol_f_wo_15 viol_f_wo_17
+     viol_f_wo_19 viol_p_wo_15 viol_p_wo_17 viol_p_wo_19 viol_rp_wo_15 viol_rp_wo_17
+     viol_rp_wo_19;
+USEVARIABLE = p_p_wo_15 p_p_wo_17 p_p_wo_19 p_r_wo_15 p_r_wo_17
+    p_r_wo_19 p_f_wo_15 p_f_wo_17 p_f_wo_19;
+MISSING=.;
+ANALYSIS:
+  ESTIMATOR = BAYES;
+  PROCESSORS = 4;
+  BCONVERGENCE = 0.01;
+  THIN = 3000;
+  BITERATIONS = 500000 20000;
+  CHAINS = 4;
+  BSEED = 2015022;
+  ALGORITHM = GIBBS(PX1);
+OUTPUT:
+ CINTERVAL STANDARDIZED(STDYX) RESIDUAL SVALUES
+ TECH1 TECH5 TECH8 TECH10 TECH16 TECH12 TECH16;
+MODEL:
+t1 BY p_f_wo_15@1 p_p_wo_15@1 p_r_wo_15@1;
+t2 BY p_f_wo_17@1 p_p_wo_17@1 p_r_wo_17@1;
+t3 BY p_f_wo_19@1 p_p_wo_19@1 p_r_wo_19@1;
+t2 ON t1;
+t3 ON t2;
+m_rep BY p_p_wo_15@1 p_p_wo_17@1 p_p_wo_19@1;
+m_vic BY p_r_wo_15@1 p_r_wo_17@1 p_r_wo_19@1;
+m_loc BY p_f_wo_15@1 p_f_wo_17@1 p_f_wo_19@1;
+m_vic WITH m_rep@0;
+m_vic WITH m_loc@0;
+m_vic WITH t1@0;
+m_rep WITH m_loc@0;
+m_rep WITH t1@0;
+m_loc WITH t1@0;
+[t1 t2 t3 m_vic m_rep m_loc ];
+[p_p_wo_15@0 p_p_wo_17@0 p_p_wo_19@0 p_r_wo_15@0 p_r_wo_17@0
+p_r_wo_19@0 p_f_wo_15@0 p_f_wo_17@0 p_f_wo_19@0];
+INPUT_END
+1
+1
+0
+1
+BAYES
+1
+GENERAL
+0
+9
+6
+0
+p_p_wo_15 p_p_wo_17 p_p_wo_19 p_r_wo_15 p_r_wo_17 p_r_wo_19 p_f_wo_15 p_f_wo_17 p_f_wo_19 t1 t2 t3 m_rep m_vic m_loc
+3
+-1 -1 -1 -1 -1 -1 -1 -1 -1 0 1 2 0 0 0
+0
+6
+t1
+p_f_wo_15 p_p_wo_15 p_r_wo_15
+t2
+p_f_wo_17 p_p_wo_17 p_r_wo_17
+t3
+p_f_wo_19 p_p_wo_19 p_r_wo_19
+m_rep
+p_p_wo_15 p_p_wo_17 p_p_wo_19
+m_vic
+p_r_wo_15 p_r_wo_17 p_r_wo_19
+m_loc
+p_f_wo_15 p_f_wo_17 p_f_wo_19
+1 1 t1 p_f_wo_15    1.000
+1 1 t1 p_p_wo_15    1.000
+1 1 t1 p_r_wo_15    1.000
+1 1 t2 p_f_wo_17    1.000
+1 1 t2 p_p_wo_17    1.000
+1 1 t2 p_r_wo_17    1.000
+1 1 t3 p_f_wo_19    1.000
+1 1 t3 p_p_wo_19    1.000
+1 1 t3 p_r_wo_19    1.000
+1 1 m_rep p_p_wo_15    1.000
+1 1 m_rep p_p_wo_17    1.000
+1 1 m_rep p_p_wo_19    1.000
+1 1 m_vic p_r_wo_15    1.000
+1 1 m_vic p_r_wo_17    1.000
+1 1 m_vic p_r_wo_19    1.000
+1 1 m_loc p_f_wo_15    1.000
+1 1 m_loc p_f_wo_17    1.000
+1 1 m_loc p_f_wo_19    1.000
+1 1 t1 t2    0.806
+1 1 t2 t3    0.991
+2 1 m_vic m_rep    0.000
+2 1 m_vic m_loc    0.000
+2 1 m_vic t1    0.000
+2 1 m_rep m_loc    0.000
+2 1 m_rep t1    0.000
+2 1 m_loc t1    0.000
+4 1 p_p_wo_15    0.048
+4 1 p_p_wo_17    0.269
+4 1 p_p_wo_19    0.115
+4 1 p_r_wo_15    0.222
+4 1 p_r_wo_17    0.179
+4 1 p_r_wo_19    0.105
+4 1 p_f_wo_15    0.313
+4 1 p_f_wo_17    0.130
+4 1 p_f_wo_19    0.045
+4 1 t2    0.123
+4 1 t3    0.197
+5 1 t1    0.898
+5 1 m_rep    0.030
+5 1 m_vic    0.122
+5 1 m_loc    0.013

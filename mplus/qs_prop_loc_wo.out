@@ -1,0 +1,574 @@
+Mplus VERSION 8.6
+MUTHEN & MUTHEN
+04/20/2021   8:58 AM
+
+INPUT INSTRUCTIONS
+
+  TITLE: Your title goes here
+  DATA: FILE = "./mplus/b2yw_wo.dat";
+  VARIABLE:
+  NAMES = id prop_vh_15 prop_vh_17 prop_vh_19 prop_vh_r_15 prop_vh_r_17 prop_vh_r_19
+       prop_vh_f_15 prop_vh_f_17 prop_vh_f_19 prop_vh_p_15 prop_vh_p_17 prop_vh_p_19
+       prop_vh_rp_15 prop_vh_rp_17 prop_vh_rp_19 prop_15 prop_17 prop_19 prop_r_15
+       prop_r_17 prop_r_19 prop_f_15 prop_f_17 prop_f_19 prop_p_15 prop_p_17 prop_p_19
+       prop_rp_15 prop_rp_17 prop_rp_19 viol_15 viol_17 viol_19 viol_r_15 viol_r_17
+       viol_r_19 viol_f_15 viol_f_17 viol_f_19 viol_p_15 viol_p_17 viol_p_19
+       viol_rp_15 viol_rp_17 viol_rp_19;
+
+  USEVARIABLE = prop_f_15 prop_f_17 prop_f_19;
+
+  MISSING=.;
+
+  Analysis:
+
+
+    !COVERAGE = 0;
+    ESTIMATOR = BAYES;
+    PROCESSORS = 4;
+    BCONVERGENCE = 0.05;
+    THIN = 3000;
+    FBITERATIONS = 1000;
+    BITERATIONS = 500000 10000;
+    CHAINS = 4;
+    BSEED = 2015011;
+
+  MODEL:
+
+  t1 BY prop_f_15@1;
+  t2 BY prop_f_17@1;
+  t3 BY prop_f_19@1;
+
+  t2 ON t1;
+  t3 ON t2;
+
+  prop_f_15 (a)
+  prop_f_17 (a)
+  prop_f_19 (a);
+
+
+
+  OUTPUT:
+  	CINTERVAL STANDARDIZED(STDYX) RESIDUAL SVALUES
+  	TECH1 TECH5 TECH8 TECH10 TECH16 TECH12 TECH16;
+
+
+
+*** WARNING in ANALYSIS command
+  The BCONVERGENCE option is not used when the FBITERATIONS option is used.
+  Setting for the BCONVERGENCE option will be ignored.
+*** WARNING in VARIABLE command
+  Note that only the first 8 characters of variable names are used in the output.
+  Shorten variable names to avoid any confusion.
+*** WARNING in OUTPUT command
+  TECH10 option is only available with categorical or count outcomes.
+  Request for TECH10 is ignored.
+*** WARNING in OUTPUT command
+  TECH12 option is available only with TYPE=MIXTURE.
+  Request for TECH12 is ignored.
+   4 WARNING(S) FOUND IN THE INPUT INSTRUCTIONS
+
+
+
+Your title goes here
+
+SUMMARY OF ANALYSIS
+
+Number of groups                                                 1
+Number of observations                                          73
+
+Number of dependent variables                                    3
+Number of independent variables                                  0
+Number of continuous latent variables                            3
+
+Observed dependent variables
+
+  Continuous
+   PROP_F_15   PROP_F_17   PROP_F_19
+
+Continuous latent variables
+   T1          T2          T3
+
+
+Estimator                                                    BAYES
+Specifications for Bayesian Estimation
+  Point estimate                                            MEDIAN
+  Number of Markov chain Monte Carlo (MCMC) chains               4
+  Random seed for the first chain                          2015011
+  Starting value information                           UNPERTURBED
+  Algorithm used for Markov chain Monte Carlo           GIBBS(PX1)
+  Fixed number of iterations                                  1000
+  K-th iteration used for thinning                            3000
+
+Input data file(s)
+  ./mplus/b2yw_wo.dat
+Input data format  FREE
+
+
+SUMMARY OF DATA
+
+
+
+COVARIANCE COVERAGE OF DATA
+
+Minimum covariance coverage value   0.100
+
+     Number of missing data patterns             1
+
+
+     PROPORTION OF DATA PRESENT
+
+
+           Covariance Coverage
+              PROP_F_1      PROP_F_1      PROP_F_1
+              ________      ________      ________
+ PROP_F_1       1.000
+ PROP_F_1       1.000         1.000
+ PROP_F_1       1.000         1.000         1.000
+
+
+
+UNIVARIATE SAMPLE STATISTICS
+
+
+     UNIVARIATE HIGHER-ORDER MOMENT DESCRIPTIVE STATISTICS
+
+         Variable/         Mean/     Skewness/   Minimum/ % with                Percentiles
+        Sample Size      Variance    Kurtosis    Maximum  Min/Max      20%/60%    40%/80%    Median
+
+     PROP_F_15             1.590       0.369       0.000   15.07%       0.338      1.252      1.658
+              73.000       1.225      -0.364       4.320    1.37%       1.777      2.391
+     PROP_F_17             1.995       0.182       0.000   10.96%       0.764      1.508      2.173
+              73.000       1.589      -0.709       5.079    1.37%       2.359      3.025
+     PROP_F_19             2.105       0.237       0.000   12.33%       0.809      1.710      2.133
+              73.000       1.739      -0.371       5.554    1.37%       2.376      3.148
+
+
+THE MODEL ESTIMATION TERMINATED NORMALLY
+
+     USE THE FBITERATIONS OPTION TO INCREASE THE NUMBER OF ITERATIONS BY A FACTOR
+     OF AT LEAST TWO TO CHECK CONVERGENCE AND THAT THE PSR VALUE DOES NOT INCREASE.
+
+
+
+MODEL FIT INFORMATION
+
+Number of Free Parameters                               9
+
+Bayesian Posterior Predictive Checking using Chi-Square
+
+          95% Confidence Interval for the Difference Between
+          the Observed and the Replicated Chi-Square Values
+
+                                 -5.872            19.752
+
+          Posterior Predictive P-Value              0.147
+
+Information Criteria
+
+          Deviance (DIC)                          507.255
+          Estimated Number of Parameters (pD)       7.655
+          Bayesian (BIC)                          529.562
+
+RMSEA (Root Mean Square Error Of Approximation)
+
+          Estimate                           0.245
+          90 Percent C.I.                    0.081  0.400
+          Probability RMSEA <= .05           0.029
+
+CFI/TLI
+
+          CFI                                0.974
+          90 Percent C.I.                    0.925  0.996
+
+          TLI                                0.941
+          90 Percent C.I.                    0.833  0.992
+
+
+
+MODEL RESULTS
+
+                                Posterior  One-Tailed         95% C.I.
+                    Estimate       S.D.      P-Value   Lower 2.5%  Upper 2.5%  Significance
+
+ T1       BY
+    PROP_F_15          1.000       0.000      0.000       1.000       1.000
+
+ T2       BY
+    PROP_F_17          1.000       0.000      0.000       1.000       1.000
+
+ T3       BY
+    PROP_F_19          1.000       0.000      0.000       1.000       1.000
+
+ T2         ON
+    T1                 1.103       0.093      0.000       0.934       1.297      *
+
+ T3         ON
+    T2                 1.055       0.067      0.000       0.929       1.192      *
+
+ Intercepts
+    PROP_F_15          1.590       0.133      0.000       1.335       1.846      *
+    PROP_F_17          1.992       0.151      0.000       1.697       2.293      *
+    PROP_F_19          2.104       0.158      0.000       1.797       2.415      *
+
+ Variances
+    T1                 1.107       0.229      0.000       0.755       1.659      *
+
+ Residual Variances
+    PROP_F_15          0.175       0.031      0.000       0.118       0.236      *
+    PROP_F_17          0.175       0.031      0.000       0.118       0.236      *
+    PROP_F_19          0.175       0.031      0.000       0.118       0.236      *
+    T2                 0.112       0.085      0.000       0.008       0.320      *
+    T3                 0.031       0.039      0.000       0.001       0.147      *
+
+
+STANDARDIZED MODEL RESULTS
+
+
+STDYX Standardization
+
+                                Posterior  One-Tailed         95% C.I.
+                    Estimate       S.D.      P-Value   Lower 2.5%  Upper 2.5%  Significance
+ T1       BY
+    PROP_F_15          0.930       0.018      0.000       0.887       0.959      *
+
+ T2       BY
+    PROP_F_17          0.946       0.013      0.000       0.916       0.969      *
+
+ T3       BY
+    PROP_F_19          0.952       0.012      0.000       0.925       0.972      *
+
+ T2         ON
+    T1                 0.961       0.030      0.000       0.888       0.997      *
+
+ T3         ON
+    T2                 0.991       0.012      0.000       0.957       1.000      *
+
+ Intercepts
+    PROP_F_15          1.402       0.169      0.000       1.086       1.738      *
+    PROP_F_17          1.553       0.175      0.000       1.218       1.915      *
+    PROP_F_19          1.545       0.173      0.000       1.203       1.876      *
+
+ Variances
+    T1                 1.000       0.000      0.000       1.000       1.000
+
+ Residual Variances
+    PROP_F_15          0.134       0.033      0.000       0.081       0.213      *
+    PROP_F_17          0.105       0.025      0.000       0.061       0.161      *
+    PROP_F_19          0.093       0.023      0.000       0.055       0.144      *
+    T2                 0.076       0.056      0.000       0.005       0.211      *
+    T3                 0.018       0.023      0.000       0.001       0.084      *
+
+
+R-SQUARE
+
+                                Posterior  One-Tailed         95% C.I.
+    Variable        Estimate       S.D.      P-Value   Lower 2.5%  Upper 2.5%
+
+    PROP_F_15          0.866       0.033      0.000       0.787       0.919
+    PROP_F_17          0.895       0.025      0.000       0.839       0.939
+    PROP_F_19          0.907       0.023      0.000       0.856       0.945
+
+                                Posterior  One-Tailed         95% C.I.
+    Variable        Estimate       S.D.      P-Value   Lower 2.5%  Upper 2.5%
+
+    T2                 0.924       0.056      0.000       0.789       0.994
+    T3                 0.982       0.023      0.000       0.915       0.999
+
+
+CREDIBILITY INTERVALS OF MODEL RESULTS
+
+                  Lower .5%  Lower 2.5%    Lower 5%    Estimate    Upper 5%  Upper 2.5%   Upper .5%
+
+ T1       BY
+    PROP_F_15        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ T2       BY
+    PROP_F_17        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ T3       BY
+    PROP_F_19        1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ T2       ON
+    T1               0.882       0.934       0.964       1.103       1.270       1.297       1.391
+
+ T3       ON
+    T2               0.892       0.929       0.951       1.055       1.171       1.192       1.236
+
+ Intercepts
+    PROP_F_15        1.241       1.335       1.372       1.590       1.810       1.846       1.935
+    PROP_F_17        1.607       1.697       1.745       1.992       2.239       2.293       2.392
+    PROP_F_19        1.681       1.797       1.849       2.104       2.363       2.415       2.502
+
+ Variances
+    T1               0.685       0.755       0.802       1.107       1.528       1.659       1.837
+
+ Residual Variances
+    PROP_F_15        0.101       0.118       0.127       0.175       0.228       0.236       0.257
+    PROP_F_17        0.101       0.118       0.127       0.175       0.228       0.236       0.257
+    PROP_F_19        0.101       0.118       0.127       0.175       0.228       0.236       0.257
+    T2               0.001       0.008       0.016       0.112       0.283       0.320       0.412
+    T3               0.000       0.001       0.003       0.031       0.121       0.147       0.206
+
+
+CREDIBILITY INTERVALS OF STANDARDIZED MODEL RESULTS
+
+
+STDYX Standardization
+
+                  Lower .5%  Lower 2.5%    Lower 5%    Estimate    Upper 5%  Upper 2.5%   Upper .5%
+
+ T1       BY
+    PROP_F_15        0.875       0.887       0.895       0.930       0.955       0.959       0.965
+
+ T2       BY
+    PROP_F_17        0.905       0.916       0.920       0.946       0.965       0.969       0.973
+
+ T3       BY
+    PROP_F_19        0.915       0.925       0.931       0.952       0.969       0.972       0.976
+
+ T2       ON
+    T1               0.855       0.888       0.901       0.961       0.995       0.997       1.000
+
+ T3       ON
+    T2               0.941       0.957       0.963       0.991       0.999       1.000       1.000
+
+ Intercepts
+    PROP_F_15        0.995       1.086       1.130       1.402       1.694       1.738       1.875
+    PROP_F_17        1.100       1.218       1.268       1.553       1.855       1.915       2.006
+    PROP_F_19        1.094       1.203       1.249       1.545       1.828       1.876       1.992
+
+ Variances
+    T1               1.000       1.000       1.000       1.000       1.000       1.000       1.000
+
+ Residual Variances
+    PROP_F_15        0.069       0.081       0.088       0.134       0.198       0.213       0.234
+    PROP_F_17        0.053       0.061       0.069       0.105       0.153       0.161       0.180
+    PROP_F_19        0.046       0.055       0.061       0.093       0.134       0.144       0.163
+    T2               0.001       0.005       0.010       0.076       0.187       0.211       0.268
+    T3               0.000       0.001       0.002       0.018       0.072       0.084       0.113
+
+
+MODEL COMMAND WITH FINAL ESTIMATES USED AS STARTING VALUES
+
+     t1 BY prop_f_15@1;
+     t2 BY prop_f_17@1;
+     t3 BY prop_f_19@1;
+
+     t2 ON t1*1.10327;
+     t3 ON t2*1.05505;
+
+     [ prop_f_15*1.59035 ];
+     [ prop_f_17*1.99204 ];
+     [ prop_f_19*2.10380 ];
+
+     prop_f_15*0.17484 (a);
+     prop_f_17*0.17484 (a);
+     prop_f_19*0.17484 (a);
+     t1*1.10729;
+     t2*0.11218;
+     t3*0.03082;
+
+
+
+RESIDUAL OUTPUT
+
+
+     ESTIMATED MODEL
+
+
+           Means
+              PROP_F_1      PROP_F_1      PROP_F_1
+              ________      ________      ________
+                1.590         1.992         2.104
+
+
+           Covariances
+              PROP_F_1      PROP_F_1      PROP_F_1
+              ________      ________      ________
+ PROP_F_1       1.282
+ PROP_F_1       1.222         1.635
+ PROP_F_1       1.289         1.540         1.831
+
+
+           Correlations
+              PROP_F_1      PROP_F_1      PROP_F_1
+              ________      ________      ________
+ PROP_F_1       1.000
+ PROP_F_1       0.844         1.000
+ PROP_F_1       0.841         0.890         1.000
+
+
+TECHNICAL 1 OUTPUT
+
+
+     PARAMETER SPECIFICATION
+
+
+           NU
+              PROP_F_1      PROP_F_1      PROP_F_1
+              ________      ________      ________
+                    1             2             3
+
+
+           LAMBDA
+              T1            T2            T3
+              ________      ________      ________
+ PROP_F_1           0             0             0
+ PROP_F_1           0             0             0
+ PROP_F_1           0             0             0
+
+
+           THETA
+              PROP_F_1      PROP_F_1      PROP_F_1
+              ________      ________      ________
+ PROP_F_1           4
+ PROP_F_1           0             4
+ PROP_F_1           0             0             4
+
+
+           ALPHA
+              T1            T2            T3
+              ________      ________      ________
+                    0             0             0
+
+
+           BETA
+              T1            T2            T3
+              ________      ________      ________
+ T1                 0             0             0
+ T2                 5             0             0
+ T3                 0             6             0
+
+
+           PSI
+              T1            T2            T3
+              ________      ________      ________
+ T1                 7
+ T2                 0             8
+ T3                 0             0             9
+
+
+     STARTING VALUES
+
+
+           NU
+              PROP_F_1      PROP_F_1      PROP_F_1
+              ________      ________      ________
+                1.590         1.995         2.105
+
+
+           LAMBDA
+              T1            T2            T3
+              ________      ________      ________
+ PROP_F_1       1.000         0.000         0.000
+ PROP_F_1       0.000         1.000         0.000
+ PROP_F_1       0.000         0.000         1.000
+
+
+           THETA
+              PROP_F_1      PROP_F_1      PROP_F_1
+              ________      ________      ________
+ PROP_F_1       0.612
+ PROP_F_1       0.000         0.794
+ PROP_F_1       0.000         0.000         0.869
+
+
+           ALPHA
+              T1            T2            T3
+              ________      ________      ________
+                0.000         0.000         0.000
+
+
+           BETA
+              T1            T2            T3
+              ________      ________      ________
+ T1             0.000         0.000         0.000
+ T2             0.000         0.000         0.000
+ T3             0.000         0.000         0.000
+
+
+           PSI
+              T1            T2            T3
+              ________      ________      ________
+ T1             1.000
+ T2             0.000         1.000
+ T3             0.000         0.000         1.000
+
+
+
+     PRIORS FOR ALL PARAMETERS            PRIOR MEAN      PRIOR VARIANCE     PRIOR STD. DEV.
+
+     Parameter 1~N(0.000,infinity)           0.0000            infinity            infinity
+     Parameter 2~N(0.000,infinity)           0.0000            infinity            infinity
+     Parameter 3~N(0.000,infinity)           0.0000            infinity            infinity
+     Parameter 4~IG(-1.000,0.000)          infinity            infinity            infinity
+     Parameter 5~N(0.000,infinity)           0.0000            infinity            infinity
+     Parameter 6~N(0.000,infinity)           0.0000            infinity            infinity
+     Parameter 7~IG(-1.000,0.000)          infinity            infinity            infinity
+     Parameter 8~IG(-1.000,0.000)          infinity            infinity            infinity
+     Parameter 9~IG(-1.000,0.000)          infinity            infinity            infinity
+
+
+TECHNICAL 16 OUTPUT
+
+
+     Testing significance of variance components
+
+
+     Parameter     BF for <0.0001    BF for <0.001    BF for <0.01    BF for <0.1
+
+
+
+
+TECHNICAL 8 OUTPUT
+
+
+   TECHNICAL 8 OUTPUT FOR BAYES ESTIMATION
+
+     CHAIN    BSEED
+     1        2015011
+     2        240617
+     3        950827
+     4        713781
+
+                     POTENTIAL       PARAMETER WITH
+     ITERATION    SCALE REDUCTION      HIGHEST PSR
+     100              1.014               6
+     200              1.001               4
+     300              1.000               1
+     400              1.001               6
+     500              1.001               7
+     600              1.001               7
+     700              1.001               7
+     800              1.001               8
+     900              1.001               8
+     1000             1.000               7
+
+
+TECHNICAL 5 OUTPUT
+
+
+DIAGRAM INFORMATION
+
+  Use View Diagram under the Diagram menu in the Mplus Editor to view the diagram.
+  If running Mplus from the Mplus Diagrammer, the diagram opens automatically.
+
+  Diagram output
+    c:\users\msassac6\dropbox (the university of manchester)\grants\measurement error and crime - project\longitudinal c
+
+     Beginning Time:  08:58:33
+        Ending Time:  09:04:42
+       Elapsed Time:  00:06:09
+
+
+
+MUTHEN & MUTHEN
+3463 Stoner Ave.
+Los Angeles, CA  90066
+
+Tel: (310) 391-9971
+Fax: (310) 391-8971
+Web: www.StatModel.com
+Support: Support@StatModel.com
+
+Copyright (c) 1998-2021 Muthen & Muthen

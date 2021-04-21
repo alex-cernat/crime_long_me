@@ -1,0 +1,143 @@
+VERSION 1.1.0
+INPUT
+TITLE:
+ Your title goes here
+DATA:
+ FILE = "./mplus/b2yw_wo.dat";
+VARIABLE:
+NAMES = id prop_15 prop_17 prop_19 prop_r_wo_15 prop_r_wo_17
+     prop_r_wo_19 prop_f_wo_15 prop_f_wo_17 prop_f_wo_19 prop_p_wo_15
+     prop_p_wo_17 prop_p_wo_19 prop_rp_wo_15 prop_rp_wo_17
+     prop_rp_wo_19 prop_pers_15 prop_pers_17 prop_pers_19 prop_pers_r_wo_15
+     prop_pers_r_wo_17 prop_pers_r_wo_19 prop_pers_f_wo_15 prop_pers_f_wo_17
+     prop_pers_f_wo_19 prop_pers_p_wo_15 prop_pers_p_wo_17 prop_pers_p_wo_19
+     prop_pers_rp_wo_15 prop_pers_rp_wo_17 prop_pers_rp_wo_19 viol_15 viol_17
+     viol_19 viol_r_wo_15 viol_r_wo_17 viol_r_wo_19 viol_f_wo_15 viol_f_wo_17
+     viol_f_wo_19 viol_p_wo_15 viol_p_wo_17 viol_p_wo_19 viol_rp_wo_15 viol_rp_wo_17
+     viol_rp_wo_19;
+USEVARIABLE = prop_p_wo_15 prop_p_wo_17 prop_p_wo_19 prop_r_wo_15 prop_r_wo_17
+    prop_r_wo_19 prop_f_wo_15 prop_f_wo_17 prop_f_wo_19 prop_rp_wo_15
+    prop_rp_wo_17 prop_rp_wo_19;
+MISSING=.;
+ANALYSIS:
+  ESTIMATOR = BAYES;
+  PROCESSORS = 4;
+  BCONVERGENCE = 0.05;
+  THIN = 3000;
+  BITERATIONS = 500000 20000;
+  CHAINS = 4;
+  BSEED = 2015011;
+  ALGORITHM = GIBBS(PX1);
+OUTPUT:
+ CINTERVAL STANDARDIZED(STDYX) RESIDUAL SVALUES
+ TECH1 TECH5 TECH8 TECH10 TECH16 TECH12 TECH16;
+MODEL:
+t1 BY prop_f_wo_15@1 prop_p_wo_15@1 prop_r_wo_15@1 prop_rp_wo_15@1;
+t2 BY prop_f_wo_17@1 prop_p_wo_17@1 prop_r_wo_17@1 prop_rp_wo_17@1;
+t3 BY prop_f_wo_19@1 prop_p_wo_19@1 prop_r_wo_19@1 prop_rp_wo_19@1;
+t2 ON t1;
+t3 ON t2;
+m_rep BY prop_p_wo_15@1 prop_p_wo_17@1 prop_p_wo_19@1;
+m_vic BY prop_r_wo_15@1 prop_r_wo_17@1 prop_r_wo_19@1;
+m_loc BY prop_f_wo_15@1 prop_f_wo_17@1 prop_f_wo_19@1;
+m_vicrep BY prop_rp_wo_15@1 prop_rp_wo_17@1 prop_rp_wo_19@1;
+m_vic WITH m_rep@0;
+m_vic WITH m_loc@0;
+m_vic WITH m_vicrep@0;
+m_vic WITH t1@0;
+m_rep WITH m_loc@0;
+m_rep WITH m_vicrep@0;
+m_rep WITH t1@0;
+m_loc WITH m_vicrep@0;
+m_loc WITH t1@0;
+m_vicrep WITH t1@0;
+[t1 t2 t3 m_vic m_rep m_loc m_vicrep];
+[prop_p_wo_15@0 prop_p_wo_17@0 prop_p_wo_19@0 prop_r_wo_15@0 prop_r_wo_17@0
+prop_r_wo_19@0 prop_f_wo_15@0 prop_f_wo_17@0 prop_f_wo_19@0 prop_rp_wo_15@0
+prop_rp_wo_17@0 prop_rp_wo_19@0];
+INPUT_END
+1
+1
+0
+1
+BAYES
+1
+GENERAL
+0
+12
+7
+0
+prop_p_wo_15 prop_p_wo_17 prop_p_wo_19 prop_r_wo_15 prop_r_wo_17 prop_r_wo_19 prop_f_wo_15 prop_f_wo_17 prop_f_wo_19 prop_rp_wo_15 prop_rp_wo_17 prop_rp_wo_19 t1 t2 t3 m_rep m_vic m_loc m_vicrep
+3
+-1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 0 1 2 0 0 0 0
+0
+7
+t1
+prop_f_wo_15 prop_p_wo_15 prop_r_wo_15 prop_rp_wo_15
+t2
+prop_f_wo_17 prop_p_wo_17 prop_r_wo_17 prop_rp_wo_17
+t3
+prop_f_wo_19 prop_p_wo_19 prop_r_wo_19 prop_rp_wo_19
+m_rep
+prop_p_wo_15 prop_p_wo_17 prop_p_wo_19
+m_vic
+prop_r_wo_15 prop_r_wo_17 prop_r_wo_19
+m_loc
+prop_f_wo_15 prop_f_wo_17 prop_f_wo_19
+m_vicrep
+prop_rp_wo_15 prop_rp_wo_17 prop_rp_wo_19
+1 1 t1 prop_f_wo_15    1.000
+1 1 t1 prop_p_wo_15    1.000
+1 1 t1 prop_r_wo_15    1.000
+1 1 t1 prop_rp_wo_15    1.000
+1 1 t2 prop_f_wo_17    1.000
+1 1 t2 prop_p_wo_17    1.000
+1 1 t2 prop_r_wo_17    1.000
+1 1 t2 prop_rp_wo_17    1.000
+1 1 t3 prop_f_wo_19    1.000
+1 1 t3 prop_p_wo_19    1.000
+1 1 t3 prop_r_wo_19    1.000
+1 1 t3 prop_rp_wo_19    1.000
+1 1 m_rep prop_p_wo_15    1.000
+1 1 m_rep prop_p_wo_17    1.000
+1 1 m_rep prop_p_wo_19    1.000
+1 1 m_vic prop_r_wo_15    1.000
+1 1 m_vic prop_r_wo_17    1.000
+1 1 m_vic prop_r_wo_19    1.000
+1 1 m_loc prop_f_wo_15    1.000
+1 1 m_loc prop_f_wo_17    1.000
+1 1 m_loc prop_f_wo_19    1.000
+1 1 m_vicrep prop_rp_wo_15    1.000
+1 1 m_vicrep prop_rp_wo_17    1.000
+1 1 m_vicrep prop_rp_wo_19    1.000
+1 1 t1 t2    0.691
+1 1 t2 t3    0.745
+2 1 m_vic m_rep    0.000
+2 1 m_vic m_loc    0.000
+2 1 m_vic m_vicrep    0.000
+2 1 m_vic t1    0.000
+2 1 m_rep m_loc    0.000
+2 1 m_rep m_vicrep    0.000
+2 1 m_rep t1    0.000
+2 1 m_loc m_vicrep    0.000
+2 1 m_loc t1    0.000
+2 1 m_vicrep t1    0.000
+4 1 prop_p_wo_15    0.036
+4 1 prop_p_wo_17    0.093
+4 1 prop_p_wo_19    0.099
+4 1 prop_r_wo_15    0.100
+4 1 prop_r_wo_17    0.141
+4 1 prop_r_wo_19    0.151
+4 1 prop_f_wo_15    0.404
+4 1 prop_f_wo_17    0.076
+4 1 prop_f_wo_19    0.122
+4 1 prop_rp_wo_15    0.115
+4 1 prop_rp_wo_17    0.098
+4 1 prop_rp_wo_19    0.150
+4 1 t2    0.174
+4 1 t3    0.147
+5 1 t1    0.555
+5 1 m_rep    0.000
+5 1 m_vic    0.260
+5 1 m_loc    0.076
+5 1 m_vicrep    0.030
