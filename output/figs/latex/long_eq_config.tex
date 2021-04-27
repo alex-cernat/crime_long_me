@@ -20,7 +20,7 @@
 
 
 \tikzstyle{true}=[circle,draw=black,thick,inner sep=0pt, minimum size=20mm]
-\tikzstyle{obs}=[rectangle,draw=black,thick,inner sep=0pt, minimum size=13mm]
+\tikzstyle{obs}=[rectangle,draw=black,thick,inner sep=3pt, minimum size=13mm]
 \tikzstyle{err}=[circle,draw=black,thick,inner sep=0pt, minimum size=9mm]
 \tikzstyle{pre}=[<-,shorten <=1pt,>=stealth', thick]
 \tikzstyle{post}=[->,shorten >=1pt,>=stealth', thick]
@@ -30,13 +30,16 @@
 
 \node (D1) at (1, -0.5) [obs, draw = white] {2015-2016};
 
-\node (T2) at ( 1,-1.5) [true] {T1};
-\node (O1) at ( -1,-5) [obs] {viol.f.w\_15};
+\node (T2) at (1.25, -1.5) [true] {T1};
+\node (O1) at ( -1,-5) [obs] {viol.f\_15};
 \node[above left = 3pt, at=(O1.north)] (int1) {};
-\node (O2) at ( 1,-5) [obs] {viol.p.w\_15};
+\node (O2) at ( 0.5,-5) [obs] {viol.p\_15};
 \node[above left = 3pt, at=(O2.north)] (int2) {};
-\node (O3) at ( 3,-5) [obs] {viol.r.w\_15};
+\node (O3) at ( 2,-5) [obs] {viol.r\_15};
 \node[above right = 3pt, at=(O3.north)] (int3) {};
+\node (O4) at ( 3.5,-5) [obs] {viol.pr\_15};
+\node[above right = 3pt, at=(O4.north)] (int4) {};
+
 
 
 %\node (E1) at ( -0.5,-6.5) [err] {$\epsilon_{11}$};
@@ -46,6 +49,7 @@
 \draw[post] (T2) to node[pos = 0.5, left]  {1} (O1.north);
 \draw[post] (T2) to node[pos = 0.5, left]  {1} (O2.north);
 \draw[post] (T2) to node[pos = 0.5, left]  {1} (O3.north);
+\draw[post] (T2) to node[pos = 0.5, left]  {1} (O4.north);
 
 %\draw[post] (E1) to (O1.south);
 %\draw[post] (E2) to (O2.south);
@@ -56,13 +60,15 @@
 
 \node (D1B) at (8, -0.5) [obs, draw = white] {2017-2018};
 
-\node (T2B) at (8,-1.5) [true] {T2};
-\node (O1B) at (6,-5) [obs] {viol.f.w\_17};
+\node (T2B) at (8.25,-1.5) [true] {T2};
+\node (O1B) at (6,-5) [obs] {viol.f\_17};
 \node[above left = 3pt, at=(O1B.north)] (int1b) {};
-\node (O2B) at (8,-5) [obs] {viol.p.w\_17};
+\node (O2B) at (7.5,-5) [obs] {viol.p\_17};
 \node[above left = 3pt, at=(O2B.north)] (int2b) {};
-\node (O3B) at (10,-5) [obs] {viol.r.w\_17};
+\node (O3B) at (9,-5) [obs] {viol.r\_17};
 \node[above right = 3pt, at=(O3B.north)] (int3b) {};
+\node (O4B) at (10.5,-5) [obs] {viol.pr\_17};
+\node[above right = 3pt, at=(O4B.north)] (int4b) {};
 
 
 %\node (E1B) at ( 6.5,-6.5) [err] {$\epsilon_{12}$};
@@ -72,6 +78,7 @@
 \draw[post] (T2B) to node[pos = 0.5, left]  {1} (O1B.north);
 \draw[post] (T2B) to node[pos = 0.5, left]  {1} (O2B.north);
 \draw[post] (T2B) to node[pos = 0.5, left]  {1} (O3B.north);
+\draw[post] (T2B) to node[pos = 0.5, left]  {1} (O4B.north);
 
 %\draw[post] (E1B) to (O1B.south);
 %\draw[post] (E2B) to (O2B.south);
@@ -86,13 +93,15 @@
 
 \node (D1) at (15, -0.5) [obs, draw = white] {2019-2020};
 
-\node (T22) at (15,-1.5) [true] {T3};
-\node (O12) at (13,-5) [obs] {viol.f.w\_19};
+\node (T22) at (15.25,-1.5) [true] {T3};
+\node (O12) at (13,-5) [obs] {viol.f\_19};
 \node[above left = 3pt, at=(O12.north)] (int4) {};
-\node (O22) at (15,-5) [obs] {viol.p.w\_19};
+\node (O22) at (14.5,-5) [obs] {viol.p\_19};
 \node[above left = 3pt, at=(O22.north)] (int5) {};
-\node (O32) at (17,-5) [obs] {viol.r.w\_19};
+\node (O32) at (16,-5) [obs] {viol.r\_19};
 \node[above right = 3pt, at=(O32.north)] (int6) {};
+\node (O42) at (17.5,-5) [obs] {viol.pr\_19};
+\node[above right = 3pt, at=(O42.north)] (int7) {};
 
 
 
@@ -104,6 +113,7 @@
 \draw[post] (T22) to node[pos = 0.5, left]  {1} (O12.north);
 \draw[post] (T22) to node[pos = 0.5, left]  {1} (O22.north);
 \draw[post] (T22) to node[pos = 0.5, left]  {1} (O32.north);
+\draw[post] (T22) to node[pos = 0.5, left]  {1} (O42.north);
 
 %\draw[post] (E12) to (O12.south);
 %\draw[post] (E22) to (O22.south);
@@ -115,14 +125,17 @@
 \draw[post] (T2B) to node[pos = 0.5, above]  {$\beta_{32}$} (T22.west);
 
 
-\node (DM1) at (1, -11) [obs, draw = white] {Survey places};
-\node (M1) at (1,-10) [true] {M1};
+\node (DM1) at (-1, -11) [obs, draw = white] {Offence location};
+\node (M1) at (-1, -10) [true] {M1};
 
-\node (DM2) at (8, -11) [obs, draw = white] {Survey reported};
-\node (M2) at (8,-10) [true] {M2};
+\node (DM2) at (6.2, -11) [obs, draw = white] {Offence location (report)};
+\node (M2) at (6.2,-10) [true] {M2};
 
-\node (DM2) at (15, -11) [obs, draw = white] {Survey victim};
-\node (M3) at (15,-10) [true] {M3};
+\node (DM3) at (12.4, -11) [obs, draw = white] {Victim residence};
+\node (M3) at (12.4,-10) [true] {M3};
+
+\node (DM4) at (17.5, -11) [obs, draw = white] {Victim residence (report)};
+\node (M4) at (17.5,-10) [true] {M4};
 
 
 \draw[post] (M1) to node[pos = 0.1, left]  {1} (O1.south);
@@ -137,6 +150,9 @@
 \draw[post] (M3) to node[pos = 0.1, left]  {1} (O3B.south);
 \draw[post] (M3) to node[pos = 0.1, above]  {1} (O32.south);
 
+\draw[post] (M4) to node[pos = 0.1, left]  {1} (O4.south);
+\draw[post] (M4) to node[pos = 0.1, left]  {1} (O4B.south);
+\draw[post] (M4) to node[pos = 0.1, above]  {1} (O42.south);
 
 
 \end{tikzpicture}

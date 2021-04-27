@@ -1,0 +1,13 @@
+Measure,Component,Quality
+Offence location,Trait,0.61
+Offence location,Method,0.21
+Offence location,Random error,0.18
+Offence location (report),Trait,0.74
+Offence location (report),Method,0.05
+Offence location (report),Random error,0.21
+Victim residence,Trait,0.58
+Victim residence,Method,0.24
+Victim residence,Random error,0.18
+Victim residence (report),Trait,0.68
+Victim residence (report),Method,0.08
+Victim residence (report),Random error,0.24
