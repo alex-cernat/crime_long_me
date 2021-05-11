@@ -196,8 +196,8 @@ cors_data %>%
     TRUE ~ "Police"
     ),
          topic = case_when(
-           str_detect(x, "prop_pers") ~ "Property personal",
-           str_detect(x, "prop_vh") ~ "Property household/vehicle",
+           str_detect(x, "prop_pers") ~ "Property (personal)",
+           str_detect(x, "prop_vh") ~ "Property (household/vehicle)",
            TRUE ~ "Violence"
            )) %>%
   ggplot(aes(est, topic, color = group)) +
@@ -209,47 +209,12 @@ cors_data %>%
   viridis::scale_color_viridis(discrete = T,
                                guide = guide_legend(reverse = TRUE)) +
   labs(x = "Correlation with police data",
-       y = "Type crime", color = "Measure")
+       y = "Type of crime", color = "Measure")
 
 ggsave("./output/figs/cor_police_overall.png")
 
-corr_data %>%
-  summarise_all(~mean(.)) %>%
-  gather() %>%
-  mutate(group = case_when(
-    str_detect(key, "\\.r\\.w") ~ "Victim residence",
-    str_detect(key, "\\.p\\.w") ~ "Offence location (report)",
-    str_detect(key, "\\.f\\.w") ~ "Offence location",
-    str_detect(key, "\\.rp\\.w") ~ "Victim residence (report)",
-    TRUE ~ "Police"
-    ),
-         topic = case_when(
-           str_detect(key, "prop_pers") ~ "Property personal",
-           str_detect(key, "prop_vh") ~ "Property household/vehicle",
-           TRUE ~ "Violence"),
-         key2 = str_remove_all(key, "\\..+"),
-         est = exp(value) - 1) %>%
-  ggplot(aes(value, topic, color = group)) +
-  geom_point(size = 3, alpha = 0.6) +
-  theme_bw() +
-  viridis::scale_color_viridis(discrete = T) +
-  labs(x = "Log crime rates", y = "Topic", color = "Question")
-
-
-# ggsave("./output/figs/logrates_police_overall.png")
-
-
-
-
-
-
-
-
 
 # Models with original weights --------------------------------------------------
-
-
-
 
 
 # MTMM with 4 methods -----------------------------------------------------
@@ -330,8 +295,8 @@ mtmm_wo_qual <- mtmm_wo_est %>%
   filter(op == "=~" | op == "~~") %>%
   filter(!(op == "~~" & str_detect(lhs, "t_|m_"))) %>%
   mutate(Trait = case_when(str_detect(rhs, "viol") ~ "Violence",
-                           str_detect(rhs, "vh") ~ "Property household/vehicle",
-                           str_detect(rhs, "pers") ~ "Property personal"),
+                           str_detect(rhs, "vh") ~ "Property (household/vehicle)",
+                           str_detect(rhs, "pers") ~ "Property (personal)"),
          group = case_when(
            str_detect(rhs, "\\.r\\.") ~ "Victim residence",
            str_detect(rhs, "\\.p") ~ "Offence location (report)",
@@ -531,8 +496,8 @@ qual_qsm2_wo <- qs_m2_wo %>%
       select(-op, -est, -std.lv, -std.nox)
   }) %>%
   mutate(Trait = case_when(str_detect(rhs, "viol") ~ "Violence",
-                           str_detect(rhs, "vh") ~ "Property household/vehicle",
-                           str_detect(rhs, "pers") ~ "Property personal"),
+                           str_detect(rhs, "vh") ~ "Property (household/vehicle)",
+                           str_detect(rhs, "pers") ~ "Property (personal)"),
          year = case_when(year == "15" ~ "15/16",
                           year == "17" ~ "17/18",
                           year == "19" ~ "19/20"))
@@ -569,8 +534,8 @@ var_qs_m2_wo <- qs_m2_wo %>%
       filter(op == "~~", str_detect(lhs, "m_|t")) %>%
       filter(!est %in% c(0, 1))
   }) %>%
-  mutate(Dimension = rep(c("Property household/vehicle",
-                            "Property personal",
+  mutate(Dimension = rep(c("Property (household/vehicle)",
+                            "Property (personal)",
                             "Violence"),
                           each = 7),
          Variable = case_when(
@@ -627,8 +592,8 @@ qs_rel_wo %>%
                            TRUE ~ "Police"),
          var = str_remove_all(key, "\\.f|\\.p|\\.rp|\\.r"),
          topic = case_when(
-           str_detect(key, "prop_pers") ~ "Property personal",
-           str_detect(key, "prop_vh") ~ "Property household/vehicle",
+           str_detect(key, "prop_pers") ~ "Property (personal)",
+           str_detect(key, "prop_vh") ~ "Property (household/vehicle)",
            TRUE ~ "Violence")) %>%
   ggplot(aes(as.factor(year), value,
              color = group, group = group)) +

@@ -2,5 +2,9 @@
 .Rhistory
 .Ruserdata
 *.RData
+output/*.RData
 *.csv
 /lavExport/
+output/qs_m2_wo.RData
+output/quasi_simple_wo.RData
+output/mtmm_wo.RData
