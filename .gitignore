@@ -1,9 +1,6 @@
 .Rproj.user
 .Rhistory
-.RData
 .Ruserdata
-output/mtmm_wo.RData
-output/qs_m2_wo.RData
-output/quasi_simple_wo.RData
 *.RData
-*.RData
+*.csv
+/lavExport/
