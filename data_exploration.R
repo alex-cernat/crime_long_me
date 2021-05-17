@@ -44,7 +44,7 @@ rm(list = ls())
 # install packages
 pkg <- c("knitr", "tidyverse", "lavaan", "ggcorrplot",
          "blavaan", "rstan", "viridis", "ggpubr",
-         "MplusAutomation")
+         "MplusAutomation", "here")
 
 # sapply(pkg, install.packages)
 sapply(pkg, library, character.only = T)
@@ -57,9 +57,9 @@ future::plan("multiprocess")
 
 # load data ---------------------------------------------------------------
 
-barca_raw_full <- read_csv("./data/clean/neighbourhoods.csv")
-barca_2y_full <- read_csv("./data/clean/neighbourhoods_2years.csv")
-barca_6y_full <- read_csv("./data/clean/neighbourhoods_6years.csv")
+barca_raw_full <- read_csv(here("data/clean/neighbourhoods.csv"))
+barca_2y_full <- read_csv(here("data/clean/neighbourhoods_2years.csv"))
+barca_6y_full <- read_csv(here("data/clean/neighbourhoods_6years.csv"))
 
 # data cleaning -----------------------------------------------------------
 
