@@ -1,11 +1,13 @@
 # Estimating crime in place: moving beyond residence location 
 
-This is the code used in the production of the "Estimating crime in place: moving beyond residence location" paper published at xxx. This is joined work of Alexandru Cernat, David Buil-Gil, Ian Brunton-Smith, Jose Pina-Sánchez and Marta Murrià-Sangenís
+This is the code used in the production of the "Estimating crime in place: moving beyond residence location" paper submitted to the Journal of Research in Crime and Delinquency. This is joined work of A. Cernat, D. Buil-Gil, I. Brunton-Smith, J. Pina-Sánchez and M. Murrià-Sangenís
 
 
 ## Reproduce results
 
-We have started from the xxx data downloaded from xxx on xxxx date. The ".R" file cleans the data and prepars the csv files used in the analysis while the  "data_exploration.R" runs the analysis and produces the graphs. The Mplus folder has the sensitivity analysis done using mplus.
+We have started from the Barcelona Victimization Survey data downloaded from the Barcelona City Council Public Opinion Poll Register (https://ajuntament.barcelona.cat/en/administrative-information/public-opinion-poll-register) on February 12th 2021. In order to access the low-level geographies of the Barcelona Victimization Survey, we submitted a Freedom of Information request to the Barcelona Institute of Regional and Metropolitan Studies (https://iermb.uab.cat/es/encuestas/convivencia-seguridad-urbana/). All survey data are saved in the "data/raw" folder (not available from Github due to privacy restrictions of the data sharing agreement). We also submitted a Freedom of Information Request to Mossos d'Esquadra, the Catalan Police, to request access to police-recorded crime data. Police data are also saved in the "data/raw'" folder (not available from Github due to privacy restrictions of the data sharing agreement).
+
+The "data_cleaning.R" file cleans the data and prepars the csv files used in the analysis while the  "data_exploration.R" runs the analysis and produces the graphs. The R scrupt should be run from within "crime_long_me.RProj" project. The Mplus folder has the sensitivity analysis done using mplus.
 
 
 
