@@ -1,6 +1,6 @@
 # Estimating crime in place: moving beyond residence location 
 
-This is the code used in the production of the "Estimating crime in place from survey data: Moving beyond residence location" paper submitted to the Journal of Research in Crime and Delinquency. This is joined work of A. Cernat, D. Buil-Gil, I. Brunton-Smith, J. Pina-Sánchez and M. Murrià-Sangenís.
+This is the code used in the production of the "Estimating Crime in Place: Moving Beyond Residence Location" paper, published in Crime and Delinquency (https://doi.org/10.1177/00111287211064779). This is joined work of A. Cernat, D. Buil-Gil, I. Brunton-Smith, J. Pina-Sánchez and M. Murrià-Sangenís.
 
 
 ## Reproduce results
